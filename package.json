@@ -14,6 +14,7 @@
     "@pantheon-systems/cpub-react-sdk": "^5.2.1",
     "@pantheon-systems/css-client": "^0.7.0",
     "@pantheon-systems/p1-ai-chat": "^0.1.0",
+    "@pantheon-systems/p1-media-r2": "^0.2.0",
     "@pantheon-systems/p1-next-sdk": "^0.7.0",
     "@pantheon-systems/pcc-react-sdk": "^5.2.0",
     "@pantheon-systems/pds-toolkit-react": "2.0.0-alpha.44",

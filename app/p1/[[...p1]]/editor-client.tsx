@@ -9,12 +9,13 @@ import {
   useP1Editor,
   useP1Plugins,
   useP1Auth,
-  wrapConfigForEditorPreview,
+  useP1Puck,
   P1QueryProvider,
   editorPathHref,
 } from "@pantheon-systems/puck-css";
 import { P1NextRouterProvider } from "@pantheon-systems/p1-next-sdk";
 import { createAIChatPlugin } from "@pantheon-systems/p1-ai-chat";
+import { createMediaPlugin, DEFAULT_MEDIA_PATTERNS } from "@pantheon-systems/p1-media-r2";
 import { useFlags } from "launchdarkly-react-client-sdk";
 import type { Checkpoint } from "@pantheon-systems/puck-css";
 import type { ContentRole } from "@pantheon-systems/puck-css";
@@ -68,7 +69,12 @@ try {
   p1ConfigError = e instanceof Error ? e.message : String(e);
 }
 
-const editorConfig = wrapConfigForEditorPreview(config);
+// Raw config, NOT wrapConfigForEditorPreview(config) — the wrapper's per-block
+// prop merge overwrites Puck's injected contentEditable elements, which the
+// GLU components use extensively (renders raw HTML instead of inline-editable
+// text). Only needed for remote-datasource/string-template preview binding,
+// which these components don't use.
+const editorConfig = config;
 
 const ROLES: ContentRole[] = ['admin', 'editor', 'junior-editor'];
 
@@ -204,6 +210,7 @@ function EditorContent({
 }) {
   const router = useRouter();
   const { getToken } = useP1Auth();
+  const { siteId, branchId } = useP1Puck();
   const p1Plugins = useP1Plugins(path, config);
   const flags = useFlags();
   const agentUrl = process.env.NEXT_PUBLIC_AGENT_URL;
@@ -215,9 +222,23 @@ function EditorContent({
         : null,
     [chatbotEnabled, agentUrl],
   );
+  // Media uploads (Cloudflare R2) — auto-upgrades text fields matching an
+  // image-name pattern (imageUrl, backgroundImageUrl, logo, icon, photo…)
+  // into an upload/media-library picker, scoped to this site + workstream.
+  const mediaPlugin = React.useMemo(
+    () =>
+      createMediaPlugin({
+        workerUrl: process.env.NEXT_PUBLIC_MEDIA_WORKER_URL ?? "",
+        siteId,
+        workstreamId: branchId,
+        getAuthToken: () => getToken(),
+        fieldNamePatterns: [...DEFAULT_MEDIA_PATTERNS, /^photo$/],
+      }),
+    [siteId, branchId, getToken],
+  );
   const additionalPlugins = React.useMemo(
-    () => (aiPlugin ? [...p1Plugins, aiPlugin] : p1Plugins),
-    [p1Plugins, aiPlugin],
+    () => [...p1Plugins, ...(aiPlugin ? [aiPlugin] : []), mediaPlugin],
+    [p1Plugins, aiPlugin, mediaPlugin],
   ) as typeof p1Plugins;
 
   const [redirecting, setRedirecting] = React.useState(false);
