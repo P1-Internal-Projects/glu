@@ -20,4 +20,10 @@ export default {
       { protocol: "https", hostname: "media.p1.pantheon.io" },
     ],
   },
+  async redirects() {
+    return [
+      // Serve the built Storybook (public/storybook/) at a clean /storybook path.
+      { source: "/storybook", destination: "/storybook/index.html", permanent: false },
+    ];
+  },
 };
