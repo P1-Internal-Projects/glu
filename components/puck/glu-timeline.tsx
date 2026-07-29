@@ -57,7 +57,7 @@ function TimelineEntry({ item, index, isLast }: EntryProps) {
             width: 56,
             height: 56,
             borderRadius: radii.full,
-            backgroundColor: colors.navy,
+            backgroundColor: colors.crimson,
             color: colors.white,
             display: "flex",
             alignItems: "center",
@@ -69,7 +69,7 @@ function TimelineEntry({ item, index, isLast }: EntryProps) {
             flexShrink: 0,
             position: "relative",
             zIndex: 1,
-            boxShadow: `0 0 0 4px ${colors.offWhite}, 0 0 0 6px ${colors.navy}`,
+            boxShadow: `0 0 0 4px ${colors.offWhite}, 0 0 0 6px ${colors.crimson}`,
           }}
         >
           {item.year}
@@ -80,7 +80,7 @@ function TimelineEntry({ item, index, isLast }: EntryProps) {
             style={{
               width: 2,
               flexGrow: 1,
-              background: `linear-gradient(to bottom, ${colors.navy}, ${colors.navy}33)`,
+              background: `linear-gradient(to bottom, ${colors.crimson}, ${colors.crimson}33)`,
               marginTop: spacing[2],
               minHeight: 40,
             }}

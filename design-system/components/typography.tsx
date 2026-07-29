@@ -83,7 +83,7 @@ export function Eyebrow({ children, light, style, className }: EyebrowProps) {
         fontWeight: typography.weightSemibold,
         letterSpacing: "0.08em",
         textTransform: "uppercase" as const,
-        color: light ? "rgba(255,255,255,0.75)" : colors.navy,
+        color: light ? "rgba(255,255,255,0.75)" : colors.crimson,
         margin: 0,
         ...style,
       }}

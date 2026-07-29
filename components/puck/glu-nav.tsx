@@ -19,7 +19,7 @@ export function GLUNavComponent({ logoText, links, ctaLabel, ctaHref }: GLUNavPr
   return (
     <header
       style={{
-        backgroundColor: colors.navy,
+        backgroundColor: colors.crimson,
         height: layout.navHeight,
         position: "sticky",
         top: 0,
@@ -97,7 +97,7 @@ export function GLUNavComponent({ logoText, links, ctaLabel, ctaHref }: GLUNavPr
             top: layout.navHeight,
             left: 0,
             right: 0,
-            backgroundColor: colors.navyDark,
+            backgroundColor: colors.crimsonDark,
             padding: spacing[4],
             display: "flex",
             flexDirection: "column" as const,

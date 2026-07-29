@@ -14,7 +14,7 @@ export interface SectionProps {
 const bgColors: Record<SectionBackground, string> = {
   white: colors.white,
   offWhite: colors.offWhite,
-  navy: colors.navy,
+  navy: colors.crimson,
   lightBlue: colors.lightBlue,
 };
 

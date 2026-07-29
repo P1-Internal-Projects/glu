@@ -16,7 +16,7 @@ export type GLUFooterProps = {
 
 export function GLUFooterComponent({ logoText, tagline, columns, copyright, socialLinks }: GLUFooterProps) {
   return (
-    <footer style={{ backgroundColor: colors.navyDark, color: colors.white }}>
+    <footer style={{ backgroundColor: colors.crimsonDark, color: colors.white }}>
       {/* Main footer content */}
       <div style={{ paddingTop: spacing[16], paddingBottom: spacing[12] }}>
         <Container>
@@ -77,7 +77,7 @@ export function GLUFooterComponent({ logoText, tagline, columns, copyright, soci
                     fontSize: typography.sizeXs,
                     fontWeight: typography.weightSemibold,
                     color: colors.gold,
-                    backgroundColor: colors.navyDark,
+                    backgroundColor: colors.crimsonDark,
                     letterSpacing: "0.08em",
                     textTransform: "uppercase" as const,
                     margin: `0 0 ${spacing[4]}`,

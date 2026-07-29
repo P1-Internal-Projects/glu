@@ -10,10 +10,10 @@ export interface BadgeProps {
 }
 
 const variantStyles: Record<BadgeVariant, React.CSSProperties> = {
-  navy: { backgroundColor: colors.navy, color: colors.white },
+  navy: { backgroundColor: colors.crimson, color: colors.white },
   gold: { backgroundColor: colors.gold, color: colors.white },
   blue: { backgroundColor: colors.blue, color: colors.white },
-  light: { backgroundColor: colors.lightBlue, color: colors.navy },
+  light: { backgroundColor: colors.lightBlue, color: colors.crimson },
   success: { backgroundColor: colors.success, color: colors.white },
   error: { backgroundColor: colors.error, color: colors.white },
 };

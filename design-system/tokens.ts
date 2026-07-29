@@ -1,7 +1,7 @@
 export const colors = {
-  navy: "#8B0015",       // Deep collegiate crimson (nav, footer, dark sections)
-  navyDark: "#6B0010",
-  navyLight: "#B22030",
+  crimson: "#8B0015",    // Deep collegiate crimson (nav, footer, dark sections)
+  crimsonDark: "#6B0010",
+  crimsonLight: "#B22030",
   blue: "#C0392B",       // Alizarin / medium red (accents, links)
   gold: "#C8922A",       // Collegiate gold (CTAs, highlights)
   goldDark: "#A87522",

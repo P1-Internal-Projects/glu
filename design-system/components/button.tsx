@@ -19,18 +19,18 @@ const variantStyles: Record<ButtonVariant, React.CSSProperties> = {
     border: `2px solid ${colors.gold}`,
   },
   secondary: {
-    backgroundColor: colors.navy,
+    backgroundColor: colors.crimson,
     color: colors.white,
-    border: `2px solid ${colors.navy}`,
+    border: `2px solid ${colors.crimson}`,
   },
   outline: {
     backgroundColor: "transparent",
-    color: colors.navy,
-    border: `2px solid ${colors.navy}`,
+    color: colors.crimson,
+    border: `2px solid ${colors.crimson}`,
   },
   ghost: {
     backgroundColor: "transparent",
-    color: colors.navy,
+    color: colors.crimson,
     border: "2px solid transparent",
   },
 };

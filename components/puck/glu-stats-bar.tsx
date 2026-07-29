@@ -17,7 +17,7 @@ export function GLUStatsBarComponent({ heading, stats, background }: GLUStatsBar
   const isGold = background === "gold";
 
   const bgMap = { navy: "navy", gold: "white", white: "offWhite" } as const;
-  const valuColor = isNavy ? colors.gold : isGold ? colors.navy : colors.navy;
+  const valuColor = isNavy ? colors.gold : isGold ? colors.crimson : colors.crimson;
   const labelColor = isNavy ? "rgba(255,255,255,0.8)" : colors.muted;
   const dividerColor = isNavy ? "rgba(255,255,255,0.15)" : colors.border;
 
@@ -62,7 +62,7 @@ export function GLUStatsBarComponent({ heading, stats, background }: GLUStatsBar
                   fontSize: typography.size4xl,
                   fontWeight: typography.weightBold,
                   color: valuColor,
-                  backgroundColor: isNavy ? colors.navy : isGold ? colors.white : colors.offWhite,
+                  backgroundColor: isNavy ? colors.crimson : isGold ? colors.white : colors.offWhite,
                   lineHeight: 1,
                   marginBottom: spacing[2],
                 }}

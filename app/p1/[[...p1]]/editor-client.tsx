@@ -20,6 +20,7 @@ import { useFlags } from "launchdarkly-react-client-sdk";
 import type { Checkpoint } from "@pantheon-systems/puck-css";
 import type { ContentRole } from "@pantheon-systems/puck-css";
 import { P1_ASSETS } from "../../../constants/assets";
+import { THUMBNAIL_MAP } from "../../../lib/component-thumbnails";
 
 import "@pantheon-systems/puck-css/styles.css";
 import "@pantheon-systems/puck-css/pds/styles.css";
@@ -279,6 +280,7 @@ function EditorContent({
     documentPath: path,
     puckConfig: editorConfig,
     additionalPlugins,
+    thumbnails: THUMBNAIL_MAP,
     onDocumentNotFound: handleDocumentNotFound,
     pluginOptions: {
       onDocumentSelect: handleDocumentSelect,
