@@ -86,6 +86,19 @@ function Thumb({ children }: { children: React.ReactNode }) {
 
 /** GLUNav — navigation bar */
 function GLUNavThumb() {
+  // Palette resolved from this component's actual background — see resolveComponentBackground() in generate-thumbnails.ts
+  const BG_DARK = "#8B0015";
+  const BG_PANEL = "#9b2436";
+  const BG_IMAGE = "#a73d4d";
+  const BG_LIGHT = "#8B0015";
+  const IMG_LIGHT = "#a73d4d";
+  const SEP = "rgba(255,255,255,0.18)";
+  const TEXT_BRIGHT = "rgba(255,255,255,0.92)";
+  const TEXT_DIM = "rgba(255,255,255,0.58)";
+  const TEXT_VERY_DIM = "rgba(255,255,255,0.24)";
+  const TEXT_ON_LIGHT = "rgba(255,255,255,0.92)";
+  const TEXT_ON_LIGHT_DIM = "rgba(255,255,255,0.58)";
+  const ACCENT = "#C8922A";
   return (
     <Thumb>
       <R w={60} h={40} fill={BG_DARK} />
@@ -102,11 +115,32 @@ function GLUNavThumb() {
   );
 }
 
-/** GLUHero — full-bleed image with centered heading + CTA */
+/** GLUHero — full-bleed image with centered heading + CTA (wash color resolved from source) */
 function GLUHeroThumb() {
+  // Palette resolved from this component's actual background — see resolveComponentBackground() in generate-thumbnails.ts
+  const BG_DARK = "#8B0015";
+  const BG_PANEL = "#9b2436";
+  const BG_IMAGE = "#a73d4d";
+  const BG_LIGHT = "#8B0015";
+  const IMG_LIGHT = "#a73d4d";
+  const SEP = "rgba(255,255,255,0.18)";
+  const TEXT_BRIGHT = "rgba(255,255,255,0.92)";
+  const TEXT_DIM = "rgba(255,255,255,0.58)";
+  const TEXT_VERY_DIM = "rgba(255,255,255,0.24)";
+  const TEXT_ON_LIGHT = "rgba(255,255,255,0.92)";
+  const TEXT_ON_LIGHT_DIM = "rgba(255,255,255,0.58)";
+  const ACCENT = "#C8922A";
   return (
     <Thumb>
       <Img x={0} y={0} w={60} h={40} fill="#2a2f34" />
+      <defs>
+        <linearGradient id="grad-hero-gluhero" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stopColor="#8B0015" stopOpacity={0.92} />
+          <stop offset="55%" stopColor="#8B0015" stopOpacity={0.55} />
+          <stop offset="100%" stopColor="#8B0015" stopOpacity={0} />
+        </linearGradient>
+      </defs>
+      <rect x={0} y={0} width={60} height={40} fill="url(#grad-hero-gluhero)" />
       <T x={10} y={12} w={40} h={4} fill={TEXT_BRIGHT} />
       <T x={18} y={19} w={24} h={2.5} fill={TEXT_DIM} />
       <Btn x={16} y={27} w={14} />
@@ -115,11 +149,32 @@ function GLUHeroThumb() {
   );
 }
 
-/** GLUPageHero — full-bleed image with centered heading + CTA */
+/** GLUPageHero — full-bleed image with centered heading + CTA (wash color resolved from source) */
 function GLUPageHeroThumb() {
+  // Palette resolved from this component's actual background — see resolveComponentBackground() in generate-thumbnails.ts
+  const BG_DARK = "#8B0015";
+  const BG_PANEL = "#9b2436";
+  const BG_IMAGE = "#a73d4d";
+  const BG_LIGHT = "#8B0015";
+  const IMG_LIGHT = "#a73d4d";
+  const SEP = "rgba(255,255,255,0.18)";
+  const TEXT_BRIGHT = "rgba(255,255,255,0.92)";
+  const TEXT_DIM = "rgba(255,255,255,0.58)";
+  const TEXT_VERY_DIM = "rgba(255,255,255,0.24)";
+  const TEXT_ON_LIGHT = "rgba(255,255,255,0.92)";
+  const TEXT_ON_LIGHT_DIM = "rgba(255,255,255,0.58)";
+  const ACCENT = "#C8922A";
   return (
     <Thumb>
       <Img x={0} y={0} w={60} h={40} fill="#2a2f34" />
+      <defs>
+        <linearGradient id="grad-hero-glupagehero" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stopColor="#8B0015" stopOpacity={0.92} />
+          <stop offset="55%" stopColor="#8B0015" stopOpacity={0.55} />
+          <stop offset="100%" stopColor="#8B0015" stopOpacity={0} />
+        </linearGradient>
+      </defs>
+      <rect x={0} y={0} width={60} height={40} fill="url(#grad-hero-glupagehero)" />
       <T x={10} y={12} w={40} h={4} fill={TEXT_BRIGHT} />
       <T x={18} y={19} w={24} h={2.5} fill={TEXT_DIM} />
       <Btn x={16} y={27} w={14} />
@@ -130,6 +185,19 @@ function GLUPageHeroThumb() {
 
 /** GLUStatsBar — 3-column stat/pillar layout */
 function GLUStatsBarThumb() {
+  // Palette resolved from this component's actual background — see resolveComponentBackground() in generate-thumbnails.ts
+  const BG_DARK = "#8B0015";
+  const BG_PANEL = "#9b2436";
+  const BG_IMAGE = "#a73d4d";
+  const BG_LIGHT = "#8B0015";
+  const IMG_LIGHT = "#a73d4d";
+  const SEP = "rgba(255,255,255,0.18)";
+  const TEXT_BRIGHT = "rgba(255,255,255,0.92)";
+  const TEXT_DIM = "rgba(255,255,255,0.58)";
+  const TEXT_VERY_DIM = "rgba(255,255,255,0.24)";
+  const TEXT_ON_LIGHT = "rgba(255,255,255,0.92)";
+  const TEXT_ON_LIGHT_DIM = "rgba(255,255,255,0.58)";
+  const ACCENT = "#C8922A";
   return (
     <Thumb>
       <R w={60} h={40} fill={BG_LIGHT} />
@@ -153,6 +221,19 @@ function GLUStatsBarThumb() {
 
 /** GLUFeatureSection — image left, text + button right */
 function GLUFeatureSectionThumb() {
+  // Palette resolved from this component's actual background — see resolveComponentBackground() in generate-thumbnails.ts
+  const BG_DARK = "#ffffff";
+  const BG_PANEL = "#f0f0f0";
+  const BG_IMAGE = "#dbdbdb";
+  const BG_LIGHT = "#ffffff";
+  const IMG_LIGHT = "#dbdbdb";
+  const SEP = "rgba(0,0,0,0.12)";
+  const TEXT_BRIGHT = "rgba(0,0,0,0.62)";
+  const TEXT_DIM = "rgba(0,0,0,0.36)";
+  const TEXT_VERY_DIM = "rgba(0,0,0,0.15)";
+  const TEXT_ON_LIGHT = "rgba(0,0,0,0.62)";
+  const TEXT_ON_LIGHT_DIM = "rgba(0,0,0,0.36)";
+  const ACCENT = "#8b0015";
   return (
     <Thumb>
       <R w={60} h={40} fill={BG_DARK} />
@@ -169,6 +250,19 @@ function GLUFeatureSectionThumb() {
 
 /** GLUCardGrid — 3-column card grid */
 function GLUCardGridThumb() {
+  // Palette resolved from this component's actual background — see resolveComponentBackground() in generate-thumbnails.ts
+  const BG_DARK = "#FFF5F5";
+  const BG_PANEL = "#f0e6e6";
+  const BG_IMAGE = "#dbd3d3";
+  const BG_LIGHT = "#FFF5F5";
+  const IMG_LIGHT = "#dbd3d3";
+  const SEP = "rgba(0,0,0,0.12)";
+  const TEXT_BRIGHT = "rgba(0,0,0,0.62)";
+  const TEXT_DIM = "rgba(0,0,0,0.36)";
+  const TEXT_VERY_DIM = "rgba(0,0,0,0.15)";
+  const TEXT_ON_LIGHT = "rgba(0,0,0,0.62)";
+  const TEXT_ON_LIGHT_DIM = "rgba(0,0,0,0.36)";
+  const ACCENT = "#8b0015";
   return (
     <Thumb>
       <R w={60} h={40} fill={BG_DARK} />
@@ -188,11 +282,24 @@ function GLUCardGridThumb() {
   );
 }
 
-/** GLUTestimonialSlider — full-bleed image with prev/next arrows */
+/** GLUTestimonialSlider — full-bleed image with prev/next arrows (canvas color resolved from source) */
 function GLUTestimonialSliderThumb() {
+  // Palette resolved from this component's actual background — see resolveComponentBackground() in generate-thumbnails.ts
+  const BG_DARK = "#8B0015";
+  const BG_PANEL = "#9b2436";
+  const BG_IMAGE = "#a73d4d";
+  const BG_LIGHT = "#8B0015";
+  const IMG_LIGHT = "#a73d4d";
+  const SEP = "rgba(255,255,255,0.18)";
+  const TEXT_BRIGHT = "rgba(255,255,255,0.92)";
+  const TEXT_DIM = "rgba(255,255,255,0.58)";
+  const TEXT_VERY_DIM = "rgba(255,255,255,0.24)";
+  const TEXT_ON_LIGHT = "rgba(255,255,255,0.92)";
+  const TEXT_ON_LIGHT_DIM = "rgba(255,255,255,0.58)";
+  const ACCENT = "#C8922A";
   return (
     <Thumb>
-      <Img x={0} y={0} w={60} h={40} fill="#2a2f34" />
+      <Img x={0} y={0} w={60} h={40} fill="#8B0015" />
       <R x={2} y={14} w={8} h={12} fill="rgba(0,0,0,0.45)" rx={1} />
       <polyline points="8,16 4,20 8,24" fill="none"
         stroke={TEXT_BRIGHT} strokeWidth={1.2} strokeLinejoin="round" />
@@ -207,6 +314,19 @@ function GLUTestimonialSliderThumb() {
 
 /** GLUCtaBanner — image left, text + button right */
 function GLUCtaBannerThumb() {
+  // Palette resolved from this component's actual background — see resolveComponentBackground() in generate-thumbnails.ts
+  const BG_DARK = "#8B0015";
+  const BG_PANEL = "#9b2436";
+  const BG_IMAGE = "#a73d4d";
+  const BG_LIGHT = "#8B0015";
+  const IMG_LIGHT = "#a73d4d";
+  const SEP = "rgba(255,255,255,0.18)";
+  const TEXT_BRIGHT = "rgba(255,255,255,0.92)";
+  const TEXT_DIM = "rgba(255,255,255,0.58)";
+  const TEXT_VERY_DIM = "rgba(255,255,255,0.24)";
+  const TEXT_ON_LIGHT = "rgba(255,255,255,0.92)";
+  const TEXT_ON_LIGHT_DIM = "rgba(255,255,255,0.58)";
+  const ACCENT = "#C8922A";
   return (
     <Thumb>
       <R w={60} h={40} fill={BG_DARK} />
@@ -223,6 +343,19 @@ function GLUCtaBannerThumb() {
 
 /** GLUAccordion — heading + horizontal card strip */
 function GLUAccordionThumb() {
+  // Palette resolved from this component's actual background — see resolveComponentBackground() in generate-thumbnails.ts
+  const BG_DARK = "#FFF5F5";
+  const BG_PANEL = "#f0e6e6";
+  const BG_IMAGE = "#dbd3d3";
+  const BG_LIGHT = "#FFF5F5";
+  const IMG_LIGHT = "#dbd3d3";
+  const SEP = "rgba(0,0,0,0.12)";
+  const TEXT_BRIGHT = "rgba(0,0,0,0.62)";
+  const TEXT_DIM = "rgba(0,0,0,0.36)";
+  const TEXT_VERY_DIM = "rgba(0,0,0,0.15)";
+  const TEXT_ON_LIGHT = "rgba(0,0,0,0.62)";
+  const TEXT_ON_LIGHT_DIM = "rgba(0,0,0,0.36)";
+  const ACCENT = "#8b0015";
   return (
     <Thumb>
       <R w={60} h={40} fill={BG_DARK} />
@@ -244,6 +377,19 @@ function GLUAccordionThumb() {
 
 /** GLUFooter — dark footer with link columns + social circles */
 function GLUFooterThumb() {
+  // Palette resolved from this component's actual background — see resolveComponentBackground() in generate-thumbnails.ts
+  const BG_DARK = "#6B0010";
+  const BG_PANEL = "#802431";
+  const BG_IMAGE = "#8f3d49";
+  const BG_LIGHT = "#6B0010";
+  const IMG_LIGHT = "#8f3d49";
+  const SEP = "rgba(255,255,255,0.18)";
+  const TEXT_BRIGHT = "rgba(255,255,255,0.92)";
+  const TEXT_DIM = "rgba(255,255,255,0.58)";
+  const TEXT_VERY_DIM = "rgba(255,255,255,0.24)";
+  const TEXT_ON_LIGHT = "rgba(255,255,255,0.92)";
+  const TEXT_ON_LIGHT_DIM = "rgba(255,255,255,0.58)";
+  const ACCENT = "#C8922A";
   return (
     <Thumb>
       <R w={60} h={40} fill="#111315" />
@@ -272,6 +418,19 @@ function GLUFooterThumb() {
 
 /** GLUTimeline — heading + horizontal card strip */
 function GLUTimelineThumb() {
+  // Palette resolved from this component's actual background — see resolveComponentBackground() in generate-thumbnails.ts
+  const BG_DARK = "#ffffff";
+  const BG_PANEL = "#f0f0f0";
+  const BG_IMAGE = "#dbdbdb";
+  const BG_LIGHT = "#ffffff";
+  const IMG_LIGHT = "#dbdbdb";
+  const SEP = "rgba(0,0,0,0.12)";
+  const TEXT_BRIGHT = "rgba(0,0,0,0.62)";
+  const TEXT_DIM = "rgba(0,0,0,0.36)";
+  const TEXT_VERY_DIM = "rgba(0,0,0,0.15)";
+  const TEXT_ON_LIGHT = "rgba(0,0,0,0.62)";
+  const TEXT_ON_LIGHT_DIM = "rgba(0,0,0,0.36)";
+  const ACCENT = "#8b0015";
   return (
     <Thumb>
       <R w={60} h={40} fill={BG_DARK} />
@@ -293,6 +452,19 @@ function GLUTimelineThumb() {
 
 /** GLUSlideshow — heading + horizontal card strip */
 function GLUSlideshowThumb() {
+  // Palette resolved from this component's actual background — see resolveComponentBackground() in generate-thumbnails.ts
+  const BG_DARK = "#1A0505";
+  const BG_PANEL = "#3a2828";
+  const BG_IMAGE = "#514141";
+  const BG_LIGHT = "#1A0505";
+  const IMG_LIGHT = "#514141";
+  const SEP = "rgba(255,255,255,0.18)";
+  const TEXT_BRIGHT = "rgba(255,255,255,0.92)";
+  const TEXT_DIM = "rgba(255,255,255,0.58)";
+  const TEXT_VERY_DIM = "rgba(255,255,255,0.24)";
+  const TEXT_ON_LIGHT = "rgba(255,255,255,0.92)";
+  const TEXT_ON_LIGHT_DIM = "rgba(255,255,255,0.58)";
+  const ACCENT = "#C8922A";
   return (
     <Thumb>
       <R w={60} h={40} fill={BG_DARK} />

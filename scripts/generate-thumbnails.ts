@@ -674,13 +674,31 @@ function navBar(name: string): Lines {
   ];
 }
 
-function hero(name: string): Lines {
+function hero(name: string, palette: ComponentPalette | null): Lines {
+  // When the component's real background-wash color was resolved from its own
+  // source (e.g. GLUHero/GLUPageHero's crimson gradient over a photo), paint the
+  // same wash here instead of a flat photo placeholder — that gradient is the
+  // dominant visual signal these components actually have, not just an accent.
+  const gradId = `grad-hero-${name.toLowerCase()}`;
+  const wash = palette
+    ? [
+      `      <defs>`,
+      `        <linearGradient id="${gradId}" x1="0" y1="0" x2="1" y2="0">`,
+      `          <stop offset="0%" stopColor="${palette.bg}" stopOpacity={0.92} />`,
+      `          <stop offset="55%" stopColor="${palette.bg}" stopOpacity={0.55} />`,
+      `          <stop offset="100%" stopColor="${palette.bg}" stopOpacity={0} />`,
+      `        </linearGradient>`,
+      `      </defs>`,
+      `      <rect x={0} y={0} width={60} height={40} fill="url(#${gradId})" />`,
+    ]
+    : [];
   return [
-    `/** ${name} — full-bleed image with centered heading + CTA */`,
+    `/** ${name} — full-bleed image with centered heading + CTA${palette ? " (wash color resolved from source)" : ""} */`,
     `function ${name}Thumb() {`,
     `  return (`,
     `    <Thumb>`,
     `      <Img x={0} y={0} w={60} h={40} fill="#2a2f34" />`,
+    ...wash,
     `      <T x={10} y={12} w={40} h={4} fill={TEXT_BRIGHT} />`,
     `      <T x={18} y={19} w={24} h={2.5} fill={TEXT_DIM} />`,
     `      <Btn x={16} y={27} w={14} />`,
@@ -820,13 +838,17 @@ function mosaic(name: string): Lines {
   ];
 }
 
-function animated(name: string): Lines {
+function animated(name: string, palette: ComponentPalette | null): Lines {
+  // A resolved background means this component's canvas is a real brand color, not a
+  // photo (a genuine photo carousel has no fixed background token to resolve) — so show
+  // that solid color directly rather than a generic photo-gray placeholder.
+  const fill = palette ? palette.bg : "#2a2f34";
   return [
-    `/** ${name} — full-bleed image with prev/next arrows */`,
+    `/** ${name} — full-bleed image with prev/next arrows${palette ? " (canvas color resolved from source)" : ""} */`,
     `function ${name}Thumb() {`,
     `  return (`,
     `    <Thumb>`,
-    `      <Img x={0} y={0} w={60} h={40} fill="#2a2f34" />`,
+    `      <Img x={0} y={0} w={60} h={40} fill="${fill}" />`,
     `      <R x={2} y={14} w={8} h={12} fill="rgba(0,0,0,0.45)" rx={1} />`,
     `      <polyline points="8,16 4,20 8,24" fill="none"`,
     `        stroke={TEXT_BRIGHT} strokeWidth={1.2} strokeLinejoin="round" />`,
@@ -1069,29 +1091,69 @@ function defaultLayout(name: string): Lines {
   ];
 }
 
-function generateThumbFn(name: string, fields: ParsedField[] | null): Lines {
+/**
+ * Shadows the module-level palette constants (BG_DARK, TEXT_BRIGHT, ACCENT, etc.)
+ * with local consts derived from this component's own resolved background, right
+ * inside its generated *Thumb() function. Layout generators keep referencing the
+ * same constant names, so no per-archetype rewrite is needed — the values they
+ * resolve to are just component-accurate instead of a generic fallback.
+ *
+ * Deliberately skipped for `hero()`'s <Img> placeholder: that fill is a literal,
+ * not a named constant (a real photo's color can't be known statically), so this
+ * injection never touches it.
+ */
+function injectPaletteOverrides(lines: Lines, palette: ComponentPalette | null): Lines {
+  if (!palette) return lines;
+  const idx = lines.findIndex((l) => l.trim() === "return (");
+  if (idx === -1) return lines;
+  const overrides = [
+    `  // Palette resolved from this component's actual background — see resolveComponentBackground() in generate-thumbnails.ts`,
+    `  const BG_DARK = "${palette.bg}";`,
+    `  const BG_PANEL = "${palette.panelBg}";`,
+    `  const BG_IMAGE = "${palette.imageBg}";`,
+    `  const BG_LIGHT = "${palette.bg}";`,
+    `  const IMG_LIGHT = "${palette.imageBg}";`,
+    `  const SEP = "${palette.sep}";`,
+    `  const TEXT_BRIGHT = "${palette.textBright}";`,
+    `  const TEXT_DIM = "${palette.textDim}";`,
+    `  const TEXT_VERY_DIM = "${palette.textVeryDim}";`,
+    `  const TEXT_ON_LIGHT = "${palette.textBright}";`,
+    `  const TEXT_ON_LIGHT_DIM = "${palette.textDim}";`,
+    `  const ACCENT = "${palette.accent}";`,
+  ];
+  return [...lines.slice(0, idx), ...overrides, ...lines.slice(idx)];
+}
+
+function generateThumbFn(name: string, fields: ParsedField[] | null, palette: ComponentPalette | null): Lines {
   const layout = inferLayout(name, fields);
-  switch (layout) {
-    case "nav-bar":        return navBar(name);
-    case "hero":           return hero(name);
-    case "hero-overlay":   return heroOverlay(name);
-    case "split-image":    return splitImage(name);
-    case "card-strip":     return cardStrip(name);
-    case "image-grid":     return imageGrid(name);
-    case "main-thumbs":    return mainThumbs(name);
-    case "mosaic":         return mosaic(name);
-    case "animated":       return animated(name);
-    case "columns":        return columns(name);
-    case "centered-text":  return centeredText(name);
-    case "card-grid":      return cardGrid(name);
-    case "list-rows":      return listRows(name);
-    case "footer":         return footer(name);
-    case "article-header": return articleHeader(name);
-    case "article-body":   return articleBody(name);
-    case "container":      return container(name);
-    case "form-control":   return formControl(name);
-    default:               return defaultLayout(name);
-  }
+  const lines = (() => {
+    switch (layout) {
+      case "nav-bar":        return navBar(name);
+      case "hero":           return hero(name, palette);
+      case "hero-overlay":   return heroOverlay(name);
+      case "split-image":    return splitImage(name);
+      case "card-strip":     return cardStrip(name);
+      case "image-grid":     return imageGrid(name);
+      case "main-thumbs":    return mainThumbs(name);
+      case "mosaic":         return mosaic(name);
+      case "animated":       return animated(name, palette);
+      case "columns":        return columns(name);
+      case "centered-text":  return centeredText(name);
+      case "card-grid":      return cardGrid(name);
+      case "list-rows":      return listRows(name);
+      case "footer":         return footer(name);
+      case "article-header": return articleHeader(name);
+      case "article-body":   return articleBody(name);
+      case "container":      return container(name);
+      case "form-control":   return formControl(name);
+      default:               return defaultLayout(name);
+    }
+  })();
+  // hero() also receives the palette directly (for its gradient wash), but still
+  // goes through the same injection so its TEXT_BRIGHT/TEXT_DIM/ACCENT (button)
+  // read as component-accurate too — e.g. a white/gold CTA on a crimson wash
+  // instead of a same-hue crimson button that would vanish into the background.
+  return injectPaletteOverrides(lines, palette);
 }
 
 // ─── Palette extraction ────────────────────────────────────────────────────────
@@ -1277,6 +1339,278 @@ function deriveSitePalette(rootDir: string): ExtractedPalette {
   return fallback;
 }
 
+// ─── Per-component background resolution ──────────────────────────────────────
+//
+// deriveSitePalette() above answers "what is the site's brand accent" — a single
+// color used sparingly (buttons, underlines). It deliberately says nothing about
+// what background color any *particular* component actually renders on, which is
+// why every wireframe used to fall back to the same generic dark/light neutral
+// regardless of the real component.
+//
+// This section statically resolves each component's own background, in priority
+// order, entirely from its own source text — no screenshots, no AI judgment:
+//
+// 1. A hardcoded `<Section background="X">` literal.
+// 2. `defaultProps.background: "X"` — the variant a page actually starts with,
+//    translated through a local `bgMap`-style indirection if the component has one.
+// 3. A literal `backgroundColor: colors.X` / `background: colors.X` on the
+//    component's own outer element (covers hardcoded chrome like a nav or footer
+//    that doesn't go through the shared Section primitive at all).
+// 4. A raw rgb/rgba literal (e.g. inside a CSS-in-JS gradient string) whose value
+//    happens to match a known token's hex — catches gradients built from a literal
+//    color rather than a `colors.X` reference.
+//
+// Falls back to null (generic palette, unchanged from before) when none apply —
+// e.g. a plain content block with no meaningful background of its own.
+
+interface ComponentPalette {
+  bg: string;
+  panelBg: string;
+  imageBg: string;
+  sep: string;
+  textBright: string;
+  textDim: string;
+  textVeryDim: string;
+  accent: string;
+  isLight: boolean;
+}
+
+/** Simple (non-gamma-corrected) perceptive luminance — plenty for a light/dark switch. */
+function relativeLuminance([r, g, b]: RGB): number {
+  return (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+}
+
+function blendToward(rgb: RGB, target: RGB, amount: number): RGB {
+  return rgb.map((v, i) => Math.round(v + (target[i] - v) * amount)) as RGB;
+}
+
+/**
+ * Finds the shared Section-style "variant name → colors.X" dictionary
+ * (e.g. `bgColors: Record<SectionBackground, string> = { white: colors.white, navy: colors.crimson, ... }`)
+ * by scanning source files for the first object literal whose values are all
+ * `colors.X` references and whose declared name mentions "bg"/"background".
+ */
+function parseSectionVariantMap(rootDir: string): Record<string, string> {
+  const files = findTSFiles(rootDir, ["node_modules", ".next", "scripts"]);
+  for (const file of files) {
+    let src: string;
+    try { src = fs.readFileSync(file, "utf8"); } catch { continue; }
+    const declRx = /\b(?:const|let)\s+(\w*[Bb]g\w*|\w*[Bb]ackground\w*)\s*(?::[^=]+)?=\s*\{/;
+    const m = declRx.exec(src);
+    if (!m || m.index === undefined) continue;
+    const braceIdx = src.indexOf("{", m.index);
+    const block = extractBlock(src, braceIdx);
+    const entries: Record<string, string> = {};
+    const entryRx = /([a-zA-Z_$][a-zA-Z0-9_$]*)\s*:\s*colors\.(\w+)/g;
+    let em: RegExpExecArray | null;
+    while ((em = entryRx.exec(block)) !== null) entries[em[1]] = em[2];
+    if (Object.keys(entries).length > 0) return entries;
+  }
+  return {};
+}
+
+/**
+ * Returns the source text most likely to contain a component's own render logic:
+ * its inline block in puck.config.tsx, its imported-variable's file, or its
+ * spread-import's file — mirroring findComponentFields' three strategies, but
+ * returning raw text to scan rather than parsed fields.
+ */
+function resolveComponentSourceText(puckConfigSrc: string, componentName: string, rootDir: string): string | null {
+  // Strategy 1: inline in puck.config.tsx
+  const inlineRx = new RegExp(`(?<![a-zA-Z0-9_$])${componentName}\\s*:`, "g");
+  let inlineMatch: RegExpExecArray | null;
+  while ((inlineMatch = inlineRx.exec(puckConfigSrc)) !== null) {
+    let pos = inlineMatch.index + inlineMatch[0].length;
+    while (pos < puckConfigSrc.length && /[ \t\r\n]/.test(puckConfigSrc[pos])) pos++;
+    if (puckConfigSrc[pos] !== "{") continue;
+    const compBlock = extractBlock(puckConfigSrc, pos);
+    if (compBlock && compBlock.match(/\brender\s*:/)) return compBlock;
+  }
+
+  // Strategy 2: imported var — `ComponentName: someVar`
+  const assignRx = new RegExp(
+    `(?<![a-zA-Z0-9_$])${componentName}\\s*:\\s*([a-zA-Z_$][a-zA-Z0-9_$]*)\\s*[,}\\n]`,
+    "m",
+  );
+  const assignMatch = assignRx.exec(puckConfigSrc);
+  if (assignMatch) {
+    const varName = assignMatch[1];
+    if (varName && !["true", "false", "null", "undefined"].includes(varName)) {
+      const importRx = new RegExp(
+        `import\\s*\\{[^}]*\\b${varName}\\b[^}]*\\}\\s*from\\s*['"]([^'"]+)['"]`,
+      );
+      const importMatch = importRx.exec(puckConfigSrc);
+      if (importMatch) {
+        const relPath = importMatch[1];
+        const candidates = [
+          path.resolve(rootDir, relPath) + ".tsx",
+          path.resolve(rootDir, relPath) + ".ts",
+          path.resolve(rootDir, relPath),
+        ];
+        for (const c of candidates) {
+          try { return fs.readFileSync(c, "utf8"); } catch { /* try next */ }
+        }
+      }
+      // Fall back to a brute-force scan for `const varName` across the tree.
+      const files = findTSFiles(rootDir, ["node_modules", "vendor", "dist", ".next", ".cache", "__tests__", "tests"]);
+      for (const filePath of files) {
+        if (filePath.endsWith("puck.config.tsx") || filePath.endsWith("puck.config.ts")) continue;
+        if (filePath.includes("generate-thumbnails")) continue;
+        let src: string;
+        try { src = fs.readFileSync(filePath, "utf8"); } catch { continue; }
+        if (src.includes(varName) && new RegExp(`(?:export\\s+)?const\\s+${varName}\\b`).test(src)) return src;
+      }
+    }
+  }
+
+  // Strategy 3: spread imports — scan each spread source file for `ComponentName: { ... render ... }`
+  const compBlockMatch = puckConfigSrc.match(/\bcomponents\s*:\s*\{/);
+  if (compBlockMatch && compBlockMatch.index !== undefined) {
+    const compBlock = extractBlock(puckConfigSrc, compBlockMatch.index + compBlockMatch[0].length - 1);
+    const spreadRx = /\.\.\.([\w$]+)/g;
+    let sm: RegExpExecArray | null;
+    while ((sm = spreadRx.exec(compBlock)) !== null) {
+      const varName = sm[1];
+      const importRx = new RegExp(
+        `import\\s*\\{[^}]*\\b${varName}\\b[^}]*\\}\\s*from\\s*['"]([^'"]+)['"]`,
+      );
+      const importMatch = importRx.exec(puckConfigSrc);
+      if (!importMatch) continue;
+      const relPath = importMatch[1];
+      const candidates = [
+        path.resolve(rootDir, relPath) + ".tsx",
+        path.resolve(rootDir, relPath) + ".ts",
+        path.resolve(rootDir, relPath),
+      ];
+      for (const c of candidates) {
+        try {
+          const src = fs.readFileSync(c, "utf8");
+          if (src.includes(`${componentName}:`)) return src;
+        } catch { /* try next */ }
+      }
+    }
+  }
+
+  return null;
+}
+
+/** Resolves a component's real background to a hex color, per the priority order documented above. */
+function resolveComponentBackground(
+  srcText: string,
+  tokens: Record<string, string>,
+  sectionVariantMap: Record<string, string>,
+): { hex: string; note: string } | null {
+  const rgbToTokenKey = new Map<string, string>();
+  for (const [key, val] of Object.entries(tokens)) {
+    if (!val.startsWith("#")) continue;
+    const rgb = hexToRgb(val);
+    if (rgb) rgbToTokenKey.set(rgb.join(","), key);
+  }
+
+  function resolveVariant(variant: string): string | null {
+    const tokenKey = sectionVariantMap[variant];
+    if (tokenKey && tokens[tokenKey]) return tokens[tokenKey];
+    if (tokens[variant]) return tokens[variant];
+    return null;
+  }
+
+  // 1. Hardcoded literal `<Section background="X">` (not a `{prop}` passthrough).
+  const literalSectionMatch = srcText.match(/<Section\s+background=["'](\w+)["']/);
+  if (literalSectionMatch) {
+    const hex = resolveVariant(literalSectionMatch[1]);
+    if (hex) return { hex, note: `<Section background="${literalSectionMatch[1]}">` };
+  }
+
+  // 2. defaultProps.background: "X" — the variant a page actually starts with.
+  const defaultPropsMatch = srcText.match(/\bdefaultProps\s*:\s*\{/);
+  if (defaultPropsMatch && defaultPropsMatch.index !== undefined) {
+    const braceIdx = srcText.indexOf("{", defaultPropsMatch.index);
+    const block = extractBlock(srcText, braceIdx);
+    const bgDefaultMatch = block.match(/\bbackground\s*:\s*["'](\w+)["']/);
+    if (bgDefaultMatch) {
+      const variant = bgDefaultMatch[1];
+      let resolved = variant;
+      // Local translation map indirection, e.g. `bgMap = { navy: "navy", gold: "white" }`.
+      const mapMatch = srcText.match(/\bbgMap\s*[:=]\s*\{([^}]*)\}/);
+      if (mapMatch) {
+        const entryRx = new RegExp(`\\b${variant}\\s*:\\s*["'](\\w+)["']`);
+        const entryMatch = entryRx.exec(mapMatch[1]);
+        if (entryMatch) resolved = entryMatch[1];
+      }
+      const hex = resolveVariant(resolved);
+      if (hex) {
+        return {
+          hex,
+          note: `defaultProps.background="${variant}"${resolved !== variant ? ` → "${resolved}" via bgMap` : ""}`,
+        };
+      }
+    }
+  }
+
+  // 3. Raw rgb/rgba literal (e.g. in a gradient string) matching a known token by value.
+  // Checked before the plain colors.X scan below: a gradient/wash is a stronger signal of
+  // the component's dominant background than the first `colors.X` reference in the file,
+  // which is often a small decorative accent (an underline bar, a badge) rather than root.
+  const rgbaLiteralRx = /\b(?:background(?:Color)?|linear-gradient)[^;]{0,40}?rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/;
+  const rgbaMatch = srcText.match(rgbaLiteralRx);
+  if (rgbaMatch) {
+    const rgb: RGB = [Number(rgbaMatch[1]), Number(rgbaMatch[2]), Number(rgbaMatch[3])];
+    const tokenKey = rgbToTokenKey.get(rgb.join(","));
+    if (tokenKey) return { hex: tokens[tokenKey], note: `gradient literal rgb(${rgb.join(",")}) matches colors.${tokenKey}` };
+  }
+
+  // 4. Direct literal `colors.X` on the component's own backgroundColor/background.
+  const directTokenMatch = srcText.match(/\b(?:backgroundColor|background)\s*:\s*colors\.(\w+)/);
+  if (directTokenMatch && tokens[directTokenMatch[1]]) {
+    return { hex: tokens[directTokenMatch[1]], note: `backgroundColor: colors.${directTokenMatch[1]}` };
+  }
+
+  return null;
+}
+
+/**
+ * Derives a full wireframe palette from a single resolved background color.
+ * `siteAccent` (the site's brand ACCENT, e.g. crimson) is used as the button/
+ * highlight color on light backgrounds; `goldHex` (a secondary token, if the
+ * site has one) is preferred on dark backgrounds where the accent color and
+ * the background would otherwise be the same hue and vanish into each other.
+ */
+function derivePaletteFromBg(hex: string, goldHex: string | null, siteAccent: string): ComponentPalette {
+  const rgb = hexToRgb(hex);
+  if (!rgb) {
+    return {
+      bg: hex, panelBg: hex, imageBg: hex, sep: "rgba(128,128,128,0.2)",
+      textBright: "rgba(255,255,255,0.9)", textDim: "rgba(255,255,255,0.5)", textVeryDim: "rgba(255,255,255,0.2)",
+      accent: goldHex ?? siteAccent, isLight: false,
+    };
+  }
+  const isLight = relativeLuminance(rgb) > 0.55;
+  if (isLight) {
+    return {
+      bg: hex,
+      panelBg: rgbToHex(blendToward(rgb, [0, 0, 0], 0.06)),
+      imageBg: rgbToHex(blendToward(rgb, [0, 0, 0], 0.14)),
+      sep: "rgba(0,0,0,0.12)",
+      textBright: "rgba(0,0,0,0.62)",
+      textDim: "rgba(0,0,0,0.36)",
+      textVeryDim: "rgba(0,0,0,0.15)",
+      accent: siteAccent,
+      isLight: true,
+    };
+  }
+  return {
+    bg: hex,
+    panelBg: rgbToHex(blendToward(rgb, [255, 255, 255], 0.14)),
+    imageBg: rgbToHex(blendToward(rgb, [255, 255, 255], 0.24)),
+    sep: "rgba(255,255,255,0.18)",
+    textBright: "rgba(255,255,255,0.92)",
+    textDim: "rgba(255,255,255,0.58)",
+    textVeryDim: "rgba(255,255,255,0.24)",
+    accent: goldHex ?? "rgba(255,255,255,0.85)",
+    isLight: false,
+  };
+}
+
 // ─── File template ────────────────────────────────────────────────────────────
 
 function buildFile(names: string[], configSrc: string, rootDir: string): string {
@@ -1286,14 +1620,30 @@ function buildFile(names: string[], configSrc: string, rootDir: string): string 
     fieldsMap.set(name, findComponentFields(rootDir, configSrc, name));
   }
 
+  const palette = deriveSitePalette(rootDir);
+  console.log(`Palette: ACCENT=${palette.accent} (source: ${palette.source})`);
+
+  // Per-component background resolution — see "Per-component background resolution" above.
+  const tokensPath = findTokensFile(rootDir);
+  const tokens = tokensPath ? parseTokensObject(fs.readFileSync(tokensPath, "utf8")) : {};
+  const sectionVariantMap = parseSectionVariantMap(rootDir);
+  const goldHex = tokens.gold && tokens.gold.startsWith("#") ? tokens.gold : null;
+
+  const componentPalettes = new Map<string, ComponentPalette | null>();
+  for (const name of names) {
+    const srcText = resolveComponentSourceText(configSrc, name, rootDir);
+    const resolved = srcText ? resolveComponentBackground(srcText, tokens, sectionVariantMap) : null;
+    if (process.env.DEBUG_THUMBNAILS) {
+      console.log(`  ${name}: background=${resolved ? `${resolved.hex} (${resolved.note})` : "unresolved — generic palette"}`);
+    }
+    componentPalettes.set(name, resolved ? derivePaletteFromBg(resolved.hex, goldHex, palette.accent) : null);
+  }
+
   const thumbFns = names
-    .map((n) => generateThumbFn(n, fieldsMap.get(n) ?? null).join("\n"))
+    .map((n) => generateThumbFn(n, fieldsMap.get(n) ?? null, componentPalettes.get(n) ?? null).join("\n"))
     .join("\n\n");
 
   const mapEntries = names.map((n) => `  ${n}: ${n}Thumb,`).join("\n");
-
-  const palette = deriveSitePalette(rootDir);
-  console.log(`Palette: ACCENT=${palette.accent} (source: ${palette.source})`);
 
   return `/**
  * component-thumbnails.tsx
