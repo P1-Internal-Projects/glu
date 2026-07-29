@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import type { ComponentConfig } from "@puckeditor/core";
+import type { ComponentConfig, RichText } from "@puckeditor/core";
 import { Section } from "../../design-system/components/section";
 import { Container } from "../../design-system/components/container";
 import { Eyebrow } from "../../design-system/components/typography";
@@ -13,12 +13,12 @@ export type GLUTimelineProps = {
   items: {
     year: string;
     title: string;
-    description: string;
+    description: RichText;
   }[];
 };
 
 type EntryProps = {
-  item: { year: string; title: string; description: string };
+  item: { year: string; title: string; description: RichText };
   index: number;
   isLast: boolean;
 };
@@ -122,7 +122,7 @@ function TimelineEntry({ item, index, isLast }: EntryProps) {
             {item.title}
           </h3>
         </div>
-        <p
+        <div
           style={{
             fontFamily: typography.fontBody,
             fontSize: typography.sizeBase,
@@ -133,7 +133,7 @@ function TimelineEntry({ item, index, isLast }: EntryProps) {
           }}
         >
           {item.description}
-        </p>
+        </div>
       </div>
     </div>
   );
@@ -185,7 +185,7 @@ export const gluTimelineConfig = {
       arrayFields: {
         year: { type: "text", label: "Year" },
         title: { type: "text", label: "Title" },
-        description: { type: "textarea", label: "Description" },
+        description: { type: "richtext", label: "Description" },
       },
       getItemSummary: (item: { title?: string }, i?: number) => item?.title || `Item #${(i ?? 0) + 1}`,
     },

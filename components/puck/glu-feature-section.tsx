@@ -2,7 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
-import type { ComponentConfig } from "@puckeditor/core";
+import type { ComponentConfig, RichText } from "@puckeditor/core";
 import { Button } from "../../design-system/components/button";
 import { Eyebrow } from "../../design-system/components/typography";
 import { Section } from "../../design-system/components/section";
@@ -12,7 +12,7 @@ import { colors, typography, spacing, radii, shadows } from "../../design-system
 export type GLUFeatureSectionProps = {
   eyebrow: string;
   heading: string;
-  body: string;
+  body: RichText;
   ctaLabel: string;
   ctaHref: string;
   imageUrl: string;
@@ -76,7 +76,7 @@ export function GLUFeatureSectionComponent({
             >
               {heading}
             </h2>
-            <p
+            <div
               style={{
                 fontFamily: typography.fontBody,
                 fontSize: typography.sizeLg,
@@ -87,7 +87,7 @@ export function GLUFeatureSectionComponent({
               }}
             >
               {body}
-            </p>
+            </div>
             {ctaLabel && (
               <Button variant="secondary" size="md" href={ctaHref}>
                 {ctaLabel}
@@ -118,7 +118,7 @@ export const gluFeatureSectionConfig = {
       ai: { required: true, instructions: "Section headline highlighting a program strength or key feature." },
     } as any,
     body: {
-      type: "textarea",
+      type: "richtext",
       label: "Body Text",
       contentEditable: true,
       ai: { instructions: "2-3 sentences expanding on the heading. Focus on student outcomes or differentiators." },

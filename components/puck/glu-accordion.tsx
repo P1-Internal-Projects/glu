@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import type { ComponentConfig } from "@puckeditor/core";
+import type { ComponentConfig, RichText } from "@puckeditor/core";
 import { Eyebrow } from "../../design-system/components/typography";
 import { Section } from "../../design-system/components/section";
 import { Container } from "../../design-system/components/container";
@@ -11,10 +11,10 @@ export type GLUAccordionProps = {
   eyebrow: string;
   heading: string;
   background: "white" | "offWhite" | "lightBlue";
-  items: { question: string; answer: string }[];
+  items: { question: string; answer: RichText }[];
 };
 
-function AccordionItem({ question, answer }: { question: string; answer: string }) {
+function AccordionItem({ question, answer }: { question: string; answer: RichText }) {
   const [open, setOpen] = useState(false);
   const id = `accordion-${question.slice(0, 20).replace(/\s/g, "-")}`;
 
@@ -81,7 +81,7 @@ function AccordionItem({ question, answer }: { question: string; answer: string 
           transition: "max-height 0.3s ease",
         }}
       >
-        <p
+        <div
           style={{
             fontFamily: typography.fontBody,
             fontSize: typography.sizeBase,
@@ -92,7 +92,7 @@ function AccordionItem({ question, answer }: { question: string; answer: string 
           }}
         >
           {answer}
-        </p>
+        </div>
       </div>
     </div>
   );
@@ -159,7 +159,7 @@ export const gluAccordionConfig = {
       label: "FAQ Items",
       arrayFields: {
         question: { type: "text", label: "Question" },
-        answer: { type: "textarea", label: "Answer" },
+        answer: { type: "richtext", label: "Answer" },
       },
       getItemSummary: (item: { question?: string }, i?: number) => item?.question || `Item #${(i ?? 0) + 1}`,
     },

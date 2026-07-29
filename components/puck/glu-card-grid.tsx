@@ -2,7 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
-import type { ComponentConfig } from "@puckeditor/core";
+import type { ComponentConfig, RichText } from "@puckeditor/core";
 import { Card } from "../../design-system/components/card";
 import { Eyebrow } from "../../design-system/components/typography";
 import { Section } from "../../design-system/components/section";
@@ -17,7 +17,7 @@ export type GLUCardGridProps = {
   background: "white" | "offWhite" | "lightBlue";
   cards: {
     title: string;
-    description: string;
+    description: RichText;
     imageUrl: string;
     linkHref: string;
     linkLabel: string;
@@ -94,7 +94,7 @@ export function GLUCardGridComponent({ eyebrow, heading, subtext, columns, backg
                 >
                   {card.title}
                 </h3>
-                <p
+                <div
                   style={{
                     fontFamily: typography.fontBody,
                     fontSize: typography.sizeSm,
@@ -104,7 +104,7 @@ export function GLUCardGridComponent({ eyebrow, heading, subtext, columns, backg
                   }}
                 >
                   {card.description}
-                </p>
+                </div>
                 {card.linkLabel && (
                   <a
                     href={card.linkHref}
@@ -175,7 +175,7 @@ export const gluCardGridConfig = {
       label: "Cards",
       arrayFields: {
         title: { type: "text", label: "Title" },
-        description: { type: "textarea", label: "Description" },
+        description: { type: "richtext", label: "Description" },
         imageUrl: { type: "text", label: "Image URL" },
         linkHref: { type: "text", label: "Link URL" },
         linkLabel: { type: "text", label: "Link Label" },
