@@ -183,7 +183,7 @@ function GLUPageHeroThumb() {
   );
 }
 
-/** GLUStatsBar — 3-column stat/pillar layout */
+/** GLUStatsBar — 4-column stat/pillar layout (column count resolved from source) */
 function GLUStatsBarThumb() {
   // Palette resolved from this component's actual background — see resolveComponentBackground() in generate-thumbnails.ts
   const BG_DARK = "#8B0015";
@@ -201,15 +201,16 @@ function GLUStatsBarThumb() {
   return (
     <Thumb>
       <R w={60} h={40} fill={BG_LIGHT} />
-      {[0, 1, 2].map((i) => {
-        const cx = 4 + i * 19;
+      {[0, 1, 2, 3].map((i) => {
+        const cellW = 52 / 4;
+        const cx = 4 + i * cellW;
         return (
           <g key={i}>
-            <T x={cx} y={10} w={14} h={5} fill={TEXT_ON_LIGHT} />
-            <T x={cx} y={18} w={12} h={2} fill={TEXT_ON_LIGHT_DIM} />
-            <T x={cx} y={22} w={10} h={2} fill={TEXT_ON_LIGHT_DIM} />
-            {i < 2 && (
-              <line x1={cx + 17} y1={6} x2={cx + 17} y2={34}
+            <T x={cx} y={10} w={cellW - 5} h={5} fill={TEXT_ON_LIGHT} />
+            <T x={cx} y={18} w={cellW - 7} h={2} fill={TEXT_ON_LIGHT_DIM} />
+            <T x={cx} y={22} w={cellW - 9} h={2} fill={TEXT_ON_LIGHT_DIM} />
+            {i < 3 && (
+              <line x1={cx + cellW - 2} y1={6} x2={cx + cellW - 2} y2={34}
                 stroke="rgba(0,0,0,0.12)" strokeWidth={0.5} />
             )}
           </g>
@@ -248,7 +249,7 @@ function GLUFeatureSectionThumb() {
   );
 }
 
-/** GLUCardGrid — 3-column card grid */
+/** GLUCardGrid — 3-column card grid (column count resolved from source) */
 function GLUCardGridThumb() {
   // Palette resolved from this component's actual background — see resolveComponentBackground() in generate-thumbnails.ts
   const BG_DARK = "#FFF5F5";
@@ -268,13 +269,14 @@ function GLUCardGridThumb() {
       <R w={60} h={40} fill={BG_DARK} />
       <T x={4} y={3} w={18} h={2.5} fill={TEXT_BRIGHT} />
       {[0, 1, 2].map((i) => {
-        const cx = 4 + i * 19;
+        const cellW = 56 / 3;
+        const cx = 4 + i * cellW;
         return (
           <g key={i}>
-            <R x={cx} y={8} w={16} h={28} fill={BG_PANEL} rx={1} />
-            <Img x={cx} y={8} w={16} h={12} fill="#32373d" />
-            <T x={cx + 2} y={23} w={12} h={2.5} />
-            <T x={cx + 2} y={27} w={10} h={2} fill={TEXT_DIM} />
+            <R x={cx} y={8} w={cellW - 3} h={28} fill={BG_PANEL} rx={1} />
+            <Img x={cx} y={8} w={cellW - 3} h={12} fill="#32373d" />
+            <T x={cx + 2} y={23} w={cellW - 5} h={2.5} />
+            <T x={cx + 2} y={27} w={cellW - 7} h={2} fill={TEXT_DIM} />
           </g>
         );
       })}
@@ -282,7 +284,7 @@ function GLUCardGridThumb() {
   );
 }
 
-/** GLUTestimonialSlider — full-bleed image with prev/next arrows (canvas color resolved from source) */
+/** GLUTestimonialSlider — single active item (quote/testimonial) + prev/next + dot nav (shape resolved from source) */
 function GLUTestimonialSliderThumb() {
   // Palette resolved from this component's actual background — see resolveComponentBackground() in generate-thumbnails.ts
   const BG_DARK = "#8B0015";
@@ -299,15 +301,19 @@ function GLUTestimonialSliderThumb() {
   const ACCENT = "#C8922A";
   return (
     <Thumb>
-      <Img x={0} y={0} w={60} h={40} fill="#8B0015" />
-      <R x={2} y={14} w={8} h={12} fill="rgba(0,0,0,0.45)" rx={1} />
-      <polyline points="8,16 4,20 8,24" fill="none"
-        stroke={TEXT_BRIGHT} strokeWidth={1.2} strokeLinejoin="round" />
-      <R x={50} y={14} w={8} h={12} fill="rgba(0,0,0,0.45)" rx={1} />
-      <polyline points="52,16 56,20 52,24" fill="none"
-        stroke={TEXT_BRIGHT} strokeWidth={1.2} strokeLinejoin="round" />
-      <R x={0} y={32} w={60} h={8} fill="rgba(0,0,0,0.6)" />
-      <T x={4} y={35} w={30} h={2} fill={TEXT_DIM} />
+      <R w={60} h={40} fill={BG_DARK} />
+      <circle cx={30} cy={7} r={4} fill={BG_IMAGE} stroke={SEP} strokeWidth={0.4} />
+      <T x={14} y={15} w={32} h={2.2} fill={TEXT_BRIGHT} />
+      <T x={10} y={19} w={40} h={2} fill={TEXT_BRIGHT} />
+      <T x={16} y={23} w={28} h={2} fill={TEXT_DIM} />
+      <T x={22} y={27} w={16} h={1.6} fill={TEXT_VERY_DIM} />
+      <circle cx={14} cy={35} r={3} fill="none" stroke={TEXT_DIM} strokeWidth={0.8} />
+      <path d="M15.5,33.5 L13,35 L15.5,36.5" fill="none" stroke={TEXT_DIM} strokeWidth={0.6} />
+      <circle cx={46} cy={35} r={3} fill="none" stroke={TEXT_DIM} strokeWidth={0.8} />
+      <path d="M44.5,33.5 L47,35 L44.5,36.5" fill="none" stroke={TEXT_DIM} strokeWidth={0.6} />
+      <circle cx={26} cy={35} r={1} fill={TEXT_VERY_DIM} />
+      <rect x={29} y={34} width={4} height={2} rx={1} fill={ACCENT} />
+      <circle cx={36} cy={35} r={1} fill={TEXT_VERY_DIM} />
     </Thumb>
   );
 }
@@ -341,7 +347,7 @@ function GLUCtaBannerThumb() {
   );
 }
 
-/** GLUAccordion — heading + horizontal card strip */
+/** GLUAccordion — list of downloadable items */
 function GLUAccordionThumb() {
   // Palette resolved from this component's actual background — see resolveComponentBackground() in generate-thumbnails.ts
   const BG_DARK = "#FFF5F5";
@@ -358,16 +364,16 @@ function GLUAccordionThumb() {
   const ACCENT = "#8b0015";
   return (
     <Thumb>
-      <R w={60} h={40} fill={BG_DARK} />
-      <T x={4} y={4} w={8} h={2} fill={TEXT_DIM} />
-      <T x={4} y={8} w={22} h={3} fill={TEXT_BRIGHT} />
+      <R w={60} h={40} fill={BG_LIGHT} />
+      <T x={4} y={4} w={24} h={3} fill={TEXT_ON_LIGHT} />
       {[0, 1, 2].map((i) => {
-        const cx = 4 + i * 19;
+        const ry = 11 + i * 9;
         return (
           <g key={i}>
-            <Img x={cx} y={14} w={16} h={11} />
-            <T x={cx} y={27} w={14} h={2.5} />
-            <T x={cx} y={31} w={10} h={2} fill={TEXT_DIM} />
+            <R x={4} y={ry} w={52} h={7} fill="rgba(0,0,0,0.06)" rx={1} />
+            <R x={7} y={ry + 1.5} w={5} h={4} fill={IMG_LIGHT} rx={0.5} />
+            <T x={15} y={ry + 2} w={28} h={2} fill={TEXT_ON_LIGHT} />
+            <T x={48} y={ry + 2} w={4} h={2} fill={TEXT_ON_LIGHT_DIM} />
           </g>
         );
       })}
@@ -416,7 +422,7 @@ function GLUFooterThumb() {
   );
 }
 
-/** GLUTimeline — heading + horizontal card strip */
+/** GLUTimeline — vertical rail: connecting line + circular markers, content to the right (shape resolved from source) */
 function GLUTimelineThumb() {
   // Palette resolved from this component's actual background — see resolveComponentBackground() in generate-thumbnails.ts
   const BG_DARK = "#ffffff";
@@ -433,16 +439,15 @@ function GLUTimelineThumb() {
   const ACCENT = "#8b0015";
   return (
     <Thumb>
-      <R w={60} h={40} fill={BG_DARK} />
-      <T x={4} y={4} w={8} h={2} fill={TEXT_DIM} />
-      <T x={4} y={8} w={22} h={3} fill={TEXT_BRIGHT} />
+      <R w={60} h={40} fill={BG_LIGHT} />
+      <line x1={10} y1={4} x2={10} y2={36} stroke={SEP} strokeWidth={1} />
       {[0, 1, 2].map((i) => {
-        const cx = 4 + i * 19;
+        const cy = 8 + i * 12;
         return (
           <g key={i}>
-            <Img x={cx} y={14} w={16} h={11} />
-            <T x={cx} y={27} w={14} h={2.5} />
-            <T x={cx} y={31} w={10} h={2} fill={TEXT_DIM} />
+            <circle cx={10} cy={cy} r={3} fill={ACCENT} />
+            <T x={18} y={cy - 3} w={12} h={2} fill={TEXT_ON_LIGHT} />
+            <T x={18} y={cy + 1} w={34} h={2} fill={TEXT_ON_LIGHT_DIM} />
           </g>
         );
       })}
@@ -450,7 +455,7 @@ function GLUTimelineThumb() {
   );
 }
 
-/** GLUSlideshow — heading + horizontal card strip */
+/** GLUSlideshow — full-bleed image with prev/next arrows (canvas color resolved from source) */
 function GLUSlideshowThumb() {
   // Palette resolved from this component's actual background — see resolveComponentBackground() in generate-thumbnails.ts
   const BG_DARK = "#1A0505";
@@ -467,19 +472,15 @@ function GLUSlideshowThumb() {
   const ACCENT = "#C8922A";
   return (
     <Thumb>
-      <R w={60} h={40} fill={BG_DARK} />
-      <T x={4} y={4} w={8} h={2} fill={TEXT_DIM} />
-      <T x={4} y={8} w={22} h={3} fill={TEXT_BRIGHT} />
-      {[0, 1, 2].map((i) => {
-        const cx = 4 + i * 19;
-        return (
-          <g key={i}>
-            <Img x={cx} y={14} w={16} h={11} />
-            <T x={cx} y={27} w={14} h={2.5} />
-            <T x={cx} y={31} w={10} h={2} fill={TEXT_DIM} />
-          </g>
-        );
-      })}
+      <Img x={0} y={0} w={60} h={40} fill="#1A0505" />
+      <R x={2} y={14} w={8} h={12} fill="rgba(0,0,0,0.45)" rx={1} />
+      <polyline points="8,16 4,20 8,24" fill="none"
+        stroke={TEXT_BRIGHT} strokeWidth={1.2} strokeLinejoin="round" />
+      <R x={50} y={14} w={8} h={12} fill="rgba(0,0,0,0.45)" rx={1} />
+      <polyline points="52,16 56,20 52,24" fill="none"
+        stroke={TEXT_BRIGHT} strokeWidth={1.2} strokeLinejoin="round" />
+      <R x={0} y={32} w={60} h={8} fill="rgba(0,0,0,0.6)" />
+      <T x={4} y={35} w={30} h={2} fill={TEXT_DIM} />
     </Thumb>
   );
 }

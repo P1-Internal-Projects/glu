@@ -605,47 +605,71 @@ type Layout =
   | "article-header" // article header with breadcrumbs + meta
   | "article-body"   // centred text column
   | "animated"       // full-bleed image with arrow navigation
+  | "quote-carousel" // single active item (quote/testimonial) + prev/next + dot nav
+  | "rail-list"      // vertical rail: connecting line + circular markers, content to the right
   | "container"      // slot-based layout wrapper
   | "form-control"   // leaf-level UI input / control
   | "default";
 
-function inferLayout(name: string, fields: ParsedField[] | null): Layout {
+function inferLayout(name: string, fields: ParsedField[] | null, structural: StructuralSignature | null): Layout {
   // Primary: name heuristics — component names carry strong semantic signal.
   // These take priority because names like Hero, Carousel, Subnav uniquely
   // identify a layout regardless of field structure.
   const n = name.toLowerCase();
-  if (/(subnav|topnav|navbar|nav$|header$|menu$)/.test(n)) return "nav-bar";
-  if (/hero/.test(n)) return "hero";
-  if (/(footer)/.test(n)) return "footer";
-  if (/(featurecalloutlarge|herolarge|bannerlarge)/.test(n)) return "hero-overlay";
-  if (/(featurecallout|cta|factbox|mediatext|profilecard|split)/.test(n)) return "split-image";
-  if (/(carousel|news|related|blog)/.test(n)) return "card-strip";
-  if (/(lightboxcarousel)/.test(n)) return "main-thumbs";
-  if (/(featuregallery|mosaic)/.test(n)) return "mosaic";
-  if (/(lightbox|gallery)/.test(n)) return "image-grid";
-  if (/(animatedgallery|slider)/.test(n)) return "animated";
-  if (/(stats|facts|pillars|metrics)/.test(n)) return "columns";
-  if (/(sectionheader|sectiontitle|divider)/.test(n)) return "centered-text";
-  if (/(infocard|card.*grid|grid.*card|feature.*grid)/.test(n)) return "card-grid";
-  if (/(download|file|attachment|resource)/.test(n)) return "list-rows";
-  if (/(pccarticleheader|articleheader)/.test(n)) return "article-header";
-  if (/(pccarticlebody|articlebody|richtext|content)/.test(n)) return "article-body";
-
-  // Secondary: field-signature classification — for components with opaque names
-  // (e.g. design-system components like AudiButton, AudiLayout, AudiTextField)
-  // where name gives no layout signal but field structure does.
-  if (fields && fields.length > 0) {
-    const sig = buildFieldSignature(fields);
-    const layout = classifyBySignature(sig);
-    if (process.env.DEBUG_THUMBNAILS) {
-      console.log(
-        `  ${name}: fields=${fields.length}, sig=${JSON.stringify({ hasImage: sig.hasImage, hasItems: sig.hasItems, hasSlot: sig.hasSlot, isFormControl: sig.isFormControl, textFieldCount: sig.textFieldCount })}, layout=${layout ?? "default"}`,
-      );
+  let layout: Layout = "default";
+  if (/(subnav|topnav|navbar|nav$|header$|menu$)/.test(n)) layout = "nav-bar";
+  else if (/hero/.test(n)) layout = "hero";
+  else if (/(footer)/.test(n)) layout = "footer";
+  else if (/(featurecalloutlarge|herolarge|bannerlarge)/.test(n)) layout = "hero-overlay";
+  else if (/(featurecallout|cta|factbox|mediatext|profilecard|split)/.test(n)) layout = "split-image";
+  else if (/(carousel|news|related|blog)/.test(n)) layout = "card-strip";
+  else if (/(lightboxcarousel)/.test(n)) layout = "main-thumbs";
+  else if (/(featuregallery|mosaic)/.test(n)) layout = "mosaic";
+  else if (/(lightbox|gallery)/.test(n)) layout = "image-grid";
+  else if (/(animatedgallery|slider)/.test(n)) layout = "animated";
+  else if (/(stats|facts|pillars|metrics)/.test(n)) layout = "columns";
+  else if (/(sectionheader|sectiontitle|divider)/.test(n)) layout = "centered-text";
+  else if (/(infocard|card.*grid|grid.*card|feature.*grid)/.test(n)) layout = "card-grid";
+  else if (/(download|file|attachment|resource)/.test(n)) layout = "list-rows";
+  else if (/(pccarticleheader|articleheader)/.test(n)) layout = "article-header";
+  else if (/(pccarticlebody|articlebody|richtext|content)/.test(n)) layout = "article-body";
+  else {
+    // Secondary: field-signature classification — for components with opaque names
+    // (e.g. design-system components like AudiButton, AudiLayout, AudiTextField)
+    // where name gives no layout signal but field structure does.
+    if (fields && fields.length > 0) {
+      const sig = buildFieldSignature(fields);
+      const sigLayout = classifyBySignature(sig);
+      if (process.env.DEBUG_THUMBNAILS) {
+        console.log(
+          `  ${name}: fields=${fields.length}, sig=${JSON.stringify({ hasImage: sig.hasImage, hasItems: sig.hasItems, hasSlot: sig.hasSlot, isFormControl: sig.isFormControl, textFieldCount: sig.textFieldCount })}, layout=${sigLayout ?? "default"}`,
+        );
+      }
+      if (sigLayout) layout = sigLayout;
     }
-    if (layout) return layout;
   }
 
-  return "default";
+  // Structural override: name/field-type heuristics above can't tell a real
+  // per-item photo carousel from a single-active-item quote/testimonial rotator,
+  // or a horizontal card row from a vertical divider list — both look identical
+  // at the field-type level (an array with text/image fields) but render very
+  // differently. This is decided from the component's own render logic instead.
+  if (structural) {
+    if (structural.hasDividerList && !structural.hasContentMap) {
+      layout = "list-rows";
+    } else if ((structural.hasDotsNav || structural.hasArrowNav) && !structural.hasContentMap) {
+      layout = "quote-carousel";
+    } else if (structural.hasContentMap && (layout === "card-strip" || layout === "default")) {
+      layout = "animated";
+    } else if (structural.railColumns) {
+      layout = "rail-list";
+    }
+    if (process.env.DEBUG_THUMBNAILS && (structural.hasDividerList || structural.hasDotsNav || structural.hasArrowNav || structural.hasContentMap || structural.railColumns)) {
+      console.log(`  ${name}: structural override -> ${layout} (${JSON.stringify(structural)})`);
+    }
+  }
+
+  return layout;
 }
 
 // ─── SVG code generators ──────────────────────────────────────────────────────
@@ -863,22 +887,91 @@ function animated(name: string, palette: ComponentPalette | null): Lines {
   ];
 }
 
-function columns(name: string): Lines {
+function quoteCarousel(name: string, structural: StructuralSignature | null): Lines {
+  const hasAvatar = structural?.hasSmallAvatarImage ?? false;
+  const hasArrows = structural?.hasArrowNav ?? true;
+  const hasDots = structural?.hasDotsNav ?? true;
+  const top = hasAvatar ? 15 : 10;
+  const avatar = hasAvatar
+    ? [`      <circle cx={30} cy={7} r={4} fill={BG_IMAGE} stroke={SEP} strokeWidth={0.4} />`]
+    : [];
+  const arrows = hasArrows
+    ? [
+      `      <circle cx={14} cy={35} r={3} fill="none" stroke={TEXT_DIM} strokeWidth={0.8} />`,
+      `      <path d="M15.5,33.5 L13,35 L15.5,36.5" fill="none" stroke={TEXT_DIM} strokeWidth={0.6} />`,
+      `      <circle cx={46} cy={35} r={3} fill="none" stroke={TEXT_DIM} strokeWidth={0.8} />`,
+      `      <path d="M44.5,33.5 L47,35 L44.5,36.5" fill="none" stroke={TEXT_DIM} strokeWidth={0.6} />`,
+    ]
+    : [];
+  const dots = hasDots
+    ? [
+      `      <circle cx={26} cy={35} r={1} fill={TEXT_VERY_DIM} />`,
+      `      <rect x={29} y={34} width={4} height={2} rx={1} fill={ACCENT} />`,
+      `      <circle cx={36} cy={35} r={1} fill={TEXT_VERY_DIM} />`,
+    ]
+    : [];
   return [
-    `/** ${name} — 3-column stat/pillar layout */`,
+    `/** ${name} — single active item (quote/testimonial) + prev/next + dot nav (shape resolved from source) */`,
+    `function ${name}Thumb() {`,
+    `  return (`,
+    `    <Thumb>`,
+    `      <R w={60} h={40} fill={BG_DARK} />`,
+    ...avatar,
+    `      <T x={14} y={${top}} w={32} h={2.2} fill={TEXT_BRIGHT} />`,
+    `      <T x={10} y={${top + 4}} w={40} h={2} fill={TEXT_BRIGHT} />`,
+    `      <T x={16} y={${top + 8}} w={28} h={2} fill={TEXT_DIM} />`,
+    `      <T x={22} y={${top + 12}} w={16} h={1.6} fill={TEXT_VERY_DIM} />`,
+    ...arrows,
+    ...dots,
+    `    </Thumb>`,
+    `  );`,
+    `}`,
+  ];
+}
+
+function railList(name: string): Lines {
+  return [
+    `/** ${name} — vertical rail: connecting line + circular markers, content to the right (shape resolved from source) */`,
     `function ${name}Thumb() {`,
     `  return (`,
     `    <Thumb>`,
     `      <R w={60} h={40} fill={BG_LIGHT} />`,
+    `      <line x1={10} y1={4} x2={10} y2={36} stroke={SEP} strokeWidth={1} />`,
     `      {[0, 1, 2].map((i) => {`,
-    `        const cx = 4 + i * 19;`,
+    `        const cy = 8 + i * 12;`,
     `        return (`,
     `          <g key={i}>`,
-    `            <T x={cx} y={10} w={14} h={5} fill={TEXT_ON_LIGHT} />`,
-    `            <T x={cx} y={18} w={12} h={2} fill={TEXT_ON_LIGHT_DIM} />`,
-    `            <T x={cx} y={22} w={10} h={2} fill={TEXT_ON_LIGHT_DIM} />`,
-    `            {i < 2 && (`,
-    `              <line x1={cx + 17} y1={6} x2={cx + 17} y2={34}`,
+    `            <circle cx={10} cy={cy} r={3} fill={ACCENT} />`,
+    `            <T x={18} y={cy - 3} w={12} h={2} fill={TEXT_ON_LIGHT} />`,
+    `            <T x={18} y={cy + 1} w={34} h={2} fill={TEXT_ON_LIGHT_DIM} />`,
+    `          </g>`,
+    `        );`,
+    `      })}`,
+    `    </Thumb>`,
+    `  );`,
+    `}`,
+  ];
+}
+
+function columns(name: string, cols: number | null): Lines {
+  const n = cols ?? 3;
+  const indices = Array.from({ length: n }, (_, i) => i).join(", ");
+  return [
+    `/** ${name} — ${n}-column stat/pillar layout${cols ? " (column count resolved from source)" : ""} */`,
+    `function ${name}Thumb() {`,
+    `  return (`,
+    `    <Thumb>`,
+    `      <R w={60} h={40} fill={BG_LIGHT} />`,
+    `      {[${indices}].map((i) => {`,
+    `        const cellW = 52 / ${n};`,
+    `        const cx = 4 + i * cellW;`,
+    `        return (`,
+    `          <g key={i}>`,
+    `            <T x={cx} y={10} w={cellW - 5} h={5} fill={TEXT_ON_LIGHT} />`,
+    `            <T x={cx} y={18} w={cellW - 7} h={2} fill={TEXT_ON_LIGHT_DIM} />`,
+    `            <T x={cx} y={22} w={cellW - 9} h={2} fill={TEXT_ON_LIGHT_DIM} />`,
+    `            {i < ${n - 1} && (`,
+    `              <line x1={cx + cellW - 2} y1={6} x2={cx + cellW - 2} y2={34}`,
     `                stroke="rgba(0,0,0,0.12)" strokeWidth={0.5} />`,
     `            )}`,
     `          </g>`,
@@ -906,22 +999,25 @@ function centeredText(name: string): Lines {
   ];
 }
 
-function cardGrid(name: string): Lines {
+function cardGrid(name: string, cols: number | null): Lines {
+  const n = cols ?? 3;
+  const indices = Array.from({ length: n }, (_, i) => i).join(", ");
   return [
-    `/** ${name} — 3-column card grid */`,
+    `/** ${name} — ${n}-column card grid${cols ? " (column count resolved from source)" : ""} */`,
     `function ${name}Thumb() {`,
     `  return (`,
     `    <Thumb>`,
     `      <R w={60} h={40} fill={BG_DARK} />`,
     `      <T x={4} y={3} w={18} h={2.5} fill={TEXT_BRIGHT} />`,
-    `      {[0, 1, 2].map((i) => {`,
-    `        const cx = 4 + i * 19;`,
+    `      {[${indices}].map((i) => {`,
+    `        const cellW = 56 / ${n};`,
+    `        const cx = 4 + i * cellW;`,
     `        return (`,
     `          <g key={i}>`,
-    `            <R x={cx} y={8} w={16} h={28} fill={BG_PANEL} rx={1} />`,
-    `            <Img x={cx} y={8} w={16} h={12} fill="#32373d" />`,
-    `            <T x={cx + 2} y={23} w={12} h={2.5} />`,
-    `            <T x={cx + 2} y={27} w={10} h={2} fill={TEXT_DIM} />`,
+    `            <R x={cx} y={8} w={cellW - 3} h={28} fill={BG_PANEL} rx={1} />`,
+    `            <Img x={cx} y={8} w={cellW - 3} h={12} fill="#32373d" />`,
+    `            <T x={cx + 2} y={23} w={cellW - 5} h={2.5} />`,
+    `            <T x={cx + 2} y={27} w={cellW - 7} h={2} fill={TEXT_DIM} />`,
     `          </g>`,
     `        );`,
     `      })}`,
@@ -1124,8 +1220,13 @@ function injectPaletteOverrides(lines: Lines, palette: ComponentPalette | null):
   return [...lines.slice(0, idx), ...overrides, ...lines.slice(idx)];
 }
 
-function generateThumbFn(name: string, fields: ParsedField[] | null, palette: ComponentPalette | null): Lines {
-  const layout = inferLayout(name, fields);
+function generateThumbFn(
+  name: string,
+  fields: ParsedField[] | null,
+  palette: ComponentPalette | null,
+  structural: StructuralSignature | null,
+): Lines {
+  const layout = inferLayout(name, fields, structural);
   const lines = (() => {
     switch (layout) {
       case "nav-bar":        return navBar(name);
@@ -1137,9 +1238,11 @@ function generateThumbFn(name: string, fields: ParsedField[] | null, palette: Co
       case "main-thumbs":    return mainThumbs(name);
       case "mosaic":         return mosaic(name);
       case "animated":       return animated(name, palette);
-      case "columns":        return columns(name);
+      case "quote-carousel": return quoteCarousel(name, structural);
+      case "rail-list":      return railList(name);
+      case "columns":        return columns(name, structural?.columns ?? null);
       case "centered-text":  return centeredText(name);
-      case "card-grid":      return cardGrid(name);
+      case "card-grid":      return cardGrid(name, structural?.columns ?? null);
       case "list-rows":      return listRows(name);
       case "footer":         return footer(name);
       case "article-header": return articleHeader(name);
@@ -1611,6 +1714,113 @@ function derivePaletteFromBg(hex: string, goldHex: string | null, siteAccent: st
   };
 }
 
+// ─── Structural signature (rough shape, derived from source) ─────────────────
+//
+// Field types alone can't tell a real per-item photo carousel from a single-
+// active-item quote/testimonial rotator, or a horizontal card row from a
+// vertical divider list — both look identical at the field-type level (an
+// array field with text/image sub-fields) but render very differently. These
+// checks read the component's actual render logic (still static text
+// scanning, no AST, no execution) for signals field types can't carry:
+//
+// - hasContentMap: a `.map()` over the array whose item param is a real
+//   identifier (not `_`) and whose body renders a full-bleed `<Image fill>` —
+//   i.e. an actual per-item photo-rendering loop, not just an index used to
+//   drive a nav indicator.
+// - hasDotsNav / hasArrowNav: pagination controls keyed on a `current` index,
+//   independent of whether the array is ever mapped for content.
+// - hasSmallAvatarImage: an image constrained to a small fixed square with a
+//   full border-radius — a bounded avatar, not a dominant background photo.
+// - hasDividerList: repeated items separated by a border (an accordion/list
+//   pattern) rather than sitting side-by-side in a row.
+// - columns / railColumns: real column geometry read from a literal or
+//   defaultProps-resolved `gridTemplateColumns`, instead of assumed.
+
+interface StructuralSignature {
+  hasContentMap: boolean;
+  hasDotsNav: boolean;
+  hasArrowNav: boolean;
+  hasSmallAvatarImage: boolean;
+  hasDividerList: boolean;
+  columns: number | null;
+  railColumns: boolean;
+}
+
+/** True if `needle` occurs within `window` chars of `anchor`'s match position. */
+function occursNear(srcText: string, anchor: RegExp, needle: RegExp, window = 200): boolean {
+  const am = anchor.exec(srcText);
+  if (!am || am.index === undefined) return false;
+  const start = Math.max(0, am.index - window);
+  return needle.test(srcText.slice(start, am.index + window));
+}
+
+/** Resolves a `defaultProps.<name>` numeric literal, if present. */
+function resolveDefaultPropNumber(srcText: string, propName: string): number | null {
+  const defaultPropsMatch = srcText.match(/\bdefaultProps\s*:\s*\{/);
+  if (!defaultPropsMatch || defaultPropsMatch.index === undefined) return null;
+  const block = extractBlock(srcText, srcText.indexOf("{", defaultPropsMatch.index));
+  const numMatch = block.match(new RegExp(`\\b${propName}\\s*:\\s*(\\d+)`));
+  return numMatch ? Number(numMatch[1]) : null;
+}
+
+/** Resolves real column count from a `gridTemplateColumns` declaration, or null if none/unresolvable. */
+function resolveColumnCount(srcText: string): number | null {
+  // `repeat(${varName}, ...)` — resolve the variable via its defaultProps default.
+  const varRepeatMatch = srcText.match(/gridTemplateColumns:\s*`repeat\(\$\{(\w+)\}/);
+  if (varRepeatMatch) {
+    const n = resolveDefaultPropNumber(srcText, varRepeatMatch[1]);
+    if (n) return n;
+  }
+  // `repeat(${Math.min(x, N)}, ...)` — an upper bound on real (content-length-driven) column count.
+  const capMatch = srcText.match(/repeat\(\s*\$?\{?\s*Math\.min\([^,]+,\s*(\d+)\s*\)/);
+  if (capMatch) return Number(capMatch[1]);
+  // Literal `repeat(N, ...)`.
+  const literalRepeatMatch = srcText.match(/gridTemplateColumns:\s*[`"']repeat\((\d+)/);
+  if (literalRepeatMatch) return Number(literalRepeatMatch[1]);
+  // Literal `"1fr 1fr 1fr"`-style string — count the fr tokens.
+  const literalFrMatch = srcText.match(/gridTemplateColumns:\s*[`"']([\d.\s]*fr[\d.\s fr]*)[`"']/);
+  if (literalFrMatch) {
+    const count = (literalFrMatch[1].match(/\dfr/g) || []).length;
+    if (count > 0) return count;
+  }
+  return null;
+}
+
+/** True if the grid is a fixed non-repeating rail template, e.g. `"72px 1fr"` (badge rail + content). */
+function hasRailColumns(srcText: string): boolean {
+  return /gridTemplateColumns:\s*["']\d+px\s+1fr["']/.test(srcText);
+}
+
+function extractStructuralSignature(srcText: string): StructuralSignature {
+  let hasContentMap = false;
+  const mapRx = /\.map\(\s*\(?\s*([a-zA-Z_$][a-zA-Z0-9_$]*)\s*,/g;
+  let m: RegExpExecArray | null;
+  while ((m = mapRx.exec(srcText)) !== null) {
+    if (m[1] === "_") continue;
+    const window = srcText.slice(m.index, m.index + 500);
+    if (/<Image\b[^>]*\bfill\b/.test(window)) { hasContentMap = true; break; }
+  }
+
+  const hasDotsNav = occursNear(srcText, /i === current|current === i/, /radii\.full|9999/, 150);
+  const hasArrowNav = /\bconst\s+prev\s*=/.test(srcText) && /\bconst\s+next\s*=/.test(srcText);
+  // Square + fully-rounded alone isn't enough — a 44×44 round icon *button* matches the same
+  // shape as an avatar photo. Require an actual <Image> nearby to tell them apart.
+  const avatarShapeMatch = srcText.match(/width:\s*(\d{2,3}),\s*height:\s*\1,[\s\S]{0,100}borderRadius:\s*(radii\.full|9999)/);
+  const hasSmallAvatarImage = !!avatarShapeMatch && avatarShapeMatch.index !== undefined
+    && /<Image\b/.test(srcText.slice(avatarShapeMatch.index, avatarShapeMatch.index + 400));
+  const hasDividerList = /border(Top|Bottom):\s*`?1px solid/.test(srcText) && !/<Image\b/.test(srcText);
+
+  return {
+    hasContentMap,
+    hasDotsNav,
+    hasArrowNav,
+    hasSmallAvatarImage,
+    hasDividerList,
+    columns: resolveColumnCount(srcText),
+    railColumns: hasRailColumns(srcText),
+  };
+}
+
 // ─── File template ────────────────────────────────────────────────────────────
 
 function buildFile(names: string[], configSrc: string, rootDir: string): string {
@@ -1630,6 +1840,7 @@ function buildFile(names: string[], configSrc: string, rootDir: string): string 
   const goldHex = tokens.gold && tokens.gold.startsWith("#") ? tokens.gold : null;
 
   const componentPalettes = new Map<string, ComponentPalette | null>();
+  const structuralSignatures = new Map<string, StructuralSignature | null>();
   for (const name of names) {
     const srcText = resolveComponentSourceText(configSrc, name, rootDir);
     const resolved = srcText ? resolveComponentBackground(srcText, tokens, sectionVariantMap) : null;
@@ -1637,10 +1848,16 @@ function buildFile(names: string[], configSrc: string, rootDir: string): string 
       console.log(`  ${name}: background=${resolved ? `${resolved.hex} (${resolved.note})` : "unresolved — generic palette"}`);
     }
     componentPalettes.set(name, resolved ? derivePaletteFromBg(resolved.hex, goldHex, palette.accent) : null);
+    structuralSignatures.set(name, srcText ? extractStructuralSignature(srcText) : null);
   }
 
   const thumbFns = names
-    .map((n) => generateThumbFn(n, fieldsMap.get(n) ?? null, componentPalettes.get(n) ?? null).join("\n"))
+    .map((n) => generateThumbFn(
+      n,
+      fieldsMap.get(n) ?? null,
+      componentPalettes.get(n) ?? null,
+      structuralSignatures.get(n) ?? null,
+    ).join("\n"))
     .join("\n\n");
 
   const mapEntries = names.map((n) => `  ${n}: ${n}Thumb,`).join("\n");
