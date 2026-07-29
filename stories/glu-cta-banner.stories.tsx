@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs";
 import { GLUCtaBannerComponent } from "../components/puck/glu-cta-banner";
 
 const meta: Meta<typeof GLUCtaBannerComponent> = {
-  title: "GLU Components/GLUCtaBanner",
+  title: "Components/GLUCtaBanner",
   component: GLUCtaBannerComponent,
   parameters: { layout: "fullscreen" },
 };

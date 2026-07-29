@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs";
 import { GLUSlideshowComponent } from "../components/puck/glu-slideshow";
 
 const meta: Meta<typeof GLUSlideshowComponent> = {
-  title: "GLU Components/GLUSlideshow",
+  title: "Components/GLUSlideshow",
   component: GLUSlideshowComponent,
   parameters: { layout: "fullscreen" },
 };

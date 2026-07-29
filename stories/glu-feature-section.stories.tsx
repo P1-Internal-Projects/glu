@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs";
 import { GLUFeatureSectionComponent } from "../components/puck/glu-feature-section";
 
 const meta: Meta<typeof GLUFeatureSectionComponent> = {
-  title: "GLU Components/GLUFeatureSection",
+  title: "Components/GLUFeatureSection",
   component: GLUFeatureSectionComponent,
   parameters: { layout: "fullscreen" },
 };

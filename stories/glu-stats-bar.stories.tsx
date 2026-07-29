@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs";
 import { GLUStatsBarComponent } from "../components/puck/glu-stats-bar";
 
 const meta: Meta<typeof GLUStatsBarComponent> = {
-  title: "GLU Components/GLUStatsBar",
+  title: "Components/GLUStatsBar",
   component: GLUStatsBarComponent,
   parameters: { layout: "fullscreen" },
 };

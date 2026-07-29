@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs";
 import { Button } from "../design-system/components/button";
 
 const meta: Meta<typeof Button> = {
-  title: "Design System/Button",
+  title: "Components/Button",
   component: Button,
   argTypes: {
     variant: { control: "select", options: ["primary", "secondary", "outline", "ghost"] },

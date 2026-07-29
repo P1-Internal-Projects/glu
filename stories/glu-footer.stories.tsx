@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs";
 import { GLUFooterComponent } from "../components/puck/glu-footer";
 
 const meta: Meta<typeof GLUFooterComponent> = {
-  title: "GLU Components/GLUFooter",
+  title: "Components/GLUFooter",
   component: GLUFooterComponent,
   parameters: { layout: "fullscreen" },
 };

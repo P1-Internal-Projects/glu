@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs";
 import { GLUNavComponent } from "../components/puck/glu-nav";
 
 const meta: Meta<typeof GLUNavComponent> = {
-  title: "GLU Components/GLUNav",
+  title: "Components/GLUNav",
   component: GLUNavComponent,
   parameters: { layout: "fullscreen" },
 };

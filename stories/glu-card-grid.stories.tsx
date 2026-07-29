@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs";
 import { GLUCardGridComponent } from "../components/puck/glu-card-grid";
 
 const meta: Meta<typeof GLUCardGridComponent> = {
-  title: "GLU Components/GLUCardGrid",
+  title: "Components/GLUCardGrid",
   component: GLUCardGridComponent,
   parameters: { layout: "fullscreen" },
 };

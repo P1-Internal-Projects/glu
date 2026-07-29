@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs";
 import { GLUHeroComponent } from "../components/puck/glu-hero";
 
 const meta: Meta<typeof GLUHeroComponent> = {
-  title: "GLU Components/GLUHero",
+  title: "Components/GLUHero",
   component: GLUHeroComponent,
   parameters: { layout: "fullscreen" },
 };

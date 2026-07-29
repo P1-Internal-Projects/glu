@@ -3,7 +3,7 @@ import { Card } from "../design-system/components/card";
 import { typography, colors, spacing } from "../design-system/tokens";
 
 const meta: Meta<typeof Card> = {
-  title: "Design System/Card",
+  title: "Components/Card",
   component: Card,
 };
 export default meta;

@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs";
 import { Badge } from "../design-system/components/badge";
 
 const meta: Meta<typeof Badge> = {
-  title: "Design System/Badge",
+  title: "Components/Badge",
   component: Badge,
   argTypes: {
     variant: { control: "select", options: ["navy", "gold", "blue", "light", "success", "error"] },

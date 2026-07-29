@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs";
 import { GLULogo } from "../design-system/components/glu-logo";
 
 const meta: Meta<typeof GLULogo> = {
-  title: "Design System/GLULogo",
+  title: "Components/GLULogo",
   component: GLULogo,
   parameters: { layout: "centered" },
 };

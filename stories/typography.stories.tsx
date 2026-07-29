@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs";
 import { H1, H2, H3, H4, H5, H6, Body, Eyebrow, Caption, Label } from "../design-system/components/typography";
 
 const meta: Meta = {
-  title: "Design System/Typography",
+  title: "Components/Typography",
 };
 export default meta;
 

@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs";
 import { GLUAccordionComponent } from "../components/puck/glu-accordion";
 
 const meta: Meta<typeof GLUAccordionComponent> = {
-  title: "GLU Components/GLUAccordion",
+  title: "Components/GLUAccordion",
   component: GLUAccordionComponent,
   parameters: { layout: "fullscreen" },
 };

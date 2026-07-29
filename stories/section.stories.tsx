@@ -4,7 +4,7 @@ import { Container } from "../design-system/components/container";
 import { H2, Body } from "../design-system/components/typography";
 
 const meta: Meta<typeof Section> = {
-  title: "Design System/Section",
+  title: "Components/Section",
   component: Section,
 };
 export default meta;

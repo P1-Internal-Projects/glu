@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs";
 import { GLUTimelineComponent } from "../components/puck/glu-timeline";
 
 const meta: Meta<typeof GLUTimelineComponent> = {
-  title: "GLU Components/GLUTimeline",
+  title: "Components/GLUTimeline",
   component: GLUTimelineComponent,
   parameters: { layout: "fullscreen" },
 };
