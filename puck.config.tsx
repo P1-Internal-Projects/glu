@@ -6,11 +6,13 @@ import { headingBlock } from "./components/puck/heading-block";
 import { imageBlock } from "./components/puck/image-block";
 import { gridBlock } from "./components/puck/grid-block";
 import { listBlock } from "./components/puck/list-block";
+import { mediaFigureBlock } from "./components/puck/media-figure-block";
 import { paragraphBlock } from "./components/puck/paragraph-block";
 import { quoteBlock } from "./components/puck/quote-block";
 import { puckRoot } from "./components/puck/root";
 import { spacerBlock } from "./components/puck/spacer-block";
 import { welcomeBlock } from "./components/puck/welcome-block";
+import { dataListBlock } from "./components/puck/data-list-block";
 
 import { pccConfigs } from "./components/pcc/puck-configs";
 
@@ -68,11 +70,11 @@ export const config = {
     },
     media: {
       title: "Media",
-      components: ["ImageBlock"],
+      components: ["ImageBlock", "MediaFigureBlock"],
     },
     data: {
       title: "Data",
-      components: ["GridBlock"],
+      components: ["GridBlock", "DataListBlock"],
     },
     layout: {
       title: "Layout",
@@ -110,7 +112,9 @@ export const config = {
     HeadingBlock: headingBlock,
     ParagraphBlock: paragraphBlock,
     ImageBlock: imageBlock,
+    MediaFigureBlock: mediaFigureBlock,
     GridBlock: gridBlock,
+    DataListBlock: dataListBlock,
     QuoteBlock: quoteBlock,
     ListBlock: listBlock,
     DividerBlock: dividerBlock,

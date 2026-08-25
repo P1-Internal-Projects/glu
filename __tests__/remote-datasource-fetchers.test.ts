@@ -13,8 +13,8 @@ vi.mock("@pantheon-systems/puck-css/server", async (importOriginal) => {
   return actual;
 });
 
-import { REMOTE_DATASOURCE_FETCHERS } from "../lib/remote-datasource-fetchers";
 import type { RemoteDatasourceFetcherParams } from "@pantheon-systems/puck-css/server";
+import { REMOTE_DATASOURCE_FETCHERS } from "../lib/remote-datasource-fetchers";
 
 const { PCCConvenienceFunctions } = await import(
   "@pantheon-systems/cpub-react-sdk/server"
@@ -177,7 +177,7 @@ describe("monster_list fetcher", () => {
     });
     const result = await fetcher.fetch(makeFetcherParams({ fetchImpl }));
     expect(result).toEqual({
-      items: [{ index: "bulbasaur", name: "Bulbasaur", url: "/pokemon/bulbasaur" }],
+      items: [{ key: "bulbasaur", species: "Bulbasaur", index: "bulbasaur", name: "Bulbasaur", url: "/pokemon/bulbasaur" }],
     });
   });
 });

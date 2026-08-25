@@ -1,14 +1,14 @@
-import { describe, expect, it } from "vitest";
 import { readFileSync } from "fs";
 import { resolve, dirname } from "path";
 import { fileURLToPath } from "url";
+import { describe, expect, it } from "vitest";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const appDir = resolve(__dirname, "..");
 
 describe("editor-client uses P1 plugins", () => {
   const content = readFileSync(
-    resolve(appDir, "app/p1/[[...p1]]/editor-client.tsx"),
+    resolve(appDir, "app/p1/(editor)/[[...p1]]/editor-client.tsx"),
     "utf-8",
   );
 
