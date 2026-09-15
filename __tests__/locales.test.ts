@@ -25,7 +25,7 @@ describe("readLocaleFromPath", () => {
 
   it("reads a prefixed path and strips the prefix", () => {
     expect(readLocaleFromPath("/es/visit/open-house")).toEqual({
-      locale: "es-ES",
+      locale: "es-US",
       rest: "visit/open-house",
     });
   });
@@ -52,7 +52,7 @@ describe("localizedPath", () => {
   });
 
   it("prefixes a translated locale", () => {
-    expect(localizedPath("academics", "es-ES")).toBe("/es/academics");
+    expect(localizedPath("academics", "es-US")).toBe("/es/academics");
   });
 
   // "/es/" would 404: the catch-all maps a URL to a document path, and no
@@ -65,7 +65,7 @@ describe("localizedPath", () => {
 
 describe("documentPathFor", () => {
   it("drops the leading slash, since documents are stored without one", () => {
-    expect(documentPathFor("visit/open-house", "es-ES")).toBe("es/visit/open-house");
+    expect(documentPathFor("visit/open-house", "es-US")).toBe("es/visit/open-house");
     expect(documentPathFor("visit/open-house", DEFAULT_LOCALE)).toBe("visit/open-house");
   });
 });
@@ -88,7 +88,7 @@ describe("locale table", () => {
   });
 
   it("resolves a tag case-insensitively, since stored tags are canonicalized", () => {
-    expect(localeByTag("es-es")?.tag).toBe("es-ES");
+    expect(localeByTag("es-us")?.tag).toBe("es-US");
   });
 
   it("names every locale in its own language, for the switcher", () => {

@@ -8,12 +8,14 @@ import { GLULocaleSwitcher } from "./glu-locale-switcher";
 
 export type GLUNavProps = {
   logoText: string;
+  /** Where the wordmark links. Locale-aware; defaults to the site root. */
+  homeHref?: string;
   links: { label: string; href: string }[];
   ctaLabel: string;
   ctaHref: string;
 };
 
-export function GLUNavComponent({ logoText, links, ctaLabel, ctaHref }: GLUNavProps) {
+export function GLUNavComponent({ logoText, homeHref = "/", links, ctaLabel, ctaHref }: GLUNavProps) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -40,7 +42,7 @@ export function GLUNavComponent({ logoText, links, ctaLabel, ctaHref }: GLUNavPr
         }}
       >
         {/* Logo */}
-        <a href="/" style={{ textDecoration: "none", flexShrink: 0, lineHeight: 0 }} aria-label={logoText}>
+        <a href={homeHref} style={{ textDecoration: "none", flexShrink: 0, lineHeight: 0 }} aria-label={logoText}>
           <GLULogo color={colors.white} width={160} />
         </a>
 

@@ -11,7 +11,7 @@
  *   node scripts/i18n-strings.mjs apply <file.json>  # write translations back
  */
 import { readFileSync } from "node:fs";
-import { api, mainBranchId, S } from "./p1-admin.mjs";
+import { api, mainBranchId, assertNobodyEditing, S } from "./p1-admin.mjs";
 
 /** Prop keys whose values are natural language. */
 const TEXT_KEYS = new Set([
@@ -72,9 +72,13 @@ function setAt(obj, dotPath, value) {
   return true;
 }
 
+/** URL prefix per market. Mirrors LOCALES in lib/locales.ts. */
+const PREFIX = { "es-US": "es", "fr-FR": "fr" };
+
 async function variantsFor(branchId, locale) {
   const { documents } = await api(`/api/sites/${S}/branches/${branchId}/documents`);
-  const prefix = locale === "es-ES" ? "es" : "fr";
+  const prefix = PREFIX[locale];
+  if (!prefix) throw new Error(`Unknown locale ${locale}. Known: ${Object.keys(PREFIX).join(", ")}`);
   return documents
     .filter((d) => d.path === prefix || d.path.startsWith(`${prefix}/`))
     .sort((a, b) => a.path.localeCompare(b.path));
@@ -99,6 +103,7 @@ async function extract(locale) {
 async function apply(file) {
   const { locale, pages } = JSON.parse(readFileSync(file, "utf8"));
   const branchId = await mainBranchId();
+  await assertNobodyEditing(branchId);
   const { documents } = await api(`/api/sites/${S}/branches/${branchId}/documents`);
   let changed = 0;
   let missed = 0;

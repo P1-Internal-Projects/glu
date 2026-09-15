@@ -28,6 +28,12 @@ export interface NavLink {
 
 export interface NavDefinition {
   logoText: string;
+  /**
+   * Where the wordmark links. Localized like every other destination — a
+   * Spanish page whose logo returned to the English home page would drop the
+   * reader out of their language on the most-clicked link in the header.
+   */
+  homeHref: string;
   links: NavLink[];
   ctaLabel: string;
   ctaHref: string;
@@ -62,6 +68,7 @@ const LOGO_TEXT = "Grand Lakes University";
 const NAV: Record<string, NavDefinition> = {
   "en-US": {
     logoText: LOGO_TEXT,
+    homeHref: "/",
     links: [
       { label: "Admissions", href: "/apply" },
       { label: "Academics", href: "/academics" },
@@ -71,19 +78,21 @@ const NAV: Record<string, NavDefinition> = {
     ctaLabel: "Apply Now",
     ctaHref: "/apply",
   },
-  "es-ES": {
+  "es-US": {
     logoText: LOGO_TEXT,
+    homeHref: "/",
     links: [
       { label: "Admisiones", href: "/apply" },
       { label: "Estudios", href: "/academics" },
-      { label: "Coste y ayudas", href: "/cost-aid" },
+      { label: "Costo y ayuda financiera", href: "/cost-aid" },
       { label: "Vida universitaria", href: "/campus-life" },
     ],
-    ctaLabel: "Solicita tu plaza",
+    ctaLabel: "Solicita tu admisión",
     ctaHref: "/apply",
   },
   "fr-FR": {
     logoText: LOGO_TEXT,
+    homeHref: "/",
     links: [
       { label: "Admissions", href: "/apply" },
       { label: "Formations", href: "/academics" },
@@ -133,7 +142,7 @@ const FOOTER: Record<string, FooterDefinition> = {
       "© 2025 Grand Lakes University. 1887 University Drive, Grand Lakes, Michigan 48901. All rights reserved.",
     socialLinks: SOCIAL_LINKS,
   },
-  "es-ES": {
+  "es-US": {
     logoText: LOGO_TEXT,
     tagline:
       "Impulsamos el conocimiento y enriquecemos vidas mediante la excelencia en la docencia, la investigación y el compromiso con la comunidad desde 1887.",
@@ -141,7 +150,7 @@ const FOOTER: Record<string, FooterDefinition> = {
       {
         heading: "Admisiones",
         links: [
-          { label: "Cómo solicitar plaza", href: "/apply" },
+          { label: "Cómo solicitar admisión", href: "/apply" },
           { label: "Plazos", href: "/apply" },
           { label: "Requisitos", href: "/apply" },
           { label: "Visita el campus", href: "/campus-life" },
@@ -150,7 +159,7 @@ const FOOTER: Record<string, FooterDefinition> = {
       {
         heading: "Estudios",
         links: [
-          { label: "Programas y titulaciones", href: "/academics" },
+          { label: "Programas y carreras", href: "/academics" },
           { label: "Investigación", href: "/academics" },
           { label: "Calendario académico", href: "/academics" },
           { label: "Biblioteca", href: "/academics" },
@@ -160,7 +169,7 @@ const FOOTER: Record<string, FooterDefinition> = {
         heading: "Vida universitaria",
         links: [
           { label: "Alojamiento", href: "/campus-life" },
-          { label: "Restauración", href: "/campus-life" },
+          { label: "Comedores", href: "/campus-life" },
           { label: "Asociaciones estudiantiles", href: "/campus-life" },
           { label: "Deportes", href: "/campus-life" },
         ],
@@ -225,6 +234,7 @@ export function navFor(locale: string | undefined): NavDefinition {
   const nav = NAV[tag]!;
   return {
     ...nav,
+    homeHref: localizedPath("/", tag),
     links: nav.links.map((l) => ({ ...l, href: localizeHref(l.href, tag) })),
     ctaHref: localizeHref(nav.ctaHref, tag),
   };

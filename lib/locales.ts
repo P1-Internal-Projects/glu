@@ -30,7 +30,7 @@ export const DEFAULT_LOCALE = "en-US";
 
 export const LOCALES: LocaleDefinition[] = [
   { tag: "en-US", prefix: "", native: "English", english: "English (United States)", dir: "ltr" },
-  { tag: "es-ES", prefix: "es", native: "Español", english: "Spanish (Spain)", dir: "ltr" },
+  { tag: "es-US", prefix: "es", native: "Español", english: "Spanish (United States)", dir: "ltr" },
   { tag: "fr-FR", prefix: "fr", native: "Français", english: "French (France)", dir: "ltr" },
 ];
 

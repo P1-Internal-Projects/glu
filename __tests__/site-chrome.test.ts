@@ -35,8 +35,16 @@ describe("navFor", () => {
     expect(counts.size).toBe(1);
   });
 
+  // The wordmark is the most-clicked link in a header. Leaving it at "/" sent a
+  // Spanish reader back to the English home page.
+  it.each(TAGS)("points the wordmark at that locale's home page (%s)", (tag) => {
+    const prefix = LOCALES.find((l) => l.tag === tag)!.prefix;
+    expect(navFor(tag).homeHref).toBe(prefix ? `/${prefix}` : "/");
+  });
+
   it("translates the labels rather than repeating English", () => {
-    expect(navFor("es-ES").links[0]?.label).toBe("Admisiones");
+    expect(navFor("es-US").links[0]?.label).toBe("Admisiones");
+    expect(navFor("es-US").ctaLabel).toBe("Solicita tu admisión");
     expect(navFor("fr-FR").ctaLabel).toBe("Déposer une candidature");
   });
 
