@@ -159,6 +159,9 @@
     "es": "Asesor de admisiones",
     "fr": "Conseiller d'admission"
   },
+  "Admissions counselor meeting with a student": {
+    "es": "Asesora de admisiones reunida con un estudiante"
+  },
   "Admissions Events": {
     "es": "Eventos de admisiones",
     "fr": "Événements admissions"
@@ -303,6 +306,9 @@
     "es": "Licenciatura en Gestión de la Inteligencia Artificial",
     "fr": "Licence en management de l'intelligence artificielle"
   },
+  "Back to School of AI Studies": {
+    "es": "Volver a la Escuela de Estudios de IA"
+  },
   "Begin at the Visitor Center (Building A, first floor) to pick up a campus map, check in for a tour, and get the latest event information. Our staff can customize a visit based on your interests.": {
     "es": "Empieza en el Centro de Visitantes (edificio A, planta baja) para recoger un plano del campus, registrarte en una visita guiada y conocer la programación más reciente. Nuestro personal puede adaptar la visita a tus intereses.",
     "fr": "Commencez par le centre des visiteurs (bâtiment A, rez-de-chaussée) pour retirer un plan du campus, vous inscrire à une visite et consulter le programme du jour. Notre équipe peut adapter la visite à vos centres d'intérêt."
@@ -326,6 +332,9 @@
   "Business Administration": {
     "es": "Administración de Empresas",
     "fr": "Gestion d'entreprise"
+  },
+  "Business Administration, Class of 2024": {
+    "es": "Administración de Empresas, Generación 2024"
   },
   "Business School Recognized": {
     "es": "Reconocimiento de la Escuela de Negocios",
@@ -391,6 +400,9 @@
     "es": "¿Trazas tu rumbo en Grand Lakes University?",
     "fr": "Tracez votre route à Grand Lakes University"
   },
+  "Chat With a Counselor": {
+    "es": "Habla con un asesor"
+  },
   "College of Education": {
     "es": "Facultad de Educación",
     "fr": "Faculté d'éducation"
@@ -422,6 +434,12 @@
   "Complimentary parking is available in the North Visitors Lot off University Drive. Shuttle service runs every 15 minutes from the parking area to the welcome tent.": {
     "es": "Hay estacionamiento gratuito en el Lote Norte de Visitantes, junto a University Drive. Un servicio de transporte enlaza el estacionamiento con la carpa de bienvenida cada 15 minutos.",
     "fr": "Un parking gratuit est à votre disposition au parking nord des visiteurs, le long de University Drive. Une navette relie le parking au chapiteau d'accueil toutes les 15 minutes."
+  },
+  "Contact Admissions": {
+    "es": "Comunícate con Admisiones"
+  },
+  "Contact Financial Aid": {
+    "es": "Comunícate con Ayuda Financiera"
   },
   "Contact our Financial Aid Office immediately. We review special circumstances on a case-by-case basis and can often adjust your aid package to reflect significant changes in family income.": {
     "es": "Ponte en contacto de inmediato con la Oficina de Ayudas Económicas. Revisamos las circunstancias especiales caso por caso y a menudo podemos ajustar tu ayuda para reflejar cambios importantes en los ingresos familiares.",
@@ -479,6 +497,9 @@
     "es": "Comedores",
     "fr": "Restauration"
   },
+  "Dining area at Grand Lakes University": {
+    "es": "Zona de comedores en Grand Lakes University"
+  },
   "Each open house runs from morning to late afternoon and is packed with everything you need to make your decision. Your day includes a full walking tour of campus, department showcases across all 8 colleges, a financial aid and scholarships info session, lunch in one of our award-winning dining halls, and one-on-one time with admissions counselors. Families are welcome throughout.": {
     "es": "Cada jornada de puertas abiertas va de la mañana a media tarde y reúne todo lo que necesitas para decidir. El día incluye un recorrido completo a pie por el campus, presentaciones de las ocho facultades, una sesión informativa sobre ayudas y becas, comida en uno de nuestros premiados comedores y tiempo individual con los asesores de admisiones. Las familias son bienvenidas en todo momento.",
     "fr": "Chaque journée portes ouvertes se déroule du matin à la fin d'après-midi et rassemble tout ce qu'il vous faut pour décider. Au programme : une visite complète du campus à pied, des présentations des huit facultés, une séance d'information sur les aides et les bourses, un déjeuner dans l'un de nos restaurants primés et un entretien individuel avec un conseiller d'admission. Les familles sont les bienvenues tout au long de la journée."
@@ -527,6 +548,9 @@
     "es": "Ciencias Ambientales",
     "fr": "Sciences de l'environnement"
   },
+  "Environmental Science, Class of 2025": {
+    "es": "Ciencias Ambientales, Generación 2025"
+  },
   "Epidemiology, public health policy, global health, and health management — tackling the most pressing health challenges.": {
     "es": "Epidemiología, políticas de salud pública, salud global y gestión sanitaria, para afrontar los retos de salud más urgentes.",
     "fr": "Épidémiologie, politiques de santé publique, santé mondiale et management de la santé, pour relever les défis sanitaires les plus pressants."
@@ -539,9 +563,15 @@
     "es": "Todo lo que necesitas para crecer",
     "fr": "Tout ce qu'il faut pour s'épanouir"
   },
+  "Executive education cohort": {
+    "es": "Grupo de educación ejecutiva"
+  },
   "Expert Guidance Every Step of the Way": {
     "es": "Orientación experta en cada paso",
     "fr": "Un accompagnement expert à chaque étape"
+  },
+  "Explore Academics": {
+    "es": "Explora los estudios"
   },
   "Explore Cost & Aid": {
     "es": "Consulta costo y ayuda financiera",
@@ -554,6 +584,9 @@
   "Explore Our Programs": {
     "es": "Descubre nuestros programas",
     "fr": "Découvrir nos programmes"
+  },
+  "Explore Programs": {
+    "es": "Explora los programas"
   },
   "Explore Research": {
     "es": "Descubre la investigación",
@@ -1079,6 +1112,9 @@
     "es": "Las ayudas por necesidad se renuevan cada año en función de la situación económica familiar y del progreso académico satisfactorio. Las becas por méritos exigen mantener una promedio mínima (normalmente 3,0) y la inscripción de tiempo completo.",
     "fr": "Les aides sur critères sociaux sont renouvelées chaque année selon la situation financière du foyer et la progression des études. Les bourses au mérite exigent une moyenne minimale (généralement 3,0) et une inscription à temps plein."
   },
+  "Net Price Calculator": {
+    "es": "Calculadora de precio neto"
+  },
   "No separate scholarship application is required for most GLU merit awards. Apply to Grand Lakes and your eligibility is evaluated automatically.": {
     "es": "La mayoría de las becas por méritos de GLU no requieren una solicitud aparte. Solicita plaza en Grand Lakes y tu elegibilidad se valorará automáticamente.",
     "fr": "La plupart des bourses au mérite de GLU ne nécessitent aucun dossier distinct. Candidatez à Grand Lakes et votre éligibilité est évaluée automatiquement."
@@ -1167,6 +1203,9 @@
     "es": "Certificado profesional",
     "fr": "Certificat professionnel"
   },
+  "Professional working online": {
+    "es": "Profesional trabajando en línea"
+  },
   "Professor Lucy Hitz": {
     "es": "Profesora Lucy Hitz",
     "fr": "Professeure Lucy Hitz"
@@ -1174,6 +1213,9 @@
   "Professor Lucy Hitz brings a passion for discovery and a commitment to student success to every classroom and laboratory at Grand Lakes University. With expertise spanning environmental science and sustainability research, she has authored over 30 peer-reviewed publications and leads a dynamic research group exploring climate adaptation strategies.": {
     "es": "La profesora Lucy Hitz lleva su pasión por el descubrimiento y su compromiso con el éxito del alumnado a cada aula y laboratorio de Grand Lakes University. Especialista en ciencias ambientales e investigación en sostenibilidad, ha firmado más de 30 publicaciones revisadas por pares y dirige un dinámico grupo de investigación sobre estrategias de adaptación al cambio climático.",
     "fr": "La professeure Lucy Hitz met sa passion de la découverte et son attachement à la réussite des étudiants au service de chaque cours et de chaque laboratoire de Grand Lakes University. Spécialiste des sciences de l'environnement et de la recherche sur la durabilité, elle a signé plus de 30 publications à comité de lecture et dirige un groupe de recherche dynamique sur les stratégies d'adaptation au changement climatique."
+  },
+  "Professor Lucy Hitz in the laboratory": {
+    "es": "La profesora Lucy Hitz en el laboratorio"
   },
   "Program FAQs": {
     "es": "Preguntas frecuentes sobre los programas",
@@ -1190,6 +1232,9 @@
   "Programs & Majors": {
     "es": "Programas y titulaciones",
     "fr": "Programmes et spécialités"
+  },
+  "Public Health, Class of 2026": {
+    "es": "Salud Pública, Generación 2026"
   },
   "Pushing the Boundaries of Human Knowledge": {
     "es": "Ampliando las fronteras del conocimiento humano",
@@ -1227,6 +1272,9 @@
     "es": "Inscríbete en el seminario web",
     "fr": "S'inscrire au webinaire"
   },
+  "Register Interest": {
+    "es": "Registra tu interés"
+  },
   "Register your interest today and be first to know when applications open for Fall 2027.": {
     "es": "Registra hoy tu interés y sé el primero en saber cuándo se abren las solicitudes para el otoño de 2027.",
     "fr": "Manifestez votre intérêt dès aujourd'hui et soyez informé en premier de l'ouverture des candidatures pour l'automne 2027."
@@ -1255,6 +1303,9 @@
     "es": "Investigación destacada",
     "fr": "Zoom sur la recherche"
   },
+  "Researcher examining samples in a modern laboratory": {
+    "es": "Investigadora examinando muestras en un laboratorio moderno"
+  },
   "Reserve your place": {
     "es": "Reserva tu lugar",
     "fr": "Réserver votre place"
@@ -1271,6 +1322,9 @@
     "es": "Reservar lugar",
     "fr": "Réserver une place"
   },
+  "Schedule a Campus Visit": {
+    "es": "Organiza tu visita al campus"
+  },
   "Schedule a Conversation": {
     "es": "Concierta una conversación",
     "fr": "Prendre rendez-vous"
@@ -1278,6 +1332,9 @@
   "Schedule a guided campus tour, attend an open house, or book a 1-on-1 session with an admissions counselor. We can't wait to show you why Grand Lakes is special.": {
     "es": "Reserva una visita guiada al campus, asiste a una jornada de puertas abiertas o concierta una sesión individual con un asesor de admisiones. Estamos deseando enseñarte por qué Grand Lakes es especial.",
     "fr": "Réservez une visite guidée du campus, participez à une journée portes ouvertes ou prenez un rendez-vous individuel avec un conseiller d'admission. Nous avons hâte de vous montrer ce qui fait la singularité de Grand Lakes."
+  },
+  "Schedule Your Visit": {
+    "es": "Organiza tu visita"
   },
   "Scholarships": {
     "es": "Becas",
@@ -1343,6 +1400,9 @@
     "es": "Sofia Reyes",
     "fr": "Sofia Reyes"
   },
+  "Sofia Reyes, Public Health junior and Dean's Excellence Award recipient": {
+    "es": "Sofía Reyes, estudiante de tercer año de Salud Pública y galardonada con el Premio a la Excelencia del Decanato"
+  },
   "Spend a day on the Grand Lakes campus. Tour the residence halls, sit in on a class, and meet faculty from all eight colleges.": {
     "es": "Pasa un día en el campus de Grand Lakes. Visita las residencias, asiste a una clase y conoce al profesorado de las ocho facultades.",
     "fr": "Passez une journée sur le campus de Grand Lakes. Visitez les résidences, assistez à un cours et rencontrez les enseignants des huit facultés."
@@ -1383,6 +1443,18 @@
     "es": "Historias de estudiantes",
     "fr": "Témoignages d'étudiants"
   },
+  "Student studying at a desk with a laptop": {
+    "es": "Estudiante estudiando en un escritorio con una computadora portátil"
+  },
+  "Students collaborating in a research setting": {
+    "es": "Estudiantes colaborando en un entorno de investigación"
+  },
+  "Students collaborating in an advanced AI research lab": {
+    "es": "Estudiantes colaborando en un laboratorio avanzado de investigación en IA"
+  },
+  "Students collaborating in an AI lab": {
+    "es": "Estudiantes colaborando en un laboratorio de IA"
+  },
   "Students must maintain a minimum 2.0 GPA to remain in good academic standing. Many scholarships require a higher GPA (typically 3.0+).": {
     "es": "Hay que mantener una promedio mínima de 2,0 para conservar la buen estado académico. Muchas becas exigen un promedio superior (normalmente 3,0 o más).",
     "fr": "Une moyenne minimale de 2,0 est exigée pour rester en règle sur le plan académique. De nombreuses bourses demandent une moyenne supérieure (généralement 3,0 ou plus)."
@@ -1395,6 +1467,15 @@
     "es": "Alumnado con ayudas",
     "fr": "Étudiants aidés"
   },
+  "Students smiling on a college campus": {
+    "es": "Estudiantes sonriendo en un campus universitario"
+  },
+  "Students walking across the Grand Lakes University campus in autumn": {
+    "es": "Estudiantes caminando por el campus de Grand Lakes University en otoño"
+  },
+  "Students working in a research laboratory": {
+    "es": "Estudiantes trabajando en un laboratorio de investigación"
+  },
   "Submit two letters from teachers (at least one from a core academic subject) and one from your school counselor. Letters from coaches, employers, or community mentors may be submitted as additional materials.": {
     "es": "Presenta dos cartas de profesores (al menos una de una materia académica principal) y una de tu orientador escolar. Las cartas de entrenadores, empleadores o mentores comunitarios pueden aportarse como material adicional.",
     "fr": "Fournissez deux lettres d'enseignants (dont au moins une dans une matière fondamentale) et une de votre conseiller d'orientation. Les lettres d'entraîneurs, d'employeurs ou de mentors associatifs peuvent être jointes en complément."
@@ -1402,6 +1483,9 @@
   "Take a self-guided virtual tour or schedule a 1-on-1 Zoom session with one of our admissions counselors — available Monday through Friday.": {
     "es": "Haz una visita virtual por tu cuenta o concierta una sesión individual por Zoom con uno de nuestros asesores de admisiones, disponibles de lunes a viernes.",
     "fr": "Faites une visite virtuelle en autonomie ou prenez un rendez-vous individuel par Zoom avec l'un de nos conseillers d'admission, du lundi au vendredi."
+  },
+  "Take a Virtual Tour": {
+    "es": "Haz una visita virtual"
   },
   "Tell us you are coming": {
     "es": "Avísanos de que vienes",
@@ -1454,6 +1538,9 @@
   "The student theater program here rivals anything I saw at larger arts schools. We put on six full productions a year — I've grown more than I imagined.": {
     "es": "El programa de teatro estudiantil de aquí no tiene nada que envidiar a lo que vi en escuelas de arte más grandes. Montamos seis producciones completas al año; he crecido más de lo que imaginaba.",
     "fr": "Le programme de théâtre étudiant ici n'a rien à envier à ce que j'ai vu dans de plus grandes écoles d'art. Nous montons six spectacles complets par an : j'ai progressé plus que je ne l'imaginais."
+  },
+  "Theater & Communications, Class of 2024": {
+    "es": "Teatro y Comunicación, Generación 2024"
   },
   "Theo advises applicants to the College of Arts and Letters and is the counselor most students talk to when they have not settled on a major. He is a Grand Lakes graduate and spent two years in the university's advising office before moving to admissions.": {
     "es": "Theo asesora a quienes solicitan admisión en la Facultad de Humanidades y es el asesor con el que más hablan quienes aún no han elegido titulación. Es egresado de Grand Lakes y pasó dos años en la oficina de tutoría de la universidad antes de incorporarse a admisiones.",
@@ -1523,6 +1610,9 @@
     "es": "Licenciatura",
     "fr": "Diplôme de licence"
   },
+  "University campus waterfront with students": {
+    "es": "Estudiantes a la orilla del lago en el campus universitario"
+  },
   "University Founded": {
     "es": "Fundación de la universidad",
     "fr": "Fondation de l'université"
@@ -1530,6 +1620,9 @@
   "Use our net price calculator to get a personalized estimate in under five minutes.": {
     "es": "Usa nuestra calculadora de precio neto y obtén una estimación personalizada en menos de cinco minutos.",
     "fr": "Utilisez notre simulateur de coût net pour obtenir une estimation personnalisée en moins de cinq minutes."
+  },
+  "Use the Aid Calculator": {
+    "es": "Usar la calculadora de ayuda"
   },
   "Use the Net Price Calculator": {
     "es": "Usar la calculadora de precio neto",
@@ -1546,6 +1639,9 @@
   "View the Full Day Schedule": {
     "es": "Ver el programa completo del día",
     "fr": "Voir le programme complet de la journée"
+  },
+  "Virtual Tour": {
+    "es": "Visita virtual"
   },
   "Visit": {
     "es": "Visita",

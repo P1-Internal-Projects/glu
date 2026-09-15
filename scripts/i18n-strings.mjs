@@ -13,7 +13,26 @@
 import { readFileSync } from "node:fs";
 import { api, mainBranchId, assertNobodyEditing, S } from "./p1-admin.mjs";
 
-/** Prop keys whose values are natural language. */
+/**
+ * Prop keys whose values are natural language.
+ *
+ * This list is the contract, and a key missing from it is silent: the string is
+ * simply never offered for translation, so the page looks translated except for
+ * that one button. `primaryCtaLabel`, `secondaryCtaLabel` and `imageAlt` were
+ * missing for exactly that reason, which left "Start Your Application" sitting
+ * in the middle of every Spanish page.
+ *
+ * Keep it in step with the component configs, whose field names are the real
+ * source:
+ *
+ *   python3 - <<'EOF'   # top-level keys of every `fields: { ... }` block
+ *   import re, pathlib
+ *   ...brace-match `fields:` and diff against TEXT_KEYS and NEVER
+ *   EOF
+ *
+ * A single-line grep is not enough — `primaryCtaLabel` is declared across four
+ * lines and a line-oriented scan walks straight past it.
+ */
 const TEXT_KEYS = new Set([
   "title", "heading", "subheading", "eyebrow", "subtext", "text", "label",
   "description", "summary", "tagline", "copyright", "ctaLabel", "body", "bio",
@@ -21,10 +40,40 @@ const TEXT_KEYS = new Set([
   "attribution", "caption", "answer", "question", "name", "value", "stat",
   "buttonLabel", "linkLabel", "secondaryLabel", "viewAllLabel", "placeholder",
   "alt", "eventType", "logoText", "heading2", "intro", "blurb",
+  // Button labels. The href beside each one is a destination, not wording.
+  "primaryCtaLabel", "secondaryCtaLabel", "loggedInCtaLabel",
+  "loggedInSecondaryLabel",
+  // Alt text is read aloud, so it is translated like any other prose.
+  "imageAlt",
+  // Personalized variants of the blocks above, and the small print under a CTA.
+  "loggedInHeading", "loggedInDescription", "loggedInFootnote", "footnote",
+  // A degree and cohort, e.g. "Environmental Science, Class of 2025".
+  "program",
 ]);
 
-/** Keys that look textual but must never be translated. */
-const NEVER = new Set(["id", "href", "url", "src", "imageUrl", "photoUrl", "registrationUrl", "locale"]);
+/**
+ * Keys that look textual but must never be translated.
+ *
+ * Listing a key here skips its whole subtree, so only ever name a leaf. `items`
+ * is deliberately absent: it is an array of objects whose own keys hold prose,
+ * and excluding it would drop every string inside it.
+ *
+ * `startDate`, `startTime` and `endTime` are here because translating them is
+ * not what they need — "10:00 AM" wants formatting for the locale, which is a
+ * rendering decision, not a string swap. Left as data.
+ *
+ * `itemTitleTemplate` and `itemUrlTemplate` carry `{{ item.x }}` bindings.
+ * Translating one would break the binding rather than the wording.
+ */
+const NEVER = new Set([
+  "id", "href", "url", "src", "locale",
+  "imageUrl", "photoUrl", "backgroundImageUrl",
+  "ctaHref", "primaryCtaHref", "secondaryCtaHref", "loggedInCtaHref",
+  "linkHref", "registrationUrl",
+  "email", "phone",
+  "startDate", "startTime", "endTime",
+  "itemTitleTemplate", "itemUrlTemplate",
+]);
 
 /** Values that are not prose even when the key says they are. */
 function isProse(v) {
