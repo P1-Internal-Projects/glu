@@ -1,0 +1,200 @@
+{
+  "site": "92f403e4-b910-4a1d-bb22-7e2c02edf5c3",
+  "branch": "fbf8e1a9-4770-4dba-9fc2-136dc8ffe69e",
+  "archivedOn": "2026-09-15",
+  "note": "Superseded by es-US documents at the same paths. Locale tags are immutable, so correcting es-ES to es-US meant recreating each page. Soft-archived with archive_page; restore with restore_page using documentId.",
+  "documents": [
+    {
+      "originalPath": "es/about-our-counselors",
+      "heldAt": "zz-es-es/about-our-counselors",
+      "documentId": "8af75ff7-d95f-4e37-8fc2-36f749b59006",
+      "locale": "es-ES",
+      "wasPublished": true,
+      "replacedByDocumentId": "18cdc5f0-6b9b-4080-bce0-39d592f45428"
+    },
+    {
+      "originalPath": "es/academics",
+      "heldAt": "zz-es-es/academics",
+      "documentId": "44ac851f-5bb9-488a-918d-a5dfcb9f96af",
+      "locale": "es-ES",
+      "wasPublished": true,
+      "replacedByDocumentId": "9564894f-5278-49e8-a027-b7731241e3ab"
+    },
+    {
+      "originalPath": "es/apply",
+      "heldAt": "zz-es-es/apply",
+      "documentId": "97ad2ccd-f30b-4796-a548-9ae409af8697",
+      "locale": "es-ES",
+      "wasPublished": true,
+      "replacedByDocumentId": "3137d4b7-4c03-4757-942d-ad0062525d47"
+    },
+    {
+      "originalPath": "es/blog/2026/07/can-ai-take-good-notes",
+      "heldAt": "zz-es-es/blog/2026/07/can-ai-take-good-notes",
+      "documentId": "54751f10-d2b8-4b37-8fc0-7e5f98288da9",
+      "locale": "es-ES",
+      "wasPublished": true,
+      "replacedByDocumentId": "bf415f97-0100-4e5e-b978-56235734e9d6"
+    },
+    {
+      "originalPath": "es/campus-life",
+      "heldAt": "zz-es-es/campus-life",
+      "documentId": "68d56dd6-ac82-4bf1-b4bc-09a0d9968498",
+      "locale": "es-ES",
+      "wasPublished": true,
+      "replacedByDocumentId": "09ab207d-39e9-426b-afb9-e22fb7cf2c32"
+    },
+    {
+      "originalPath": "es/cost-aid",
+      "heldAt": "zz-es-es/cost-aid",
+      "documentId": "99b0e8b3-6423-4b93-9c8e-5c926ccb7dbc",
+      "locale": "es-ES",
+      "wasPublished": true,
+      "replacedByDocumentId": "0e720293-8764-49ff-bab0-429409f58bb5"
+    },
+    {
+      "originalPath": "es/counselors/daniel-okonkwo",
+      "heldAt": "zz-es-es/counselors/daniel-okonkwo",
+      "documentId": "c9723c66-7030-4bd3-9cd5-928ba9b8f619",
+      "locale": "es-ES",
+      "wasPublished": true,
+      "replacedByDocumentId": "06581fa7-6155-4132-9e0c-03e67ca875e4"
+    },
+    {
+      "originalPath": "es/counselors/hannah-lindqvist",
+      "heldAt": "zz-es-es/counselors/hannah-lindqvist",
+      "documentId": "4681a9c0-faf0-4864-84d6-c8e61954612c",
+      "locale": "es-ES",
+      "wasPublished": true,
+      "replacedByDocumentId": "d9ec611d-0012-436e-b259-db412c98931c"
+    },
+    {
+      "originalPath": "es/counselors/marisol-vega",
+      "heldAt": "zz-es-es/counselors/marisol-vega",
+      "documentId": "755a4540-db01-4afc-91b7-a0e94ce0d537",
+      "locale": "es-ES",
+      "wasPublished": true,
+      "replacedByDocumentId": "573efa29-3e64-41a6-8d84-cd81f14ca8e8"
+    },
+    {
+      "originalPath": "es/counselors/theo-brant",
+      "heldAt": "zz-es-es/counselors/theo-brant",
+      "documentId": "6e8930cb-fb5c-4e81-93d9-c9bb6268e9d0",
+      "locale": "es-ES",
+      "wasPublished": true,
+      "replacedByDocumentId": "a9e5c2dc-0813-448c-9ab7-cc586fd43f65"
+    },
+    {
+      "originalPath": "es/events/admitted-students-day",
+      "heldAt": "zz-es-es/events/admitted-students-day",
+      "documentId": "893edca0-e1a3-4f47-8a98-7ae6e121d3df",
+      "locale": "es-ES",
+      "wasPublished": true,
+      "replacedByDocumentId": "b1e7c3d8-e8e4-4cdc-9878-af7329db060b"
+    },
+    {
+      "originalPath": "es/events/early-action-deadline",
+      "heldAt": "zz-es-es/events/early-action-deadline",
+      "documentId": "feedeb0d-3b3e-4021-ac50-52d6a29384da",
+      "locale": "es-ES",
+      "wasPublished": true,
+      "replacedByDocumentId": "67343f61-62f8-4f4e-9bb6-cdc94594c2c0"
+    },
+    {
+      "originalPath": "es/events/fall-open-house-2026",
+      "heldAt": "zz-es-es/events/fall-open-house-2026",
+      "documentId": "8d39512a-5c96-418a-bbe5-caa73d39ff8b",
+      "locale": "es-ES",
+      "wasPublished": true,
+      "replacedByDocumentId": "77371cfa-b0a3-44e5-801e-e9d80b641fa2"
+    },
+    {
+      "originalPath": "es/events/financial-aid-workshop",
+      "heldAt": "zz-es-es/events/financial-aid-workshop",
+      "documentId": "7b80390a-12b8-416f-a4a7-10ef797d4d9e",
+      "locale": "es-ES",
+      "wasPublished": true,
+      "replacedByDocumentId": "4e89ce14-1e11-4280-b19a-7347a2a7e090"
+    },
+    {
+      "originalPath": "es/events/lakeside-campus-tour",
+      "heldAt": "zz-es-es/events/lakeside-campus-tour",
+      "documentId": "a24a46bd-5835-4336-b0e8-1bd76a2c30c5",
+      "locale": "es-ES",
+      "wasPublished": true,
+      "replacedByDocumentId": "ee5e3e96-f19f-4ad7-9eb5-5f2bf9825ede"
+    },
+    {
+      "originalPath": "es/events/school-of-ai-preview",
+      "heldAt": "zz-es-es/events/school-of-ai-preview",
+      "documentId": "ca6353b4-5ff5-438d-b096-66c27765ec05",
+      "locale": "es-ES",
+      "wasPublished": true,
+      "replacedByDocumentId": "2073024c-0c2f-4753-b373-26dd9e131b27"
+    },
+    {
+      "originalPath": "es",
+      "heldAt": "zz-es-es/home",
+      "documentId": "589ab8ae-085a-4352-a69a-5f3d35d6d97d",
+      "locale": "es-ES",
+      "wasPublished": true,
+      "replacedByDocumentId": "8ed6adce-a5de-47d5-b0b8-395117db2681"
+    },
+    {
+      "originalPath": "es/school-of-ai/programs",
+      "heldAt": "zz-es-es/old-school-of-ai-programs",
+      "documentId": "4483801f-c6df-4991-b3a9-09ea8aeed347",
+      "locale": "es-ES",
+      "wasPublished": true,
+      "replacedByDocumentId": "509dc397-a7a1-437a-badc-e72581d624a7"
+    },
+    {
+      "originalPath": "es/visit/open-house",
+      "heldAt": "zz-es-es/old-visit-open-house",
+      "documentId": "d1f225d0-1c5a-4fe9-ae8f-a5bb7b235ba4",
+      "locale": "es-ES",
+      "wasPublished": true,
+      "replacedByDocumentId": "c44634b4-6272-404b-8caf-d23d7a1b998d"
+    },
+    {
+      "originalPath": "es/visit/visitor-guide",
+      "heldAt": "zz-es-es/old-visit-visitor-guide",
+      "documentId": "e0489d43-050e-40ae-b49e-139d3cb94521",
+      "locale": "es-ES",
+      "wasPublished": true,
+      "replacedByDocumentId": "6dc7be18-de9e-4934-9747-3623335da7dc"
+    },
+    {
+      "originalPath": "es/professor-lucy-hitz",
+      "heldAt": "zz-es-es/professor-lucy-hitz",
+      "documentId": "6df2b246-4cce-4d8d-85fe-182b5a583da6",
+      "locale": "es-ES",
+      "wasPublished": true,
+      "replacedByDocumentId": "ce030f8f-562a-4210-a37a-592b85dd2fce"
+    },
+    {
+      "originalPath": "es/scholarships",
+      "heldAt": "zz-es-es/scholarships",
+      "documentId": "60b134fa-33bb-4903-b9f8-9976668079a3",
+      "locale": "es-ES",
+      "wasPublished": true,
+      "replacedByDocumentId": "ed733f64-d4d9-412f-86a4-a6180535d2b9"
+    },
+    {
+      "originalPath": "es/school-of-ai",
+      "heldAt": "zz-es-es/school-of-ai",
+      "documentId": "f81f10d3-0ba0-48bc-8fbd-389701c4e7f5",
+      "locale": "es-ES",
+      "wasPublished": true,
+      "replacedByDocumentId": "daf5b6d7-06a4-4615-8c0b-278daccc36db"
+    },
+    {
+      "originalPath": "es/why-now",
+      "heldAt": "zz-es-es/why-now",
+      "documentId": "8e6537d3-8c59-470d-af95-e741f3e106db",
+      "locale": "es-ES",
+      "wasPublished": true,
+      "replacedByDocumentId": "ab32241c-0fe2-4885-8834-82602750d17f"
+    }
+  ]
+}
