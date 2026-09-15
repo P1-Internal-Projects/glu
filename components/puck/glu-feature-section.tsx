@@ -8,6 +8,7 @@ import { Eyebrow } from "../../design-system/components/typography";
 import { Section } from "../../design-system/components/section";
 import { Container } from "../../design-system/components/container";
 import { colors, typography, spacing, radii, shadows } from "../../design-system/tokens";
+import { richTextProps } from "./rich-text-props";
 
 export type GLUFeatureSectionProps = {
   eyebrow: string;
@@ -85,9 +86,8 @@ export function GLUFeatureSectionComponent({
                 margin: `0 0 ${spacing[8]}`,
                 whiteSpace: "pre-line",
               }}
-            >
-              {body}
-            </div>
+              {...richTextProps(body)}
+            />
             {ctaLabel && (
               <Button variant="secondary" size="md" href={ctaHref}>
                 {ctaLabel}
