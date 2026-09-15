@@ -9,9 +9,6 @@ const p1Middleware = createP1Middleware({
   siteId: process.env.NEXT_PUBLIC_CSS_SITE_ID ?? "",
 });
 
-/** Header carrying the request's locale to the layout, which has no pathname. */
-export const LOCALE_HEADER = "x-glu-locale";
-
 /**
  * Paths that are the application rather than the site. The editor, its API and
  * the auth callbacks are never localized, and rewriting one would break a login.
@@ -39,26 +36,23 @@ export async function middleware(request: Request) {
 
   const { locale, rest } = readLocaleFromPath(url.pathname);
 
-  const headers = new Headers(request.headers);
-  headers.set(LOCALE_HEADER, locale);
-
   // The site's policy is `fallback`: a visitor asking for a page that has no
   // version in their language gets the default one rather than a 404. The
   // platform records that policy but does not act on it, so it is applied here.
   if (locale !== DEFAULT_LOCALE) {
     const localizedPath = url.pathname.replace(/^\/+/, "");
     if (!(await pageExists(localizedPath))) {
-      // The content served is the default locale's, so that is what the page is
-      // written in — `lang` has to say so, or a screen reader announces English
-      // prose in a Spanish voice.
-      headers.set(LOCALE_HEADER, DEFAULT_LOCALE);
+      // Rewriting to the default locale's path is also what gives the page its
+      // language: the chrome reads the locale from the route that actually
+      // rendered, so a fallback page reads as en-US rather than claiming
+      // Spanish for English words.
       const target = new URL(`/${rest}`, url);
       target.search = url.search;
-      return NextResponse.rewrite(target, { request: { headers } });
+      return NextResponse.rewrite(target);
     }
   }
 
-  return NextResponse.next({ request: { headers } });
+  return NextResponse.next();
 }
 
 export const config = {

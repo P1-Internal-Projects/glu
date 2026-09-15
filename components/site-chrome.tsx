@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { GLUNavComponent } from "./puck/glu-nav";
 import { GLUFooterComponent } from "./puck/glu-footer";
 import { navFor, footerFor } from "../lib/site-chrome";
-import { DEFAULT_LOCALE, readLocaleFromPath } from "../lib/locales";
+import { DEFAULT_LOCALE, localeByTag, readLocaleFromPath } from "../lib/locales";
 
 /**
  * The page landmarks, wrapped around whatever the page itself renders.
@@ -49,15 +49,22 @@ export function SiteChrome({
   children?: React.ReactNode;
 }) {
   const tag = useChromeLocale(locale);
+  const dir = localeByTag(tag)?.dir ?? "ltr";
 
+  /**
+   * `lang` sits here rather than on <html>, which has to stay free of dynamic
+   * reads so the published routes can be prerendered. Everything a reader sees
+   * is inside this element, so it is the nearest ancestor for all content and
+   * assistive technology resolves the page's real language from it.
+   */
   return (
-    <>
+    <div lang={tag} dir={dir}>
       <a className="glu-skip-link" href="#main-content">
         Skip to main content
       </a>
       <GLUNavComponent {...navFor(tag)} />
       <main id="main-content">{children}</main>
       <GLUFooterComponent {...footerFor(tag)} />
-    </>
+    </div>
   );
 }

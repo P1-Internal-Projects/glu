@@ -1,8 +1,6 @@
-import { headers } from "next/headers";
 import { Playfair_Display, Inter } from "next/font/google";
 import type { Metadata } from "next";
-import { DEFAULT_LOCALE, localeByTag } from "../lib/locales";
-import { LOCALE_HEADER } from "../middleware";
+import { DEFAULT_LOCALE } from "../lib/locales";
 import "../design-system/globals.css";
 import "./styles.css";
 
@@ -39,21 +37,29 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function RootLayout({
+/**
+ * Nothing in this layout may read headers(), cookies() or any other dynamic
+ * API. It wraps every route including the published catch-all, which Next
+ * renders statically — a dynamic read here makes that render throw
+ * DYNAMIC_SERVER_USAGE and every localized URL returns a 500 in production,
+ * while dev, where everything is dynamic, looks fine.
+ *
+ * That is why <html lang> carries the site default rather than the page's
+ * language. The language of the content is set on the wrapper the Puck root
+ * renders (components/site-chrome.tsx), which knows the locale and sits above
+ * everything a reader sees, so assistive technology resolves the right one.
+ * Getting it onto <html> itself means moving the app under a [locale] segment.
+ */
+export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  // The layout has no pathname, so the locale the middleware already resolved
-  // travels on a request header rather than being parsed a second time here.
-  const locale = (await headers()).get(LOCALE_HEADER) ?? DEFAULT_LOCALE;
-  const dir = localeByTag(locale)?.dir ?? "ltr";
-
   return (
     // The font variables stay on <html>: design-system/globals.css resolves the
     // GLU font tokens at :root, and a wrapper element would put them out of scope
     // there, leaving every face silently falling back.
-    <html lang={locale} dir={dir} className={`${playfair.variable} ${inter.variable}`}>
+    <html lang={DEFAULT_LOCALE} className={`${playfair.variable} ${inter.variable}`}>
       {/* `.p1-app-shell` must be a direct child of <body>: Puck's canvas iframe
           copies <body> attributes onto its own body, so only a descendant can
           scope a reset out of the canvas. See styles.css. */}
