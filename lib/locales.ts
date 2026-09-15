@@ -31,8 +31,16 @@ export const DEFAULT_LOCALE = "en-US";
 export const LOCALES: LocaleDefinition[] = [
   { tag: "en-US", prefix: "", native: "English", english: "English (United States)", dir: "ltr" },
   { tag: "es-US", prefix: "es", native: "Español", english: "Spanish (United States)", dir: "ltr" },
-  { tag: "fr-FR", prefix: "fr", native: "Français", english: "French (France)", dir: "ltr" },
 ];
+
+/**
+ * Adding a locale is a code change, not only a settings change.
+ *
+ * Configuring a market in site settings records the intent but does not make
+ * the site serve it: the prefix, the switcher entry and the `hreflang`
+ * alternates all read this list. A new language needs an entry here and a
+ * deploy as well as its pages.
+ */
 
 /** Prefix segment to locale tag, for reading a path. Excludes the default. */
 export const LOCALE_PREFIXES: Record<string, string> = Object.fromEntries(

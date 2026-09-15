@@ -11,6 +11,19 @@ import { DEFAULT_LOCALE, LOCALES } from "../lib/locales";
 
 const TAGS = LOCALES.map((l) => l.tag);
 
+/**
+ * A locale with no chrome of its own does not fail loudly — `chromeLocale`
+ * falls back to the default — so the header and footer would quietly render in
+ * English on a page whose body was translated. This catches a market added to
+ * LOCALES without wording to go with it.
+ */
+describe("every configured locale has its own chrome", () => {
+  it.each(TAGS.filter((t) => t !== DEFAULT_LOCALE))("%s is not the English chrome", (tag) => {
+    expect(navFor(tag).ctaLabel).not.toBe(navFor(DEFAULT_LOCALE).ctaLabel);
+    expect(footerFor(tag).tagline).not.toBe(footerFor(DEFAULT_LOCALE).tagline);
+  });
+});
+
 describe("navFor", () => {
   it.each(TAGS)("localizes every site href (%s)", (tag) => {
     const nav = navFor(tag);
@@ -24,8 +37,10 @@ describe("navFor", () => {
   });
 
   it("gives every locale the same set of destinations", () => {
+    const prefixes = LOCALES.map((l) => l.prefix).filter(Boolean);
+    const strip = new RegExp(`^/(${prefixes.join("|")})(?=/)`);
     const canonical = (tag: string) =>
-      navFor(tag).links.map((l) => l.href.replace(/^\/(es|fr)(?=\/)/, ""));
+      navFor(tag).links.map((l) => l.href.replace(strip, ""));
     const base = canonical(DEFAULT_LOCALE);
     for (const tag of TAGS) expect(canonical(tag)).toEqual(base);
   });
@@ -45,7 +60,6 @@ describe("navFor", () => {
   it("translates the labels rather than repeating English", () => {
     expect(navFor("es-US").links[0]?.label).toBe("Admisiones");
     expect(navFor("es-US").ctaLabel).toBe("Solicita tu admisión");
-    expect(navFor("fr-FR").ctaLabel).toBe("Déposer une candidature");
   });
 
   // An unconfigured or absent locale must still render a usable header.

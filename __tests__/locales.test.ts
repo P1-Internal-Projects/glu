@@ -31,7 +31,7 @@ describe("readLocaleFromPath", () => {
   });
 
   it("treats a bare prefix as that locale's home page", () => {
-    expect(readLocaleFromPath("/fr")).toEqual({ locale: "fr-FR", rest: "" });
+    expect(readLocaleFromPath("/es")).toEqual({ locale: "es-US", rest: "" });
   });
 
   // "esports" starts with "es" but is not the Spanish prefix. Matching on the
@@ -58,7 +58,7 @@ describe("localizedPath", () => {
   // "/es/" would 404: the catch-all maps a URL to a document path, and no
   // document is stored with a trailing slash.
   it("collapses the locale home page to a bare prefix", () => {
-    expect(localizedPath("", "fr-FR")).toBe("/fr");
+    expect(localizedPath("", "es-US")).toBe("/es");
     expect(localizedPath("", DEFAULT_LOCALE)).toBe("/");
   });
 });

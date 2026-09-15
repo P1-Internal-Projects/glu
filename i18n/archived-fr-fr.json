@@ -1,0 +1,200 @@
+{
+  "site": "92f403e4-b910-4a1d-bb22-7e2c02edf5c3",
+  "branch": "fbf8e1a9-4770-4dba-9fc2-136dc8ffe69e",
+  "archivedOn": "2026-09-15",
+  "note": "Soft-archived with archive_page; restore with restore_page using documentId.",
+  "documents": [
+    {
+      "path": "fr",
+      "documentId": "ff4cc7c4-c0b5-42a6-9867-182a50f5b796",
+      "locale": "fr-FR",
+      "title": null,
+      "wasPublished": true,
+      "snapshotCaptured": true
+    },
+    {
+      "path": "fr/about-our-counselors",
+      "documentId": "f4fd26d2-0083-4db6-8164-c0df6ce101c1",
+      "locale": "fr-FR",
+      "title": null,
+      "wasPublished": true,
+      "snapshotCaptured": true
+    },
+    {
+      "path": "fr/academics",
+      "documentId": "08578dad-3ef7-481f-bfb6-07e1967bb5cb",
+      "locale": "fr-FR",
+      "title": null,
+      "wasPublished": true,
+      "snapshotCaptured": true
+    },
+    {
+      "path": "fr/apply",
+      "documentId": "49730879-af4a-41d6-8553-a609a5df7739",
+      "locale": "fr-FR",
+      "title": null,
+      "wasPublished": true,
+      "snapshotCaptured": true
+    },
+    {
+      "path": "fr/blog/2026/07/can-ai-take-good-notes",
+      "documentId": "5bc521f7-ec53-46e9-ac5c-8cf4b21402c5",
+      "locale": "fr-FR",
+      "title": null,
+      "wasPublished": true,
+      "snapshotCaptured": true
+    },
+    {
+      "path": "fr/campus-life",
+      "documentId": "48361287-1a6e-48f2-a8e1-219656d2ad74",
+      "locale": "fr-FR",
+      "title": null,
+      "wasPublished": true,
+      "snapshotCaptured": true
+    },
+    {
+      "path": "fr/cost-aid",
+      "documentId": "52a3637d-30ff-48ac-9fe2-8c6bd8360ec5",
+      "locale": "fr-FR",
+      "title": null,
+      "wasPublished": true,
+      "snapshotCaptured": true
+    },
+    {
+      "path": "fr/counselors/daniel-okonkwo",
+      "documentId": "19d6b268-0298-4439-ab70-5c1839fcb4c3",
+      "locale": "fr-FR",
+      "title": null,
+      "wasPublished": true,
+      "snapshotCaptured": true
+    },
+    {
+      "path": "fr/counselors/hannah-lindqvist",
+      "documentId": "075804e3-22ab-4f0e-9c82-ff0011ed63ea",
+      "locale": "fr-FR",
+      "title": null,
+      "wasPublished": true,
+      "snapshotCaptured": true
+    },
+    {
+      "path": "fr/counselors/marisol-vega",
+      "documentId": "f5724c5a-f0b7-43be-88ce-38b51eda2d76",
+      "locale": "fr-FR",
+      "title": null,
+      "wasPublished": true,
+      "snapshotCaptured": true
+    },
+    {
+      "path": "fr/counselors/theo-brant",
+      "documentId": "8c56941b-7ca6-4e75-b43f-107504fdc509",
+      "locale": "fr-FR",
+      "title": null,
+      "wasPublished": true,
+      "snapshotCaptured": true
+    },
+    {
+      "path": "fr/events/admitted-students-day",
+      "documentId": "a278460d-2cd5-4f85-adb5-a0ad273cd89c",
+      "locale": "fr-FR",
+      "title": null,
+      "wasPublished": true,
+      "snapshotCaptured": true
+    },
+    {
+      "path": "fr/events/early-action-deadline",
+      "documentId": "218055af-80c7-421a-bd0b-731b2cdc10bf",
+      "locale": "fr-FR",
+      "title": null,
+      "wasPublished": true,
+      "snapshotCaptured": true
+    },
+    {
+      "path": "fr/events/fall-open-house-2026",
+      "documentId": "6a31fad7-b5a5-47e7-ad74-2bdc5d095b48",
+      "locale": "fr-FR",
+      "title": null,
+      "wasPublished": true,
+      "snapshotCaptured": true
+    },
+    {
+      "path": "fr/events/financial-aid-workshop",
+      "documentId": "b3b41d7e-d358-4cca-824d-bdd56de15adc",
+      "locale": "fr-FR",
+      "title": null,
+      "wasPublished": true,
+      "snapshotCaptured": true
+    },
+    {
+      "path": "fr/events/lakeside-campus-tour",
+      "documentId": "877df7b1-c026-45e7-a311-b6441dc3752a",
+      "locale": "fr-FR",
+      "title": null,
+      "wasPublished": true,
+      "snapshotCaptured": true
+    },
+    {
+      "path": "fr/events/school-of-ai-preview",
+      "documentId": "b415c215-db3e-4be8-b34a-acfab4c561aa",
+      "locale": "fr-FR",
+      "title": null,
+      "wasPublished": true,
+      "snapshotCaptured": true
+    },
+    {
+      "path": "fr/professor-lucy-hitz",
+      "documentId": "e1312f5b-183b-48f3-b20e-a4c572506e27",
+      "locale": "fr-FR",
+      "title": null,
+      "wasPublished": true,
+      "snapshotCaptured": true
+    },
+    {
+      "path": "fr/scholarships",
+      "documentId": "41764a22-fbd4-4976-8526-4352acf88eee",
+      "locale": "fr-FR",
+      "title": null,
+      "wasPublished": true,
+      "snapshotCaptured": true
+    },
+    {
+      "path": "fr/school-of-ai",
+      "documentId": "2ee68bed-e79f-4764-9f6e-65f99bb74358",
+      "locale": "fr-FR",
+      "title": null,
+      "wasPublished": true,
+      "snapshotCaptured": true
+    },
+    {
+      "path": "fr/school-of-ai/programs",
+      "documentId": "09b64f23-b2a7-42d9-a01e-9587ecfd652b",
+      "locale": "fr-FR",
+      "title": null,
+      "wasPublished": true,
+      "snapshotCaptured": true
+    },
+    {
+      "path": "fr/visit/open-house",
+      "documentId": "46bd63cb-714e-4c1a-b7c9-e595b4c3ba88",
+      "locale": "fr-FR",
+      "title": null,
+      "wasPublished": true,
+      "snapshotCaptured": true
+    },
+    {
+      "path": "fr/visit/visitor-guide",
+      "documentId": "af6741d5-f443-484c-84a8-5c54d1af685c",
+      "locale": "fr-FR",
+      "title": null,
+      "wasPublished": true,
+      "snapshotCaptured": true
+    },
+    {
+      "path": "fr/why-now",
+      "documentId": "de735371-3066-4c61-ad38-600b5454d8ac",
+      "locale": "fr-FR",
+      "title": null,
+      "wasPublished": true,
+      "snapshotCaptured": false
+    }
+  ]
+}

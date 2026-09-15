@@ -11,7 +11,7 @@
  */
 import { api, mainBranchId, assertNobodyEditing, S } from "./p1-admin.mjs";
 
-const PREFIX_TO_TAG = { es: "es-ES", fr: "fr-FR" };
+const PREFIX_TO_TAG = { es: "es-US" };
 
 async function main() {
   const branchId = await mainBranchId();

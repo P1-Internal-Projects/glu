@@ -1,6 +1,6 @@
 /**
  * Creates a market version of every translatable page, in every configured
- * locale, at a prefixed path (`/es/academics`, `/fr/academics`).
+ * locale, at a prefixed path (`/es/academics`).
  *
  * The platform's default path is `{canonicalPath}.{locale}`. Passing `path`
  * explicitly opts out of that, which is what gives this site readable URLs and
@@ -19,8 +19,7 @@
 import { api, mainBranchId, S } from "./p1-admin.mjs";
 
 const LOCALES = [
-  { tag: "es-ES", prefix: "es" },
-  { tag: "fr-FR", prefix: "fr" },
+  { tag: "es-US", prefix: "es" },
 ];
 
 /**

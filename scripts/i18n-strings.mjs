@@ -73,7 +73,7 @@ function setAt(obj, dotPath, value) {
 }
 
 /** URL prefix per market. Mirrors LOCALES in lib/locales.ts. */
-const PREFIX = { "es-US": "es", "fr-FR": "fr" };
+const PREFIX = { "es-US": "es" };
 
 async function variantsFor(branchId, locale) {
   const { documents } = await api(`/api/sites/${S}/branches/${branchId}/documents`);

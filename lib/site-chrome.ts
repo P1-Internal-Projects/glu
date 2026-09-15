@@ -9,13 +9,13 @@
  *
  * Before this existed the chrome was copied onto 71 pages and had already
  * diverged: the home page carried a fifth nav link the other 23 English pages
- * did not, in all three languages.
+ * did not, in every language the site published.
  *
  * Hrefs are CANONICAL paths, without a locale prefix. They are localized at
  * render time, so the Spanish nav points at Spanish pages. Storing prefixed
- * hrefs per locale would be three copies of one set of destinations, which is
- * the drift this module exists to remove — and it was already wrong: every
- * translated page's nav linked back to the English pages.
+ * hrefs per locale would be one copy of the same destinations per language,
+ * which is the drift this module exists to remove — and it was already wrong:
+ * every translated page's nav linked back to the English pages.
  */
 
 import { DEFAULT_LOCALE, localizedPath } from "./locales";
@@ -88,18 +88,6 @@ const NAV: Record<string, NavDefinition> = {
       { label: "Vida universitaria", href: "/campus-life" },
     ],
     ctaLabel: "Solicita tu admisión",
-    ctaHref: "/apply",
-  },
-  "fr-FR": {
-    logoText: LOGO_TEXT,
-    homeHref: "/",
-    links: [
-      { label: "Admissions", href: "/apply" },
-      { label: "Formations", href: "/academics" },
-      { label: "Coûts et aides", href: "/cost-aid" },
-      { label: "Vie de campus", href: "/campus-life" },
-    ],
-    ctaLabel: "Déposer une candidature",
     ctaHref: "/apply",
   },
 };
@@ -177,43 +165,6 @@ const FOOTER: Record<string, FooterDefinition> = {
     ],
     copyright:
       "© 2025 Grand Lakes University. 1887 University Drive, Grand Lakes, Michigan 48901. Todos los derechos reservados.",
-    socialLinks: SOCIAL_LINKS,
-  },
-  "fr-FR": {
-    logoText: LOGO_TEXT,
-    tagline:
-      "Faire progresser le savoir et enrichir des vies par l'excellence de l'enseignement, de la recherche et de l'engagement citoyen depuis 1887.",
-    columns: [
-      {
-        heading: "Admissions",
-        links: [
-          { label: "Comment candidater", href: "/apply" },
-          { label: "Dates limites", href: "/apply" },
-          { label: "Conditions d'admission", href: "/apply" },
-          { label: "Visiter le campus", href: "/campus-life" },
-        ],
-      },
-      {
-        heading: "Formations",
-        links: [
-          { label: "Programmes et spécialités", href: "/academics" },
-          { label: "Recherche", href: "/academics" },
-          { label: "Calendrier universitaire", href: "/academics" },
-          { label: "Bibliothèque", href: "/academics" },
-        ],
-      },
-      {
-        heading: "Vie de campus",
-        links: [
-          { label: "Logement", href: "/campus-life" },
-          { label: "Restauration", href: "/campus-life" },
-          { label: "Associations étudiantes", href: "/campus-life" },
-          { label: "Sport universitaire", href: "/campus-life" },
-        ],
-      },
-    ],
-    copyright:
-      "© 2025 Grand Lakes University. 1887 University Drive, Grand Lakes, Michigan 48901. Tous droits réservés.",
     socialLinks: SOCIAL_LINKS,
   },
 };
