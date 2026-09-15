@@ -71,3 +71,47 @@ export async function mainBranchId() {
 }
 
 export const S = SITE_ID;
+
+/**
+ * Refuse to bulk-write while a person has the editor open.
+ *
+ * The editor syncs in realtime. If a script republishes a document underneath
+ * an open session, that session can diff its stale in-memory copy against the
+ * new one and persist the difference — which is how `academics` lost every
+ * block on 2026-09-15: a strip script wrote a correct version at 18:02:37 and
+ * the open editor wrote an empty one 37 seconds later.
+ *
+ * The published version survived, because publishing is a separate step, but
+ * the draft had to be rolled back by hand. Checking first is much cheaper.
+ *
+ * Pass --force to proceed anyway, for when you are the one at the keyboard and
+ * know the tab is closed.
+ */
+export async function assertNobodyEditing(branchId, { force = process.argv.includes("--force") } = {}) {
+  let presence;
+  try {
+    presence = await api(`/api/sites/${SITE_ID}/branches/${branchId}/presence`);
+  } catch {
+    // Presence is a safety check, not the job. If it cannot be read, say so and
+    // continue rather than blocking a migration on a secondary endpoint.
+    console.warn("[presence] could not be read; continuing without the check");
+    return;
+  }
+
+  const actors = presence?.actors ?? presence?.presence?.actors ?? [];
+  const humans = (Array.isArray(actors) ? actors : []).filter(
+    (a) => (a.actorType ?? a.type) !== "agent",
+  );
+  if (humans.length === 0) return;
+
+  const who = humans.map((a) => a.email ?? a.name ?? a.actorId ?? "someone").join(", ");
+  if (force) {
+    console.warn(`[presence] ${who} has the editor open; continuing because --force was passed`);
+    return;
+  }
+  throw new Error(
+    `${who} currently has this site open in the visual editor. A bulk write now can be ` +
+      `overwritten by that session, emptying the document. Close the editor tab and re-run, ` +
+      `or pass --force if you know it is safe.`,
+  );
+}

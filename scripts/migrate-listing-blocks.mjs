@@ -9,7 +9,7 @@
  *
  * Idempotent: a page already carrying the new block is left alone.
  */
-import { api, mainBranchId, S } from "./p1-admin.mjs";
+import { api, mainBranchId, assertNobodyEditing, S } from "./p1-admin.mjs";
 
 const LISTING = "GLUListing";
 
@@ -84,6 +84,7 @@ const PLAN = {
 
 async function main() {
   const branchId = await mainBranchId();
+  await assertNobodyEditing(branchId);
   const { documents } = await api(`/api/sites/${S}/branches/${branchId}/documents`);
 
   for (const [path, plan] of Object.entries(PLAN)) {

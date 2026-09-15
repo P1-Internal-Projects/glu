@@ -9,12 +9,13 @@
  * This is the whole mechanism behind locale-aware listings: no datasource
  * change, no routing hook, just a per-document prop.
  */
-import { api, mainBranchId, S } from "./p1-admin.mjs";
+import { api, mainBranchId, assertNobodyEditing, S } from "./p1-admin.mjs";
 
 const PREFIX_TO_TAG = { es: "es-ES", fr: "fr-FR" };
 
 async function main() {
   const branchId = await mainBranchId();
+  await assertNobodyEditing(branchId);
   const { documents } = await api(`/api/sites/${S}/branches/${branchId}/documents`);
 
   const translated = documents.filter((d) => {

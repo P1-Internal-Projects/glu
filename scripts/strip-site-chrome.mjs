@@ -14,7 +14,7 @@
  * Idempotent, and it only republishes what was already published — a draft
  * stays a draft rather than being pushed live as a side effect of this change.
  */
-import { api, mainBranchId, S } from "./p1-admin.mjs";
+import { api, mainBranchId, assertNobodyEditing, S } from "./p1-admin.mjs";
 
 const CHROME = new Set(["GLUNav", "GLUFooter"]);
 
@@ -48,6 +48,7 @@ function stripChrome(snapshot) {
 
 async function main() {
   const branchId = await mainBranchId();
+  await assertNobodyEditing(branchId);
   const { documents } = await api(`/api/sites/${S}/branches/${branchId}/documents`);
 
   let touched = 0;
