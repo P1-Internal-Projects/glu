@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import type { ComponentConfig } from "@puckeditor/core";
 import { Container } from "../../design-system/components/container";
 import { GLULogo } from "../../design-system/components/glu-logo";
 import { colors, typography, spacing } from "../../design-system/tokens";
@@ -128,93 +127,7 @@ export function GLUFooterComponent({ logoText, tagline, columns, copyright, soci
   );
 }
 
-export const gluFooterConfig = {
-  label: "GLU Footer",
-  ai: {
-    instructions: "Footer — place last on every page, one per page. Include link columns, social links, and copyright year.",
-  },
-  fields: {
-    logoText: {
-      type: "text",
-      label: "Logo Text",
-      contentEditable: true,
-    } as any,
-    tagline: {
-      type: "textarea",
-      label: "Tagline",
-      contentEditable: true,
-    } as any,
-    copyright: {
-      type: "text",
-      label: "Copyright",
-      contentEditable: true,
-    } as any,
-    columns: {
-      type: "array",
-      label: "Link Columns",
-      arrayFields: {
-        heading: { type: "text", label: "Column Heading" },
-        links: {
-          type: "array",
-          label: "Links",
-          arrayFields: {
-            label: { type: "text", label: "Label" },
-            href: { type: "text", label: "URL" },
-          },
-          getItemSummary: (item: { label?: string }, i?: number) => item?.label || `Item #${(i ?? 0) + 1}`,
-        },
-      },
-      getItemSummary: (item: { heading?: string }, i?: number) => item?.heading || `Item #${(i ?? 0) + 1}`,
-    },
-    socialLinks: {
-      type: "array",
-      label: "Social Links",
-      arrayFields: {
-        platform: { type: "text", label: "Platform Name" },
-        href: { type: "text", label: "URL" },
-      },
-      getItemSummary: (item: { platform?: string }, i?: number) => item?.platform || `Item #${(i ?? 0) + 1}`,
-    },
-  },
-  defaultProps: {
-    logoText: "Grand Lakes University",
-    tagline: "Advancing knowledge and enriching lives through excellence in teaching, research, and community engagement since 1887.",
-    copyright: "© 2025 Grand Lakes University. 1887 University Drive, Grand Lakes, Michigan 48901. All rights reserved.",
-    columns: [
-      {
-        heading: "Admissions",
-        links: [
-          { label: "How to Apply", href: "/apply" },
-          { label: "Deadlines", href: "/apply#deadlines" },
-          { label: "Requirements", href: "/apply#requirements" },
-          { label: "Visit Campus", href: "/visit" },
-        ],
-      },
-      {
-        heading: "Academics",
-        links: [
-          { label: "Programs & Majors", href: "/academics" },
-          { label: "Research", href: "/research" },
-          { label: "Academic Calendar", href: "/calendar" },
-          { label: "Library", href: "/library" },
-        ],
-      },
-      {
-        heading: "Campus Life",
-        links: [
-          { label: "Housing", href: "/campus-life#housing" },
-          { label: "Dining", href: "/campus-life#dining" },
-          { label: "Student Clubs", href: "/campus-life#clubs" },
-          { label: "Athletics", href: "/athletics" },
-        ],
-      },
-    ],
-    socialLinks: [
-      { platform: "Twitter", href: "#" },
-      { platform: "Instagram", href: "#" },
-      { platform: "LinkedIn", href: "#" },
-      { platform: "YouTube", href: "#" },
-    ],
-  },
-  render: GLUFooterComponent,
-} as ComponentConfig<GLUFooterProps>;
+/**
+ * There is deliberately no Puck config export here — see glu-nav.tsx. The
+ * footer is rendered once by the Puck root from lib/site-chrome.ts.
+ */

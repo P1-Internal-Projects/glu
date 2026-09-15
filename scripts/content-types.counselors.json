@@ -1,0 +1,50 @@
+[
+  {
+    "slug": "marisol-vega",
+    "name": "Marisol Vega",
+    "role": "Senior Admissions Counselor",
+    "focusArea": "First-generation and transfer applicants",
+    "territory": "Michigan, Ohio, Indiana",
+    "email": "m.vega@grandlakes.edu",
+    "phone": "(517) 555-0142",
+    "photoUrl": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=600&q=80",
+    "bio": "Marisol has worked in Grand Lakes admissions for nine years and leads the counseling team for the Great Lakes region. She works most closely with students who are the first in their family to apply to university, and with transfer applicants figuring out how their credits carry.",
+    "body": "Marisol holds drop-in hours on Wednesday afternoons during term, in person at the Visitor Center and online. She reads every application from her territory herself."
+  },
+  {
+    "slug": "daniel-okonkwo",
+    "name": "Daniel Okonkwo",
+    "role": "Admissions Counselor",
+    "focusArea": "Engineering and computing applicants",
+    "territory": "Illinois, Wisconsin, Minnesota",
+    "email": "d.okonkwo@grandlakes.edu",
+    "phone": "(517) 555-0188",
+    "photoUrl": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80",
+    "bio": "Daniel advises applicants to the College of Engineering and, from this year, to the School of AI Studies. Before joining Grand Lakes he taught secondary mathematics for six years, which still shapes how he talks to students about course selection.",
+    "body": "Daniel runs the monthly online session on engineering admissions and is the person to ask about portfolio and project submissions."
+  },
+  {
+    "slug": "hannah-lindqvist",
+    "name": "Hannah Lindqvist",
+    "role": "Associate Director, International Admissions",
+    "focusArea": "International applicants and credential evaluation",
+    "territory": "Outside the United States",
+    "email": "h.lindqvist@grandlakes.edu",
+    "phone": "(517) 555-0119",
+    "photoUrl": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=600&q=80",
+    "bio": "Hannah leads international admissions and oversees how Grand Lakes evaluates qualifications earned outside the United States. She works with applicants on visa timelines, English language requirements and funding documentation.",
+    "body": "Hannah's team answers international enquiries within two business days. Sessions run in several time zones through the autumn."
+  },
+  {
+    "slug": "theo-brant",
+    "name": "Theo Brant",
+    "role": "Admissions Counselor",
+    "focusArea": "Arts, humanities and undecided applicants",
+    "territory": "Northeast and Mid-Atlantic",
+    "email": "t.brant@grandlakes.edu",
+    "phone": "(517) 555-0164",
+    "photoUrl": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=600&q=80",
+    "bio": "Theo advises applicants to the College of Arts and Letters and is the counselor most students talk to when they have not settled on a major. He is a Grand Lakes graduate and spent two years in the university's advising office before moving to admissions.",
+    "body": "Theo is happy to talk to students who have no idea what they want to study. That is most of the conversations he has."
+  }
+]

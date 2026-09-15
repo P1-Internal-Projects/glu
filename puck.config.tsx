@@ -16,14 +16,10 @@ import { dataListBlock } from "./components/puck/data-list-block";
 
 import { pccConfigs } from "./components/pcc/puck-configs";
 
-import { ctEventConfig } from "./components/puck/ct-event";
-import { ctCounselorConfig } from "./components/puck/ct-counselor";
-import { ctAccoladeConfig } from "./components/puck/ct-accolade";
-import { eventListingConfig } from "./components/puck/event-listing";
-import { counselorListingConfig } from "./components/puck/counselor-listing";
-import { accoladeListingConfig } from "./components/puck/accolade-listing";
+import { gluEventHeaderConfig } from "./components/puck/glu-event-header";
+import { gluPersonProfileConfig } from "./components/puck/glu-person-profile";
+import { gluListing } from "./components/puck/glu-listing";
 
-import { gluNavConfig } from "./components/puck/glu-nav";
 import { gluHeroConfig } from "./components/puck/glu-hero";
 import { gluPageHeroConfig } from "./components/puck/glu-page-hero";
 import { gluStatsBarConfig } from "./components/puck/glu-stats-bar";
@@ -32,7 +28,6 @@ import { gluCardGridConfig } from "./components/puck/glu-card-grid";
 import { gluTestimonialSliderConfig } from "./components/puck/glu-testimonial-slider";
 import { gluCtaBannerConfig } from "./components/puck/glu-cta-banner";
 import { gluAccordionConfig } from "./components/puck/glu-accordion";
-import { gluFooterConfig } from "./components/puck/glu-footer";
 import { gluTimelineConfig } from "./components/puck/glu-timeline";
 import { gluSlideshowConfig } from "./components/puck/glu-slideshow";
 
@@ -42,7 +37,6 @@ export const config = {
     glu: {
       title: "Grand Lakes University",
       components: [
-        "GLUNav",
         "GLUHero",
         "GLUPageHero",
         "GLUStatsBar",
@@ -53,7 +47,6 @@ export const config = {
         "GLUAccordion",
         "GLUTimeline",
         "GLUSlideshow",
-        "GLUFooter",
       ],
     },
     pcc: {
@@ -62,7 +55,7 @@ export const config = {
     },
     contentTypes: {
       title: "Content Types",
-      components: ["CtEvent", "CtCounselor", "CtAccolade", "EventListing", "CounselorListing", "AccoladeListing"],
+      components: ["GLUEventHeader", "GLUPersonProfile", "GLUListing"],
     },
     typography: {
       title: "Typography",
@@ -90,7 +83,6 @@ export const config = {
     },
   },
   components: {
-    GLUNav: gluNavConfig,
     GLUHero: gluHeroConfig,
     GLUPageHero: gluPageHeroConfig,
     GLUStatsBar: gluStatsBarConfig,
@@ -99,16 +91,12 @@ export const config = {
     GLUTestimonialSlider: gluTestimonialSliderConfig,
     GLUCtaBanner: gluCtaBannerConfig,
     GLUAccordion: gluAccordionConfig,
-    GLUFooter: gluFooterConfig,
     GLUTimeline: gluTimelineConfig,
     GLUSlideshow: gluSlideshowConfig,
     ...pccConfigs,
-    CtEvent: ctEventConfig,
-    CtCounselor: ctCounselorConfig,
-    CtAccolade: ctAccoladeConfig,
-    EventListing: eventListingConfig,
-    CounselorListing: counselorListingConfig,
-    AccoladeListing: accoladeListingConfig,
+    GLUEventHeader: gluEventHeaderConfig,
+    GLUPersonProfile: gluPersonProfileConfig,
+    GLUListing: gluListing,
     HeadingBlock: headingBlock,
     ParagraphBlock: paragraphBlock,
     ImageBlock: imageBlock,

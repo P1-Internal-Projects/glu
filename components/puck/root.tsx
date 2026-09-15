@@ -4,6 +4,7 @@ import {
   DEFAULT_EDITOR_ROOT_TITLE,
 } from "@pantheon-systems/puck-css/seo";
 import { PCCPageProvider } from "../pcc/pcc-page-context";
+import { SiteChrome } from "../site-chrome";
 
 /**
  * The root config: this site's own fields, plus the page-metadata fields.
@@ -39,7 +40,7 @@ const buildFields = (rootProps?: Record<string, unknown>) => ({
 export const puckRoot = {
   ai: {
     instructions:
-      "Page root. Standard GLU page order: GLUNav → GLUHero (or GLUPageHero for interior) → GLUStatsBar → GLUFeatureSection(s) → GLUCardGrid → GLUTestimonialSlider → GLUCtaBanner → GLUFooter. Set pccContentId only on Content Publisher article pages.",
+      "Page root. The site nav and footer render automatically and are NOT blocks — never add them. Page body order: GLUHero (or GLUPageHero for interior) → GLUStatsBar → GLUFeatureSection(s) → GLUCardGrid → GLUTestimonialSlider → GLUCtaBanner. Set pccContentId only on Content Publisher article pages.",
   },
   fields: buildFields(),
   /**
@@ -53,11 +54,30 @@ export const puckRoot = {
     title: DEFAULT_EDITOR_ROOT_TITLE,
     pccContentId: "",
   },
-  render: (props: { children?: ReactNode; title?: string; pccContentId?: string }) => {
-    const { children, pccContentId, title } = props;
+  /**
+   * The nav and footer are rendered here, not placed on pages.
+   *
+   * That is what makes them fixed: they hold no slot in the content array, so
+   * the editor has nothing to select, move, delete or reword, and every page in
+   * every language draws the same chrome from lib/site-chrome.ts. It also means
+   * the editor canvas shows the real page rather than a bare content column.
+   *
+   * `locale` is not an editable field. It is passed in by the published route
+   * and otherwise derived from the path, so it never becomes something an
+   * author can set to the wrong value.
+   */
+  render: (props: {
+    children?: ReactNode;
+    title?: string;
+    pccContentId?: string;
+    locale?: string;
+  }) => {
+    const { children, pccContentId, title, locale } = props;
     return (
       <PCCPageProvider contentId={pccContentId || null} articleTitle={title || null}>
-        <div className="font-sans antialiased">{children}</div>
+        <div className="font-sans antialiased">
+          <SiteChrome locale={locale}>{children}</SiteChrome>
+        </div>
       </PCCPageProvider>
     );
   },
