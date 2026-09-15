@@ -58,12 +58,12 @@ export default async function RootLayout({
           copies <body> attributes onto its own body, so only a descendant can
           scope a reset out of the canvas. See styles.css. */}
       <body data-rm-theme="light">
-        <div className="p1-app-shell">
-          <a className="glu-skip-link" href="#main-content">
-            Skip to main content
-          </a>
-          <main id="main-content">{children}</main>
-        </div>
+        {/* The skip link, <main> and the page landmarks are rendered by the
+            Puck root (components/puck/root.tsx), so that the editor canvas
+            shows the same header and footer the visitor gets. Wrapping
+            {children} in <main> here would nest the site header inside the
+            main landmark. */}
+        <div className="p1-app-shell">{children}</div>
       </body>
     </html>
   );

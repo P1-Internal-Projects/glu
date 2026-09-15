@@ -20,7 +20,6 @@ import { dirname, join } from "node:path";
 import { api, mainBranchId, S } from "./p1-admin.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
-const shell = JSON.parse(readFileSync(join(HERE, "content-types.shell.json"), "utf8"));
 
 const TEMPLATES = [
   {
@@ -42,28 +41,32 @@ const TEMPLATES = [
 ];
 
 /**
- * The template's component tree. Nav, the record block and the footer are
- * pinned: an event page without its event block is not an event, and the
- * listings read that block, so letting an editor delete it would silently drop
- * the page out of every listing rather than fail visibly.
+ * The template's component tree.
+ *
+ * No nav and no footer: those are rendered by the Puck root from
+ * lib/site-chrome.ts, so a template that placed them would create a second,
+ * competing definition of the site chrome — the per-page copies this repo
+ * moved away from.
+ *
+ * The record block is pinned. An event page without its event block is not an
+ * event, and the listings read that block, so letting an editor delete it
+ * would silently drop the page out of every listing rather than fail visibly.
  */
 function templateSnapshot({ label, description, recordBlock }) {
   return {
     root: {
       props: {
         _template: { label, description, deprecated: false },
-        _pinMap: { "template-nav": true, "template-record": true, "template-footer": true },
+        _pinMap: { "template-record": true },
       },
     },
     zones: {},
     content: [
-      { type: "GLUNav", props: { ...shell.nav.props, id: "template-nav" } },
       { type: recordBlock, props: { id: "template-record" } },
       {
         type: "ParagraphBlock",
         props: { id: "template-body", text: "Add the details for this page here." },
       },
-      { type: "GLUFooter", props: { ...shell.footer.props, id: "template-footer" } },
     ],
   };
 }
@@ -104,10 +107,8 @@ async function upsertPage(branchId, { path, templateId, title, recordBlock, reco
     root: { props: { title, description: record.summary ?? record.bio ?? "" } },
     zones: {},
     content: [
-      { type: "GLUNav", props: { ...shell.nav.props, id: "template-nav" } },
       { type: recordBlock, props: { id: "template-record", ...record } },
       { type: "ParagraphBlock", props: { id: "template-body", text: body } },
-      { type: "GLUFooter", props: { ...shell.footer.props, id: "template-footer" } },
     ],
   };
 

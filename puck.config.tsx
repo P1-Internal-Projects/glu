@@ -20,7 +20,6 @@ import { gluEventHeaderConfig } from "./components/puck/glu-event-header";
 import { gluPersonProfileConfig } from "./components/puck/glu-person-profile";
 import { gluListing } from "./components/puck/glu-listing";
 
-import { gluNavConfig } from "./components/puck/glu-nav";
 import { gluHeroConfig } from "./components/puck/glu-hero";
 import { gluPageHeroConfig } from "./components/puck/glu-page-hero";
 import { gluStatsBarConfig } from "./components/puck/glu-stats-bar";
@@ -29,7 +28,6 @@ import { gluCardGridConfig } from "./components/puck/glu-card-grid";
 import { gluTestimonialSliderConfig } from "./components/puck/glu-testimonial-slider";
 import { gluCtaBannerConfig } from "./components/puck/glu-cta-banner";
 import { gluAccordionConfig } from "./components/puck/glu-accordion";
-import { gluFooterConfig } from "./components/puck/glu-footer";
 import { gluTimelineConfig } from "./components/puck/glu-timeline";
 import { gluSlideshowConfig } from "./components/puck/glu-slideshow";
 
@@ -39,7 +37,6 @@ export const config = {
     glu: {
       title: "Grand Lakes University",
       components: [
-        "GLUNav",
         "GLUHero",
         "GLUPageHero",
         "GLUStatsBar",
@@ -50,7 +47,6 @@ export const config = {
         "GLUAccordion",
         "GLUTimeline",
         "GLUSlideshow",
-        "GLUFooter",
       ],
     },
     pcc: {
@@ -87,7 +83,6 @@ export const config = {
     },
   },
   components: {
-    GLUNav: gluNavConfig,
     GLUHero: gluHeroConfig,
     GLUPageHero: gluPageHeroConfig,
     GLUStatsBar: gluStatsBarConfig,
@@ -96,7 +91,6 @@ export const config = {
     GLUTestimonialSlider: gluTestimonialSliderConfig,
     GLUCtaBanner: gluCtaBannerConfig,
     GLUAccordion: gluAccordionConfig,
-    GLUFooter: gluFooterConfig,
     GLUTimeline: gluTimelineConfig,
     GLUSlideshow: gluSlideshowConfig,
     ...pccConfigs,

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import type { Data } from "@puckeditor/core";
 import { RenderClient, performLogout, P1_LOGGED_IN_KEY } from "@pantheon-systems/puck-css";
 import config from "../../puck.config";
+import { readLocaleFromPath } from "../../lib/locales";
 import { runWidgetLogout } from "./widget-logout";
 
 function EditIcon() {
@@ -217,9 +218,22 @@ export function Client({
     pageType?: "page" | "template" | "override";
   };
 }) {
+  /**
+   * The chrome's language comes from the route, resolved here rather than from
+   * the URL in the browser. The Puck root reads it off the root props, so the
+   * published page never depends on a client hook to know which nav to draw —
+   * and a document carrying no locale still renders the right one.
+   */
+  const locale = pageMetadata
+    ? readLocaleFromPath(pageMetadata.route).locale
+    : undefined;
+  const localizedData = locale
+    ? { ...data, root: { ...data.root, props: { ...data.root?.props, locale } } }
+    : data;
+
   return (
     <>
-      <RenderClient config={config} data={data} />
+      <RenderClient config={config} data={localizedData} />
       {pageMetadata && <P1EditWidget route={pageMetadata.route} />}
       {pageMetadata && (
         <footer className="mt-16 border-t border-gray-200 py-4 text-center text-sm text-gray-500">

@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import type { ComponentConfig } from "@puckeditor/core";
 import { Button } from "../../design-system/components/button";
 import { GLULogo } from "../../design-system/components/glu-logo";
 import { colors, layout, spacing, typography } from "../../design-system/tokens";
@@ -131,46 +130,13 @@ export function GLUNavComponent({ logoText, links, ctaLabel, ctaHref }: GLUNavPr
   );
 }
 
-export const gluNavConfig = {
-  label: "GLU Nav",
-  ai: {
-    instructions: "Top nav — place first on every page, one per page. Add main nav links and a primary CTA (e.g. 'Apply Now').",
-  },
-  fields: {
-    logoText: {
-      type: "text",
-      label: "Logo Text",
-      contentEditable: true,
-    } as any,
-    links: {
-      type: "array",
-      label: "Navigation Links",
-      arrayFields: {
-        label: { type: "text", label: "Label" },
-        href: { type: "text", label: "URL" },
-      },
-      getItemSummary: (item: { label?: string }, i?: number) => item?.label || `Item #${(i ?? 0) + 1}`,
-    },
-    ctaLabel: {
-      type: "text",
-      label: "CTA Button Label",
-      contentEditable: true,
-    } as any,
-    ctaHref: {
-      type: "text",
-      label: "CTA Button URL",
-    },
-  },
-  defaultProps: {
-    logoText: "Grand Lakes University",
-    links: [
-      { label: "Admissions", href: "/apply" },
-      { label: "Academics", href: "/academics" },
-      { label: "Cost & Aid", href: "/cost-aid" },
-      { label: "Campus Life", href: "/campus-life" },
-    ],
-    ctaLabel: "Apply Now",
-    ctaHref: "/apply",
-  },
-  render: GLUNavComponent,
-} as ComponentConfig<GLUNavProps>;
+/**
+ * There is deliberately no Puck config export here.
+ *
+ * The nav is not a block. It is rendered once by the Puck root (see
+ * components/site-chrome.tsx) from the single definition in lib/site-chrome.ts,
+ * so it cannot be added to a page, moved, deleted or reworded. Registering a
+ * config again would reintroduce exactly the per-page copies this replaced.
+ *
+ * The component below stays exported for that root render and for Storybook.
+ */
