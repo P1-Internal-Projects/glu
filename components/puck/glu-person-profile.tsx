@@ -146,7 +146,10 @@ export const gluPersonProfileConfig = {
     territory: { type: "text", label: "Territory" },
     email: { type: "text", label: "Email" },
     phone: { type: "text", label: "Phone" },
-    photoUrl: { type: "text", label: "Photo URL" },
+    // Rendered as the media library picker, not a text box: lib/media-fields.ts
+    // matches this name. The stored value stays a plain CDN URL string, which
+    // is what the Counselors listing binds to as `{{ item.photoUrl }}`.
+    photoUrl: { type: "text", label: "Headshot" },
     bio: { type: "textarea", label: "Biography" },
   },
   defaultProps: {
