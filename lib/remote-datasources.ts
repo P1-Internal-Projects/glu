@@ -1,6 +1,8 @@
 import type { RemoteDatasourceDefinition } from "@pantheon-systems/puck-css/server";
+import { GLU_COLLECTION_DATASOURCES } from "./glu-datasources";
 
 export const REMOTE_DATASOURCE_REGISTRY: RemoteDatasourceDefinition[] = [
+  ...GLU_COLLECTION_DATASOURCES,
   {
     id: "swapi",
     label: "Star Wars character detail",

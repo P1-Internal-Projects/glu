@@ -5,6 +5,7 @@ import type { ComponentConfig } from "@puckeditor/core";
 import { Button } from "../../design-system/components/button";
 import { GLULogo } from "../../design-system/components/glu-logo";
 import { colors, layout, spacing, typography } from "../../design-system/tokens";
+import { GLULocaleSwitcher } from "./glu-locale-switcher";
 
 export type GLUNavProps = {
   logoText: string;
@@ -68,6 +69,7 @@ export function GLUNavComponent({ logoText, links, ctaLabel, ctaHref }: GLUNavPr
           <Button variant="primary" size="sm" href={ctaHref}>
             {ctaLabel}
           </Button>
+          <GLULocaleSwitcher />
         </nav>
 
         {/* Mobile toggle */}
@@ -122,6 +124,7 @@ export function GLUNavComponent({ logoText, links, ctaLabel, ctaHref }: GLUNavPr
           <Button variant="primary" href={ctaHref} fullWidth>
             {ctaLabel}
           </Button>
+          <GLULocaleSwitcher />
         </nav>
       )}
     </header>

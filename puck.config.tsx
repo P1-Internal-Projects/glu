@@ -16,12 +16,9 @@ import { dataListBlock } from "./components/puck/data-list-block";
 
 import { pccConfigs } from "./components/pcc/puck-configs";
 
-import { ctEventConfig } from "./components/puck/ct-event";
-import { ctCounselorConfig } from "./components/puck/ct-counselor";
-import { ctAccoladeConfig } from "./components/puck/ct-accolade";
-import { eventListingConfig } from "./components/puck/event-listing";
-import { counselorListingConfig } from "./components/puck/counselor-listing";
-import { accoladeListingConfig } from "./components/puck/accolade-listing";
+import { gluEventHeaderConfig } from "./components/puck/glu-event-header";
+import { gluPersonProfileConfig } from "./components/puck/glu-person-profile";
+import { gluListing } from "./components/puck/glu-listing";
 
 import { gluNavConfig } from "./components/puck/glu-nav";
 import { gluHeroConfig } from "./components/puck/glu-hero";
@@ -62,7 +59,7 @@ export const config = {
     },
     contentTypes: {
       title: "Content Types",
-      components: ["CtEvent", "CtCounselor", "CtAccolade", "EventListing", "CounselorListing", "AccoladeListing"],
+      components: ["GLUEventHeader", "GLUPersonProfile", "GLUListing"],
     },
     typography: {
       title: "Typography",
@@ -103,12 +100,9 @@ export const config = {
     GLUTimeline: gluTimelineConfig,
     GLUSlideshow: gluSlideshowConfig,
     ...pccConfigs,
-    CtEvent: ctEventConfig,
-    CtCounselor: ctCounselorConfig,
-    CtAccolade: ctAccoladeConfig,
-    EventListing: eventListingConfig,
-    CounselorListing: counselorListingConfig,
-    AccoladeListing: accoladeListingConfig,
+    GLUEventHeader: gluEventHeaderConfig,
+    GLUPersonProfile: gluPersonProfileConfig,
+    GLUListing: gluListing,
     HeadingBlock: headingBlock,
     ParagraphBlock: paragraphBlock,
     ImageBlock: imageBlock,
