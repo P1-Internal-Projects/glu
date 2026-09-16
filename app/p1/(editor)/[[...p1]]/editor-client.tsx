@@ -25,6 +25,8 @@ import { useFlags } from "launchdarkly-react-client-sdk";
 import type { Checkpoint } from "@pantheon-systems/puck-css";
 import type { ContentRole } from "@pantheon-systems/puck-css";
 import { P1_ASSETS } from "../../../../constants/assets";
+import { MEDIA_FIELD_PATTERNS } from "../../../../lib/media-fields";
+
 
 import "@pantheon-systems/puck-css/styles.css";
 import "@pantheon-systems/puck-css/pds/styles.css";
@@ -191,7 +193,10 @@ function EditorContent({ path }: { path: string }) {
     context: remoteDatasourceContext,
   } = useRemoteDatasourceContext(path, editorCtx?.remoteDatasourceRegistry ?? []);
   const p1Plugins = useP1Plugins(path, config);
-  const mediaPlugin = React.useMemo(() => createMediaPlugin({}), []);
+  const mediaPlugin = React.useMemo(
+    () => createMediaPlugin({ fieldNamePatterns: MEDIA_FIELD_PATTERNS }),
+    [],
+  );
   const flags = useFlags();
   const agentUrl = process.env.NEXT_PUBLIC_AGENT_URL;
   const chatbotEnabled = shouldShowChatbot(flags[CHATBOT_FLAG_KEY], agentUrl);

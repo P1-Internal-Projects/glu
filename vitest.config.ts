@@ -19,7 +19,13 @@ export default defineConfig({
         // leaf leaves puck-css external, and Node then loads the whole subtree
         // without consulting this list. The patterns match a resolved path, so
         // they allow pnpm's `@pantheon-systems+puck-css` directory form too.
-        inline: [/@pantheon-systems[/+]puck-css/, /@pantheon-systems[/+]pds-toolkit-react/],
+        // p1-media reaches the same CSS through its own client entry, which
+        // lib/media-fields.ts imports for the plugin's default field patterns.
+        inline: [
+          /@pantheon-systems[/+]puck-css/,
+          /@pantheon-systems[/+]pds-toolkit-react/,
+          /@pantheon-systems[/+]p1-media/,
+        ],
       },
     },
     typecheck: {
