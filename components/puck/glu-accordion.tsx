@@ -6,6 +6,7 @@ import { Eyebrow } from "../../design-system/components/typography";
 import { Section } from "../../design-system/components/section";
 import { Container } from "../../design-system/components/container";
 import { colors, typography, spacing, radii } from "../../design-system/tokens";
+import { richTextProps } from "./rich-text-props";
 
 export type GLUAccordionProps = {
   eyebrow: string;
@@ -90,9 +91,8 @@ function AccordionItem({ question, answer }: { question: string; answer: RichTex
             margin: `0 0 ${spacing[5]}`,
             paddingRight: spacing[8],
           }}
-        >
-          {answer}
-        </div>
+          {...richTextProps(answer)}
+        />
       </div>
     </div>
   );

@@ -8,6 +8,7 @@ import { Eyebrow } from "../../design-system/components/typography";
 import { Section } from "../../design-system/components/section";
 import { Container } from "../../design-system/components/container";
 import { colors, typography, spacing } from "../../design-system/tokens";
+import { richTextProps } from "./rich-text-props";
 
 export type GLUCardGridProps = {
   eyebrow: string;
@@ -102,9 +103,8 @@ export function GLUCardGridComponent({ eyebrow, heading, subtext, columns, backg
                     lineHeight: typography.lineHeightRelaxed,
                     margin: `0 0 ${spacing[4]}`,
                   }}
-                >
-                  {card.description}
-                </div>
+                  {...richTextProps(card.description)}
+                />
                 {card.linkLabel && (
                   <a
                     href={card.linkHref}

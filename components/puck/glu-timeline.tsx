@@ -6,6 +6,7 @@ import { Section } from "../../design-system/components/section";
 import { Container } from "../../design-system/components/container";
 import { Eyebrow } from "../../design-system/components/typography";
 import { colors, typography, spacing, radii } from "../../design-system/tokens";
+import { richTextProps } from "./rich-text-props";
 
 export type GLUTimelineProps = {
   eyebrow: string;
@@ -131,9 +132,8 @@ function TimelineEntry({ item, index, isLast }: EntryProps) {
             margin: 0,
             maxWidth: 560,
           }}
-        >
-          {item.description}
-        </div>
+          {...richTextProps(item.description)}
+        />
       </div>
     </div>
   );
