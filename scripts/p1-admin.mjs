@@ -90,11 +90,20 @@ export const S = SITE_ID;
  *
  * Pass --force to proceed anyway, for when you are the one at the keyboard and
  * know the tab is closed.
+ *
+ * `siteId` defaults to this repo's own site. Pass it when writing to another —
+ * a duplicate, say. Without it the presence of GLU's branch was queried using
+ * the other site's branch id, which fails, and the helper then warns and
+ * continues: the guard silently stopped guarding exactly where a second site
+ * was involved.
  */
-export async function assertNobodyEditing(branchId, { force = process.argv.includes("--force") } = {}) {
+export async function assertNobodyEditing(
+  branchId,
+  { force = process.argv.includes("--force"), siteId = SITE_ID } = {},
+) {
   let presence;
   try {
-    presence = await api(`/api/sites/${SITE_ID}/branches/${branchId}/presence`);
+    presence = await api(`/api/sites/${siteId}/branches/${branchId}/presence`);
   } catch {
     // Presence is a safety check, not the job. If it cannot be read, say so and
     // continue rather than blocking a migration on a secondary endpoint.
