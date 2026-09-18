@@ -32,8 +32,12 @@ function readEnvFile(path) {
 }
 
 function agentKey() {
+  // This project's own .env.local comes first. It used to read the key out of an
+  // unrelated site's env file, which meant every script here broke if that site
+  // was moved or cleaned up, and a key rotated here was silently ignored.
   const candidates = [
     process.env.P1_AGENT_KEY,
+    readEnvFile(new URL("../.env.local", import.meta.url).pathname).CSS_AGENT_KEY,
     readEnvFile(join(homedir(), "p1/newsites/p1-sd-zoo-events/.env.local")).CSS_AGENT_KEY,
   ].filter(Boolean);
   const key = candidates.find((k) => k.startsWith("aak_"));
