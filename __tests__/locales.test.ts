@@ -2,10 +2,12 @@ import { describe, expect, it } from "vitest";
 import {
   DEFAULT_LOCALE,
   LOCALES,
+  documentPathCandidates,
   documentPathFor,
   localeByTag,
   localizedPath,
   readLocaleFromPath,
+  suffixDocumentPath,
 } from "../lib/locales";
 
 /**
@@ -96,5 +98,61 @@ describe("locale table", () => {
       expect(l.native.length).toBeGreaterThan(0);
       expect(l.english.length).toBeGreaterThan(0);
     }
+  });
+});
+
+/**
+ * The platform's own translation path shape.
+ *
+ * The editor cannot send a path — puck-css's `createTranslation` takes only
+ * `{canonicalDocumentId, locale, mode}` — so anything a person creates in the
+ * UI is stored at the server's default rather than under this site's prefix.
+ * Reading that shape, and looking for it, is what keeps an editor-authored
+ * translation from being served as English with English chrome.
+ */
+describe("the editor's translation paths", () => {
+  // The exact path the live API produced for locale es-US on 2026-09-18. It is
+  // LOWERCASE, which the schema's "{canonicalPath}.{locale}" does not say.
+  const OBSERVED = "test-basic-page.es-us";
+
+  it("reads the locale off the path the backend actually creates", () => {
+    expect(readLocaleFromPath(`/${OBSERVED}`)).toEqual({
+      locale: "es-US",
+      rest: "test-basic-page",
+    });
+  });
+
+  it("offers that exact path as a candidate", () => {
+    expect(documentPathCandidates("test-basic-page", "es-US")).toContain(OBSERVED);
+  });
+
+  it("reads the tag in its declared case too, in case the backend stops lowercasing", () => {
+    expect(readLocaleFromPath("/academics.es-US").locale).toBe("es-US");
+  });
+
+  it("reads a bare language suffix, for a translation made by hand", () => {
+    expect(readLocaleFromPath("/academics.es")).toEqual({
+      locale: "es-US",
+      rest: "academics",
+    });
+  });
+
+  // Without checking the suffix against the configured locales, every dotted
+  // path would be read as a translation of something.
+  it("leaves a dotted path that is not a locale alone", () => {
+    expect(readLocaleFromPath("/articles/privacy.policy").locale).toBe(DEFAULT_LOCALE);
+    expect(readLocaleFromPath("/articles/privacy.policy").rest).toBe("articles/privacy.policy");
+  });
+
+  it("prefers this site's prefix, so a page existing in both shapes uses the pretty URL", () => {
+    expect(documentPathCandidates("academics", "es-US")[0]).toBe("es/academics");
+  });
+
+  it("has nothing but the plain path to offer for the default locale", () => {
+    expect(documentPathCandidates("academics", DEFAULT_LOCALE)).toEqual(["academics"]);
+  });
+
+  it("builds the suffix path without a leading slash, as documents are stored", () => {
+    expect(suffixDocumentPath("/academics", "es-US")).toBe("academics.es-US");
   });
 });
