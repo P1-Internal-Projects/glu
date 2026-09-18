@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { createP1Middleware } from "@pantheon-systems/p1-next-sdk/server";
 import { DEFAULT_LOCALE, readLocaleFromPath } from "./lib/locales";
-import { pageExists } from "./lib/locale-pages";
+import { findLocalizedDocument, pageExists } from "./lib/locale-pages";
 
 const p1Middleware = createP1Middleware({
   cssBaseUrl: process.env.NEXT_PUBLIC_CSS_BASE_URL,
@@ -40,13 +40,23 @@ export async function middleware(request: Request) {
   // version in their language gets the default one rather than a 404. The
   // platform records that policy but does not act on it, so it is applied here.
   if (locale !== DEFAULT_LOCALE) {
-    const localizedPath = url.pathname.replace(/^\/+/, "");
-    if (!(await pageExists(localizedPath))) {
+    const requested = url.pathname.replace(/^\/+/, "");
+    if (!(await pageExists(requested))) {
+      // Before falling back, look for the same page under the platform's own
+      // translation path. The editor cannot send a path, so a translation
+      // authored in the UI is stored at `{canonicalPath}.{tag}` rather than
+      // under this site's prefix. Serving it here is what makes an
+      // editor-authored page reachable at the prefix URL that the nav, the
+      // switcher and the hreflang alternates all link to — without anyone
+      // having to rename the document first.
+      const stored = await findLocalizedDocument(rest, locale);
+
       // Rewriting to the default locale's path is also what gives the page its
       // language: the chrome reads the locale from the route that actually
       // rendered, so a fallback page reads as en-US rather than claiming
-      // Spanish for English words.
-      const target = new URL(`/${rest}`, url);
+      // Spanish for English words. A suffix path keeps its own locale, because
+      // `readLocaleFromPath` recognises that shape too.
+      const target = new URL(`/${stored ?? rest}`, url);
       target.search = url.search;
       return NextResponse.rewrite(target);
     }

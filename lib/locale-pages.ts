@@ -13,7 +13,7 @@
  */
 
 import { P1ContentClient } from "@pantheon-systems/css-client";
-import { DEFAULT_LOCALE, LOCALES, documentPathFor, readLocaleFromPath } from "./locales";
+import { DEFAULT_LOCALE, LOCALES, documentPathCandidates, readLocaleFromPath } from "./locales";
 
 const TTL_MS = 60_000;
 
@@ -69,7 +69,31 @@ export async function pageExists(path: string): Promise<boolean> {
 export async function availableLocales(canonicalPath: string): Promise<string[]> {
   const paths = await publishedPaths();
   if (paths.size === 0) return [DEFAULT_LOCALE];
-  return LOCALES.filter((l) => paths.has(documentPathFor(canonicalPath, l.tag))).map((l) => l.tag);
+  return LOCALES.filter((l) =>
+    documentPathCandidates(canonicalPath, l.tag).some((candidate) => paths.has(candidate)),
+  ).map((l) => l.tag);
+}
+
+/**
+ * The document path `canonicalPath` is actually published at in `tag`, or null.
+ *
+ * Two shapes are possible for the same page. This site creates translations
+ * with an explicit prefixed path, but the editor cannot send a path at all, so
+ * anything authored in the UI lands at the platform default
+ * `{canonicalPath}.{tag}`. The middleware uses this to serve either one at the
+ * prefix URL the rest of the site links to, so a page authored in the editor is
+ * reachable without anyone renaming it first.
+ *
+ * Returns null when the path set is unavailable: callers must treat that as
+ * "cannot say" and leave the request alone rather than rewriting it.
+ */
+export async function findLocalizedDocument(
+  canonicalPath: string,
+  tag: string,
+): Promise<string | null> {
+  const paths = await publishedPaths();
+  if (paths.size === 0) return null;
+  return documentPathCandidates(canonicalPath, tag).find((c) => paths.has(c)) ?? null;
 }
 
 export { readLocaleFromPath };
