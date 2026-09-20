@@ -5,6 +5,7 @@ import { createDataListBlock } from "@pantheon-systems/puck-css/fields";
 import type { ResolvedItem, LayoutProps } from "@pantheon-systems/puck-css/fields";
 import { colors, radii, shadows, spacing, typography } from "../../design-system/tokens";
 import { formatEventDate } from "./glu-event-header";
+import { GLUProgramCards } from "./glu-program-cards";
 
 /**
  * A GLU-branded view mode for the data list block.
@@ -360,6 +361,25 @@ export const gluListing = createDataListBlock({
         { label: "Top", value: "top" },
         { label: "None", value: "none" },
       ],
+    },
+    // Text-only by design — see glu-program-cards.tsx. It offers no image
+    // position because it renders no image; the factory still requires the
+    // key, so it carries the single honest option rather than pretending.
+    programCards: {
+      label: "Program cards",
+      component: GLUProgramCards,
+      imagePositions: [{ label: "None", value: "none" }],
+      fields: {
+        showCollegeFilter: {
+          type: "radio",
+          label: "College filter",
+          options: [
+            { label: "Show", value: true },
+            { label: "Hide", value: false },
+          ],
+        },
+      },
+      defaultProps: { showCollegeFilter: true },
     },
   },
 });
