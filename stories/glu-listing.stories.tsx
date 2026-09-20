@@ -170,6 +170,21 @@ export const WithoutHeader: Story = {
   },
 };
 
+/**
+ * Image position "None". The factory shows that control whenever an image field
+ * is mapped; these modes lay out one way, so it decides whether the image
+ * appears at all.
+ */
+export const ImagePositionNone: Story = {
+  name: "Image position: none",
+  args: {
+    eyebrow: "Admissions",
+    heading: "Meet Your Counselors",
+    background: "offWhite",
+    children: <PersonCards items={people} {...show} imagePosition="none" />,
+  },
+};
+
 /** What an editor sees before a datasource is bound, or when a filter matches nothing. */
 export const Empty: Story = {
   args: {

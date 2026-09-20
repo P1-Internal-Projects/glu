@@ -52,6 +52,7 @@ function EventCard({
   item: ResolvedItem;
   showTitle: boolean;
   showTeaser: boolean;
+  /** Already combined with the image position by the mode — see `withImage`. */
   showImage: boolean;
 }) {
   const r = raw(item);
@@ -183,8 +184,14 @@ function EventCards({
   showTitle,
   showTeaser,
   showImage,
+  imagePosition,
   columns,
-}: LayoutProps & { columns?: number }) {
+}: LayoutProps & { imagePosition?: string; columns?: number }) {
+  // The factory always renders its "Image position" control when an image field
+  // is mapped, and hands the choice down. These modes lay out one way, so the
+  // only meaningful choice is whether the image appears at all — but the
+  // control still has to be obeyed, or "None" is a switch that does nothing.
+  const withImage = showImage && imagePosition !== "none";
   if (items.length === 0) {
     return (
       <p
@@ -217,14 +224,22 @@ function EventCards({
           item={item}
           showTitle={showTitle}
           showTeaser={showTeaser}
-          showImage={showImage}
+          showImage={withImage}
         />
       ))}
     </div>
   );
 }
 
-function PersonCards({ items, showTitle, showSubtitle, showTeaser, showImage }: LayoutProps) {
+function PersonCards({
+  items,
+  showTitle,
+  showSubtitle,
+  showTeaser,
+  showImage,
+  imagePosition,
+}: LayoutProps & { imagePosition?: string }) {
+  const withImage = showImage && imagePosition !== "none";
   if (items.length === 0) {
     return (
       <p
@@ -263,7 +278,7 @@ function PersonCards({ items, showTitle, showSubtitle, showTeaser, showImage }: 
               padding: spacing[6],
             }}
           >
-            {showImage && item.image && (
+            {withImage && item.image && (
               <img
                 src={item.image}
                 alt=""
