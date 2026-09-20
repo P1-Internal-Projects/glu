@@ -1,5 +1,6 @@
 import type { RemoteDatasourceDefinition } from "@pantheon-systems/puck-css/server";
 import { GLU_COLLECTION_DATASOURCES } from "./glu-datasources";
+import { PROGRAMS_DATASOURCE } from "./glu-programs";
 
 /**
  * The datasources the editor offers, beyond GLU's own collections.
@@ -13,6 +14,7 @@ import { GLU_COLLECTION_DATASOURCES } from "./glu-datasources";
 
 export const REMOTE_DATASOURCE_REGISTRY: RemoteDatasourceDefinition[] = [
   ...GLU_COLLECTION_DATASOURCES,
+  PROGRAMS_DATASOURCE,
   {
     id: "urlParams",
     label: "Route URL params",

@@ -48,12 +48,16 @@ function getFetcher(id: string) {
  * rather than as a failing render.
  */
 describe("the registered fetchers", () => {
-  it("are GLU's own collections and Content Publisher, nothing third-party", () => {
+  it("are GLU's own collections, its Drupal catalog, and Content Publisher", () => {
     expect(REMOTE_DATASOURCE_FETCHERS.map((f) => f.id).sort()).toEqual([
       "article",
       "article_list",
       "gluEvents",
       "gluPeople",
+      // The one genuinely external source: a Drupal instance this site does
+      // not own. Distinct from the SWAPI/Pokemon samples that were removed —
+      // those demonstrated nothing about the customer's own systems.
+      "gluPrograms",
     ]);
   });
 });
