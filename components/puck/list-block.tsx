@@ -1,6 +1,6 @@
 import { blockPaddingClass } from "./block-padding";
 
-/** One line = `[label](href)` (from `{{ swapi_list.markdownLinks }}` or arg form) or plain text. */
+/** One line = `[label](href)` (from a datasource's `markdownLinks` token or arg form) or plain text. */
 const MARKDOWN_LINK_LINE = /^\[([^\]]*)\]\(([^)]+)\)$/;
 
 export const listBlock = {

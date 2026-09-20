@@ -141,12 +141,12 @@ describe("dataListBlock", () => {
       {
         props: {
           ...dataListBlock.defaultProps,
-          datasourceId: "swapi_list",
+          datasourceId: "gluEvents",
         },
       },
       { changed: { datasourceId: true } },
     );
-    expect(result.props.items).toBe("{{ swapi_list.items }}");
+    expect(result.props.items).toBe("{{ gluEvents.items }}");
   });
 
   it("resolveData sets empty items when no datasource selected", async () => {
@@ -173,7 +173,7 @@ describe("dataListBlock", () => {
       {
         props: {
           ...dataListBlock.defaultProps,
-          datasourceId: "swapi_list",
+          datasourceId: "gluEvents",
         },
       },
       { changed: { viewMode: true } },

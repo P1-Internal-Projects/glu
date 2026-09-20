@@ -58,23 +58,23 @@ export const gridBlock = {
     title: { type: "text" as const, label: "Heading" },
     items: {
       type: "textarea" as const,
-      label: "Items datasource (e.g. {{ swapi_list.items }})",
+      label: "Items datasource (e.g. {{ gluEvents.items }})",
     },
     min: { type: "number" as const, label: "Min cards" },
     max: { type: "number" as const, label: "Max cards" },
     itemTitleTemplate: { type: "text" as const, label: "Item title template" },
     itemUrlTemplate: {
       type: "text" as const,
-      label: "Optional item URL template (e.g. /jedi/{id} or {{ item.url }})",
+      label: "Optional item URL template (e.g. /events/{id} or {{ item.url }})",
     },
   },
   defaultProps: {
     title: "Cards",
-    items: "{{ swapi_list.items }}",
+    items: "{{ gluEvents.items }}",
     min: 1,
     max: 12,
-    itemTitleTemplate: "title is {{ item.name }}",
-    itemUrlTemplate: "/jedi/{id}",
+    itemTitleTemplate: "{{ item.title }}",
+    itemUrlTemplate: "{{ item.url }}",
   },
   render: ConnectableCardGrid,
 };
