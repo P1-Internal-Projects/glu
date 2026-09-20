@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/nextjs";
 import type { ResolvedItem } from "@pantheon-systems/puck-css/fields";
 import { GLUProgramCards } from "../components/puck/glu-program-cards";
-import { colors, layout, spacing, typography } from "../design-system/tokens";
+import { GLUListingSection } from "../components/puck/glu-listing";
 
 /**
  * The academic program mode: text-only cards, a college filter, and a detail
@@ -80,32 +80,18 @@ const PROGRAMS: ResolvedItem[] = [
 
 const SHOW = { showTitle: true, showSubtitle: true, showTeaser: true, showImage: false, showIcon: false };
 
-/**
- * How the block reads on a page.
- *
- * The section shell is inlined here rather than imported: GLUListingSection
- * lands with the listing-chrome PR, and this branch should not depend on it.
- * Swap this for the real one once that merges.
- */
+/** How the block renders on a page, inside GLU's section chrome. */
 export const InPage: Story = {
   name: "In page",
   render: (args) => (
-    <section style={{ backgroundColor: colors.offWhite, padding: `${layout.sectionPaddingY} 0` }}>
-      <div style={{ maxWidth: layout.containerMax, margin: "0 auto", padding: `0 ${spacing[6]}` }}>
-        <div style={{ textAlign: "center", maxWidth: 680, margin: `0 auto ${spacing[12]}` }}>
-          <p style={{ fontFamily: typography.fontBody, fontSize: typography.sizeSm, fontWeight: typography.weightSemibold, letterSpacing: "0.08em", textTransform: "uppercase", color: colors.crimson, margin: `0 0 ${spacing[3]}` }}>
-            Academics
-          </p>
-          <h2 style={{ fontFamily: typography.fontHeading, fontSize: typography.size4xl, fontWeight: typography.weightBold, color: colors.dark, lineHeight: typography.lineHeightTight, margin: `0 0 ${spacing[4]}` }}>
-            The Full Catalog
-          </h2>
-          <p style={{ fontFamily: typography.fontBody, fontSize: typography.sizeLg, color: colors.muted, lineHeight: typography.lineHeightRelaxed, margin: 0 }}>
-            Every degree and certificate across eight colleges. Filter by college, then open a program for the full detail.
-          </p>
-        </div>
-        <GLUProgramCards {...args} />
-      </div>
-    </section>
+    <GLUListingSection
+      eyebrow="Academics"
+      heading="The Full Catalog"
+      subtext="Every degree and certificate across eight colleges. Filter by college, then open a program for the full detail."
+      background="offWhite"
+    >
+      <GLUProgramCards {...args} />
+    </GLUListingSection>
   ),
   args: { items: PROGRAMS, ...SHOW, showCollegeFilter: true },
 };
