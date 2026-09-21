@@ -29,6 +29,12 @@ export const headingBlock = {
   render: ({ title, level }: { title?: string; level?: string }) => {
     const L = (level ?? "h1") as "h1" | "h2" | "h3" | "h4";
     const size = levelClass[L] ?? levelClass.h1;
+    // An empty heading is an accessibility failure, not a blank line: a screen
+    // reader announces a heading with nothing under it. This happens for real
+    // on a route template, where the text is bound to a datasource field that
+    // a given record leaves empty, and the block cannot be removed per record.
+    // Rendering nothing is what lets such a heading disappear with its content.
+    if (!title?.trim()) return null;
     return (
       <div className={blockPaddingClass}>
         <L className={`m-0 font-bold leading-tight ${size}`}>{title}</L>
