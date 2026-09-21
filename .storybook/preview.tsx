@@ -1,6 +1,11 @@
 import type { Preview } from "@storybook/nextjs";
 import React from "react";
 import "../design-system/globals.css";
+// The P1 component library's token layer and GLU's answers to it, so a block
+// installed from components.p1.pantheon.io renders here as it does on the site.
+import "../app/p1-tokens.css";
+import "../app/p1-base.css";
+import "../app/p1-theme.css";
 
 const preview: Preview = {
   parameters: {
