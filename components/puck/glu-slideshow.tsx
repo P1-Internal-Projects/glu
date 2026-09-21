@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback, useRef } from "react";
 import Image from "next/image";
 import type { ComponentConfig } from "@puckeditor/core";
 import { colors, typography, spacing, radii } from "../../design-system/tokens";
+import { CAMPUS_BANNER_URL } from "../../lib/glu-assets";
 
 export type GLUSlideshowProps = {
   slides: {
@@ -284,7 +285,7 @@ export const gluSlideshowConfig = {
     height: "lg",
     slides: [
       {
-        imageUrl: "https://images.unsplash.com/photo-1562774053-701939374585?w=1920&q=80",
+        imageUrl: CAMPUS_BANNER_URL,
         heading: "Campus at the Water's Edge",
         subtext: "Our lakeside campus spans 1,400 acres of natural beauty in the heart of Michigan.",
       },
