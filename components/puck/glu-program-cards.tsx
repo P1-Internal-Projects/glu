@@ -364,24 +364,49 @@ function DetailPanel({ item, panelId, onClose }: { item: ResolvedItem; panelId: 
             <Fact label="Program code" value={r.code} />
           </dl>
 
-          {r.applyUrl && (
-            <div>
-              <a
-                href={r.applyUrl}
-                style={{
-                  display: "inline-block",
-                  backgroundColor: colors.crimson,
-                  color: colors.white,
-                  fontFamily: typography.fontBody,
-                  fontSize: typography.sizeSm,
-                  fontWeight: typography.weightSemibold,
-                  textDecoration: "none",
-                  padding: `${spacing[3]} ${spacing[6]}`,
-                  borderRadius: radii.full,
-                }}
-              >
-                Apply to this program
-              </a>
+          {/*
+            Two destinations, and the distinction matters. The panel above is a
+            reveal inside the listing: quick to scan, but it has no URL, so it
+            cannot be bookmarked, linked to or shared. `r.url` is the program's
+            own page, which can. Offering both is why the permalink is worded as
+            a page rather than as "more details" — there are no more details
+            there, only a place to point at.
+          */}
+          {(r.applyUrl || r.url) && (
+            <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: spacing[4] }}>
+              {r.applyUrl && (
+                <a
+                  href={r.applyUrl}
+                  style={{
+                    display: "inline-block",
+                    backgroundColor: colors.crimson,
+                    color: colors.white,
+                    fontFamily: typography.fontBody,
+                    fontSize: typography.sizeSm,
+                    fontWeight: typography.weightSemibold,
+                    textDecoration: "none",
+                    padding: `${spacing[3]} ${spacing[6]}`,
+                    borderRadius: radii.full,
+                  }}
+                >
+                  Apply to this program
+                </a>
+              )}
+              {r.url && (
+                <a
+                  href={r.url}
+                  style={{
+                    fontFamily: typography.fontBody,
+                    fontSize: typography.sizeSm,
+                    fontWeight: typography.weightSemibold,
+                    color: colors.crimson,
+                    textDecoration: "underline",
+                    textUnderlineOffset: "3px",
+                  }}
+                >
+                  {`Full ${item.title} page`}
+                </a>
+              )}
             </div>
           )}
         </div>

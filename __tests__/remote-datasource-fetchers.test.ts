@@ -54,8 +54,12 @@ describe("the registered fetchers", () => {
       "article_list",
       "gluEvents",
       "gluPeople",
-      // The one genuinely external source: a Drupal instance this site does
-      // not own. Distinct from the SWAPI/Pokemon samples that were removed —
+      // One program, chosen by the `:code` segment of the URL. Backs the route
+      // template at academic-programs/:code. Separate from the list below
+      // because it is the only fetcher here that reads `urlParams`.
+      "gluProgram",
+      // The genuinely external source: a Drupal instance this site does not
+      // own. Distinct from the SWAPI/Pokemon samples that were removed —
       // those demonstrated nothing about the customer's own systems.
       "gluPrograms",
     ]);

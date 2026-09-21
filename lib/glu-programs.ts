@@ -13,6 +13,7 @@
  */
 
 import type { RemoteDatasourceDefinition, RemoteDatasourceFetcher } from "@pantheon-systems/puck-css/server";
+import { CAMPUS_BANNER_URL } from "./glu-assets";
 
 export const PROGRAMS_DATASOURCE_ID = "gluPrograms";
 
@@ -37,6 +38,8 @@ export interface ProgramRecord {
   featured: boolean;
   url: string;
   changed: string;
+  /** Long-form description. Present on both the list rows and the detail row. */
+  description: string | null;
 }
 
 /**
@@ -118,4 +121,249 @@ export const PROGRAMS_DATASOURCE: RemoteDatasourceDefinition = {
 export const PROGRAMS_FETCHER: RemoteDatasourceFetcher = {
   id: PROGRAMS_DATASOURCE_ID,
   fetch: async () => ({ items: await fetchPrograms() }),
+};
+
+/* ------------------------------------------------------------------ *
+ * One program, for the route template at `academic-programs/:code`.
+ * ------------------------------------------------------------------ */
+
+export const PROGRAM_DATASOURCE_ID = "gluProgram";
+
+/**
+ * The detail payload: the Drupal record, plus the display strings the page
+ * actually binds.
+ *
+ * The derived fields exist because token interpolation is string-only —
+ * `toText` in puck-css returns "" for an array or an object, so a heading bound
+ * to `{{ gluProgram.deliveryModes }}` would silently render empty. Joining here
+ * rather than in a component keeps every field bindable from the editor, which
+ * is the point of putting the page in a template at all.
+ */
+export interface ProgramDetail extends Partial<ProgramRecord> {
+  /** A datasource payload: every key is bindable, so the shape stays open. */
+  [key: string]: unknown;
+  /** False when the code in the URL matched no published program. */
+  found: boolean;
+  /** Ready-to-bind text for the multi-value fields. */
+  deliveryModesText: string;
+  startTermsText: string;
+  /** One outcome per line, for a List block. */
+  careerOutcomesLines: string;
+  creditsText: string;
+  /** Program image where Drupal has one, the campus banner otherwise. */
+  heroImageUrl: string;
+  /** The campus banner, always. The page hero uses this so every program
+   *  opens on the same branded image and the program's own photo can carry
+   *  the section below it rather than appearing twice. */
+  bannerImageUrl: string;
+  /** Facts for a Stats Bar, already in its `{ value, label }` shape. */
+  stats: { value: string; label: string }[];
+  /**
+   * Everything the listing's expanded panel shows, in a Fact Grid's
+   * `{ label, value }` shape.
+   *
+   * The detail page has to carry at least what the listing does, or following
+   * the permalink loses information. The four headline numbers are left out
+   * because the stats bar above already carries them; a page that states the
+   * credit hours twice reads as unedited rather than as thorough.
+   */
+  facts: { label: string; value: string }[];
+  /**
+   * Section labels, supplied by the datasource rather than typed into the
+   * template.
+   *
+   * A route template renders one document for every program, and for the
+   * codes that match nothing at all. It has no conditionals: a block is on the
+   * page or it is not. Driving the headings from here is what lets the
+   * not-found page drop "Where graduates go" instead of standing an empty
+   * bulleted list under it, and lets the closing banner stop inviting an
+   * application to a program that does not exist.
+   */
+  aboutHeading: string;
+  ctaHeading: string;
+  ctaSubtext: string;
+  ctaPrimaryLabel: string;
+  ctaPrimaryHref: string;
+  ctaSecondaryLabel: string;
+  ctaSecondaryHref: string;
+}
+
+/** Shown when the URL carries a code no published program answers to. */
+function programNotFound(code: string): ProgramDetail {
+  return {
+    found: false,
+    code,
+    title: "Program not found",
+    summary:
+      "No published program matches this address. It may have been renamed or retired.",
+    description:
+      "No published program matches this address. The program may have been renamed or retired, or the link that brought you here may be out of date. The full catalogue is the best place to pick up the search.",
+    college: "",
+    department: "",
+    degreeType: "",
+    degreeLevelLabel: "",
+    accreditation: "",
+    applyUrl: "/academic-programs",
+    deliveryModesText: "",
+    startTermsText: "",
+    careerOutcomesLines: "",
+    creditsText: "",
+    heroImageUrl: CAMPUS_BANNER_URL,
+    bannerImageUrl: CAMPUS_BANNER_URL,
+    stats: [],
+    facts: [],
+    aboutHeading: "We could not find that program",
+    ctaHeading: "Find the program you are after",
+    ctaSubtext:
+      "The full catalogue lists every published program, filterable by college and level.",
+    ctaPrimaryLabel: "Browse all programs",
+    ctaPrimaryHref: "/academic-programs",
+    ctaSecondaryLabel: "Talk to admissions",
+    ctaSecondaryHref: "/apply",
+  };
+}
+
+function toDetail(record: ProgramRecord): ProgramDetail {
+  const delivery = record.deliveryModes ?? [];
+  const terms = record.startTerms ?? [];
+  const outcomes = record.careerOutcomes ?? [];
+
+  // Only facts the record actually carries become stats. A "Credits —" tile
+  // reads as a data error; an absent tile reads as a program that is measured
+  // some other way, which is the truth for the certificates.
+  const stats = [
+    record.credits ? { value: String(record.credits), label: "Credit hours" } : null,
+    record.duration ? { value: record.duration, label: "Typical length" } : null,
+    delivery.length ? { value: delivery.join(" / "), label: "Delivery" } : null,
+    terms.length ? { value: terms.join(" / "), label: "Starts" } : null,
+  ].filter((s): s is { value: string; label: string } => s !== null);
+
+  // The same fields the listing's expanded panel lists, minus the four the
+  // stats bar already shows. Empty values are dropped here as well as in the
+  // component, so the shape the editor previews is the shape that renders.
+  const facts = [
+    { label: "Degree", value: record.degreeLevelLabel ?? "" },
+    { label: "Award", value: record.degreeType ?? "" },
+    { label: "College", value: record.college ?? "" },
+    { label: "Department", value: record.department ?? "" },
+    { label: "Accreditation", value: record.accreditation ?? "" },
+    { label: "Program code", value: record.code ?? "" },
+    { label: "Career outcomes", value: outcomes.join(", ") },
+  ].filter((f) => f.value.trim());
+
+  return {
+    ...record,
+    found: true,
+    deliveryModesText: delivery.join(", "),
+    startTermsText: terms.join(", "),
+    careerOutcomesLines: outcomes.join("\n"),
+    creditsText: record.credits ? `${record.credits} credits` : "",
+    heroImageUrl: record.imageUrl || CAMPUS_BANNER_URL,
+    bannerImageUrl: CAMPUS_BANNER_URL,
+    stats,
+    facts,
+    aboutHeading: "About this program",
+    ctaHeading: "Ready to apply?",
+    ctaSubtext:
+      "Start your application, or browse the rest of the catalogue to compare programs.",
+    ctaPrimaryLabel: "Apply to this program",
+    ctaPrimaryHref: record.applyUrl || "/apply",
+    ctaSecondaryLabel: "All academic programs",
+    ctaSecondaryHref: "/academic-programs",
+  };
+}
+
+/**
+ * One program by its code, or null when the catalog has no such program.
+ *
+ * Returns null for a miss and for an outage alike: the caller renders the same
+ * "not found" page either way, because a detail page that renders half a
+ * program is worse than one that admits it has nothing.
+ */
+export async function fetchProgram(
+  code: string,
+  { signal }: { signal?: AbortSignal } = {},
+): Promise<ProgramRecord | null> {
+  const base = programApiBaseUrl();
+  if (!base || !code) return null;
+
+  try {
+    const response = await fetch(
+      `${base}/glu-program-api/programs/${encodeURIComponent(code)}`,
+      {
+        signal,
+        headers: { Accept: "application/json" },
+        next: { revalidate: 300, tags: [PROGRAMS_DATASOURCE_ID] },
+      },
+    );
+    if (!response.ok) return null;
+    const payload = (await response.json()) as ProgramRecord & { error?: string };
+    return payload?.code ? payload : null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * The detail datasource behind `academic-programs/:code`.
+ *
+ * With no code at all — the editor canvas on the template itself, or someone
+ * visiting the literal `:code` path — it shows a real program rather than an
+ * error. Authoring a template against an empty page means guessing at how long
+ * a title wraps, and the demo's own preview would read "Program not found".
+ * A code that is present but unknown is a different case and does say so.
+ */
+export const PROGRAM_FETCHER: RemoteDatasourceFetcher = {
+  id: PROGRAM_DATASOURCE_ID,
+  fetch: async ({ urlParams }) => {
+    const code = (urlParams?.code ?? "").trim();
+
+    if (!code) {
+      const [sample] = await fetchPrograms({ limit: 1 });
+      return sample
+        ? { ...toDetail(sample), isSample: true }
+        : { ...programNotFound(""), isSample: true };
+    }
+
+    const record = await fetchProgram(code);
+    return record ? toDetail(record) : programNotFound(code);
+  },
+};
+
+export const PROGRAM_DATASOURCE: RemoteDatasourceDefinition = {
+  id: PROGRAM_DATASOURCE_ID,
+  label: "GLU academic program (one)",
+  description:
+    "A single academic program, chosen by the `:code` segment of the URL. For the detail page at /academic-programs/:code — use `gluPrograms` for a listing of them all.",
+  resolution:
+    "Fetched server-side from GLU_PROGRAM_API_BASE_URL + /glu-program-api/programs/{code}, where {code} is the route's `:code` param. Cached five minutes. With no code in the URL it shows the first program as a sample, so the template previews against real content.",
+  fields: [
+    { path: "title", description: "Program name, e.g. B.A. Psychology" },
+    { path: "code", description: "Program code from the URL, e.g. PSYC-BA" },
+    { path: "summary", description: "Short description, good for a hero or intro" },
+    { path: "description", description: "Long description, for the body" },
+    { path: "college", description: "Owning college or school" },
+    { path: "department", description: "Department" },
+    { path: "degreeType", description: "B.S., M.Eng., Ph.D. and so on" },
+    { path: "degreeLevelLabel", description: "Bachelor's, Master's, Doctoral, Certificate" },
+    { path: "creditsText", description: "Credit hours as text, e.g. '120 credits'" },
+    { path: "duration", description: "Typical time to completion" },
+    { path: "deliveryModesText", description: "Delivery modes joined for display, e.g. 'On campus, Online'" },
+    { path: "startTermsText", description: "Start terms joined for display, e.g. 'Fall, Spring'" },
+    { path: "careerOutcomesLines", description: "Career outcomes, one per line. Bind to a List block's Items." },
+    { path: "accreditation", description: "Accrediting body, where one applies" },
+    { path: "heroImageUrl", description: "Program image, falling back to the campus banner" },
+    { path: "bannerImageUrl", description: "The campus banner. For the page hero, so the program's own photo is not shown twice." },
+    { path: "applyUrl", description: "Application link, for a CTA" },
+    { path: "stats", description: "Credits, length, delivery and start terms as { value, label } rows. Bind to a Stats Bar's Stats." },
+    { path: "facts", description: "Degree, college, department, accreditation, code and career outcomes as { label, value } rows — everything the listing's expanded panel shows. Bind to a Fact Grid's Facts." },
+    { path: "aboutHeading", description: "Heading for the description section. Changes when the code matches nothing." },
+    { path: "ctaHeading", description: "Heading for the closing banner." },
+    { path: "ctaSubtext", description: "Supporting line for the closing banner." },
+    { path: "ctaPrimaryLabel", description: "Label for the banner's primary button." },
+    { path: "ctaPrimaryHref", description: "Destination for the banner's primary button." },
+    { path: "ctaSecondaryLabel", description: "Label for the banner's secondary button." },
+    { path: "ctaSecondaryHref", description: "Destination for the banner's secondary button." },
+    { path: "found", description: "False when the URL's code matches no program." },
+  ],
 };

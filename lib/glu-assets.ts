@@ -22,3 +22,13 @@ export const COUNSELOR_SILHOUETTE_LOCAL = "/images/counselor-silhouette.png";
 export function headshotOrSilhouette(photoUrl: string | undefined | null): string {
   return photoUrl && photoUrl.trim() ? photoUrl : COUNSELOR_SILHOUETTE_URL;
 }
+
+/**
+ * The campus photograph used as the home page banner.
+ *
+ * Also the fallback hero for a program detail page, since the catalog carries
+ * an image for only some programs. Uploaded to the media library as
+ * glu-hero.jpeg.
+ */
+export const CAMPUS_BANNER_URL =
+  "https://media.p1.pantheon.io/image/92f403e4-b910-4a1d-bb22-7e2c02edf5c3/assets/cc682a18-70f0-48a4-b831-6ebf199954b4/c11b0445-e2c1-4485-82dd-43f66d18d806-glu-hero.jpeg";
