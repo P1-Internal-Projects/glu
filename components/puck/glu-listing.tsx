@@ -453,6 +453,8 @@ function PersonCards({
                   borderRadius: photoShape === "circle" ? radii.full : radii.xl,
                   marginBottom: spacing[4],
                   boxShadow: shadows.sm,
+                  // Behind the transparent silhouette; a photo covers it.
+                  backgroundColor: flatOnDark ? "rgba(255,255,255,0.12)" : colors.lightBlue,
                 }}
               />
             )}

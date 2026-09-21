@@ -29,6 +29,18 @@ const TEMPLATES = [
       "A single Grand Lakes event: open house, webinar, campus tour or deadline. Use for anything with a date, a time and a place that people register for. Creates a page under /events and feeds the Upcoming Events listings.",
     defaultUrlPattern: "/events/:slug",
     recordBlock: "GLUEventHeader",
+    recordDefaults: {
+      eventType: "Open House",
+      title: "New Event",
+      summary: "",
+      startDate: "",
+      startTime: "",
+      endTime: "",
+      location: "Grand Lakes campus",
+      registrationUrl: "/visit/open-house",
+      registrationLabel: "Register",
+      imageUrl: "",
+    },
     body: eventBody,
   },
   {
@@ -38,6 +50,25 @@ const TEMPLATES = [
       "An admissions counselor's profile page. Carries their territory, focus area and contact details, and feeds the Meet Your Counselors listing. Creates a page under /counselors.",
     defaultUrlPattern: "/counselors/:slug",
     recordBlock: "GLUPersonProfile",
+    recordDefaults: {
+      name: "New Counselor",
+      pronouns: "",
+      role: "Admissions Counselor",
+      focusArea: "",
+      territory: "",
+      languages: "English",
+      email: "",
+      phone: "",
+      officeLocation: "Visitor Center, Room 120",
+      officeHours: "",
+      bookingUrl: "/visit/open-house",
+      bookingLabel: "Schedule a conversation",
+      photoUrl: "",
+      bio: "",
+      layout: "split",
+      background: "white",
+      photoShape: "rounded",
+    },
     body: counselorBody,
   },
 ];
@@ -197,8 +228,15 @@ function eventBody() {
  * would silently drop the page out of every listing rather than fail visibly.
  * The blocks below it are not pinned: they are a strong starting point, and an
  * editor is free to reorder, restyle or remove them.
+ *
+ * The record block carries its starting values here, not only in the
+ * component's `defaultProps`. Puck applies `defaultProps` when a block is
+ * dragged in from the drawer; a page scaffolded from a template gets the
+ * template's props verbatim, so a bare `{ id }` produced a page with no role,
+ * no office and no booking button — exactly the unfinished look this is meant
+ * to avoid. Keep these in step with the component's defaultProps.
  */
-function templateSnapshot({ label, description, defaultUrlPattern, recordBlock, body }) {
+function templateSnapshot({ label, description, defaultUrlPattern, recordBlock, recordDefaults = {}, body }) {
   return {
     root: {
       props: {
@@ -208,7 +246,7 @@ function templateSnapshot({ label, description, defaultUrlPattern, recordBlock, 
     },
     zones: {},
     content: [
-      { type: recordBlock, props: { id: "template-record" } },
+      { type: recordBlock, props: { id: "template-record", ...recordDefaults } },
       ...body(),
     ],
   };

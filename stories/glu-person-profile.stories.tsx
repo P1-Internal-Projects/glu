@@ -60,7 +60,7 @@ export const FreshFromTemplate: Story = {
     photoUrl: "",
     bio: "",
     layout: "split",
-    background: "offWhite",
+    background: "white",
     photoShape: "rounded",
   },
 };

@@ -203,6 +203,14 @@ export function GLUPersonProfile(props: GLUPersonProfileProps) {
   const src = headshotOrSilhouette(photoUrl);
   const ink = onDark ? colors.white : colors.dark;
   const soft = onDark ? "rgba(255,255,255,0.78)" : colors.muted;
+  // The silhouette is a transparent PNG, so the tile behind it is chosen here
+  // to sit one step off the section: a white section gets a blush tile, a
+  // tinted one gets white, crimson gets a translucent lift. A photo covers it.
+  const tileBg = onDark
+    ? "rgba(255,255,255,0.12)"
+    : background === "white"
+      ? colors.offWhite
+      : colors.white;
 
   const photo = (
     <div
@@ -214,6 +222,7 @@ export function GLUPersonProfile(props: GLUPersonProfileProps) {
         overflow: "hidden",
         boxShadow: shadows.lg,
         border: `4px solid ${onDark ? "rgba(255,255,255,0.18)" : colors.white}`,
+        backgroundColor: tileBg,
         flexShrink: 0,
         margin: centered ? "0 auto" : undefined,
       }}
@@ -403,7 +412,7 @@ export const gluPersonProfileConfig = {
     photoUrl: "",
     bio: "",
     layout: "split",
-    background: "offWhite",
+    background: "white",
     photoShape: "rounded",
   },
   render: GLUPersonProfile,
