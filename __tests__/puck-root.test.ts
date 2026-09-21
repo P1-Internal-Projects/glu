@@ -28,8 +28,44 @@ describe("puckRoot", () => {
     expect(fields.pccContentId).toMatchObject({ type: "text" });
   });
 
-  it("takes the metadata field set from puck-css", () => {
-    expect(fields._meta).toEqual(createSeoRootFields()._meta);
+  /**
+   * The shape has to stay the package's, but GLU decorates it with `ai`
+   * instructions on the way through (see withSeoAi in components/puck/root.tsx).
+   * So this compares the field set with those annotations stripped: a new
+   * metadata field arriving from puck-css still has to show up here, while
+   * adding guidance for an author does not fail the test.
+   */
+  it("takes the metadata field set from puck-css, bar the AI guidance", () => {
+    const withoutAi = (value: unknown): unknown => {
+      if (Array.isArray(value)) return value.map(withoutAi);
+      if (!value || typeof value !== "object") return value;
+      return Object.fromEntries(
+        Object.entries(value as Record<string, unknown>)
+          .filter(([key]) => key !== "ai")
+          .map(([key, v]) => [key, withoutAi(v)]),
+      );
+    };
+
+    expect(withoutAi(fields._meta)).toEqual(withoutAi(createSeoRootFields()._meta));
+  });
+
+  /**
+   * The audit in scripts/audit-ai-hints.ts only walks a component's top-level
+   * fields, so nothing else would notice a new metadata field arriving from
+   * puck-css with no guidance attached. A field may opt out with
+   * `exclude: true` — ogLocale does — but it has to say so rather than be
+   * silently unannotated.
+   */
+  it("carries AI guidance on every metadata field, or an explicit opt-out", () => {
+    const meta = fields._meta as {
+      ai?: { instructions?: string };
+      objectFields: Record<string, { ai?: { instructions?: string; exclude?: boolean } }>;
+    };
+    expect(meta.ai?.instructions).toBeTruthy();
+    for (const [name, field] of Object.entries(meta.objectFields)) {
+      const annotated = Boolean(field.ai?.instructions) || field.ai?.exclude === true;
+      expect(annotated, `${name} has neither AI instructions nor exclude`).toBe(true);
+    }
   });
 
   it("passes the live root props through, so placeholders track edits", () => {

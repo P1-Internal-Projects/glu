@@ -20,7 +20,7 @@ export const Default: Story = {
     ctaHref: "/apply",
     secondaryCtaLabel: "Explore Academics",
     secondaryCtaHref: "/academics",
-    backgroundImageUrl: "https://images.unsplash.com/photo-1562774053-701939374585?w=1920&q=80",
+    backgroundImageUrl: "https://media.p1.pantheon.io/image/92f403e4-b910-4a1d-bb22-7e2c02edf5c3/assets/cc682a18-70f0-48a4-b831-6ebf199954b4/c11b0445-e2c1-4485-82dd-43f66d18d806-glu-hero.jpeg",
     overlayOpacity: 0.72,
   },
 };

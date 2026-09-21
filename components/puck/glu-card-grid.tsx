@@ -9,6 +9,7 @@ import { Section } from "../../design-system/components/section";
 import { Container } from "../../design-system/components/container";
 import { colors, typography, spacing } from "../../design-system/tokens";
 import { richTextProps } from "./rich-text-props";
+import { resolveMediaImage, type MediaImageValue } from "../../lib/media-image";
 import { BACKGROUND_AI, EYEBROW_AI, buttonLabelAi, imageAi, linkAi } from "../../lib/ai-hints";
 
 export type GLUCardGridProps = {
@@ -20,7 +21,11 @@ export type GLUCardGridProps = {
   cards: {
     title: string;
     description: RichText;
-    imageUrl: string;
+    /**
+     * A media-library value, or a bare URL from before this field was rich.
+     * See lib/media-image.ts for why both shapes have to keep working.
+     */
+    imageUrl: MediaImageValue;
     linkHref: string;
     linkLabel: string;
   }[];
@@ -70,13 +75,18 @@ export function GLUCardGridComponent({ eyebrow, heading, subtext, columns, backg
             gap: spacing[6],
           }}
         >
-          {cards.map((card, i) => (
+          {cards.map((card, i) => {
+            // Asking for both dimensions is what makes the editor's crop
+            // choice visible: the transform only honours fit/gravity/trim when
+            // there is a target aspect ratio to crop to. 16:9 matches the box.
+            const image = resolveMediaImage(card.imageUrl, { width: 800, height: 450 });
+            return (
             <Card key={i}>
-              {card.imageUrl && (
+              {image.src && (
                 <div style={{ position: "relative", aspectRatio: "16/9", overflow: "hidden" }}>
                   <Image
-                    src={card.imageUrl}
-                    alt={card.title}
+                    src={image.src}
+                    alt={image.alt || card.title}
                     fill
                     style={{ objectFit: "cover" }}
                     sizes={`(max-width: 768px) 100vw, ${Math.round(100 / columns)}vw`}
@@ -125,7 +135,8 @@ export function GLUCardGridComponent({ eyebrow, heading, subtext, columns, backg
                 )}
               </div>
             </Card>
-          ))}
+            );
+          })}
         </div>
       </Container>
     </Section>
@@ -182,7 +193,19 @@ export const gluCardGridConfig = {
       arrayFields: {
         title: { type: "text", label: "Title", ai: { required: true, instructions: "2–5 words, e.g. 'Environmental Science'." } },
         description: { type: "richtext", label: "Description", ai: { instructions: "1–2 sentences on what makes this one distinctive." } },
-        imageUrl: { type: "text", label: "Image URL", ai: imageAi("Landscape photo for the top of the card.") },
+        // The rich media field, not a URL box. It stores an object carrying
+        // the asset, its alt text and the crop, which is what puts "Custom…"
+        // and the crop dialog in front of an editor. The name stays `imageUrl`
+        // so the cards already published on school-of-ai and
+        // visit/visitor-guide keep their images — see lib/media-image.ts.
+        //
+        // `as any` because the plugin registers this field type at runtime,
+        // so it is not in Puck's built-in Field union.
+        imageUrl: {
+          type: "p1-media",
+          label: "Image",
+          ai: imageAi("Landscape photo for the top of the card. Crop it to 16:9."),
+        } as any,
         linkHref: { type: "text", label: "Link URL", ai: linkAi("The page this card leads to.", { optional: true }) },
         linkLabel: { type: "text", label: "Link Label", ai: buttonLabelAi("Explore the program", { optional: true }) },
       },
