@@ -57,12 +57,17 @@ export const GLU_COLLECTION_DATASOURCES: RemoteDatasourceDefinition[] = [
       "Reads published pages under `counselors/` and under each locale prefix, taking each record from the page's pinned GLUPersonProfile block.",
     fields: [
       { path: "name", description: "Full name" },
+      { path: "pronouns", description: "Pronouns, if given" },
       { path: "role", description: "Role or title" },
       { path: "focusArea", description: "What this counselor advises on" },
       { path: "territory", description: "Region or school group they cover" },
+      { path: "languages", description: "Languages spoken, comma-separated" },
       { path: "email", description: "Contact email" },
       { path: "phone", description: "Contact phone" },
-      { path: "photoUrl", description: "Headshot image" },
+      { path: "officeLocation", description: "Office" },
+      { path: "officeHours", description: "Drop-in hours as displayed" },
+      { path: "bookingUrl", description: "Link to book a conversation" },
+      { path: "photoUrl", description: "Headshot image; blank when the page shows the GLU silhouette" },
       { path: "bio", description: "Biography" },
       { path: "url", description: "Path of this person's page, locale prefix included" },
       { path: "canonicalUrl", description: "Path with the locale prefix removed" },
@@ -91,7 +96,10 @@ export const GLU_COLLECTION_FETCHERS: RemoteDatasourceFetcher[] = [
   {
     id: PEOPLE_DATASOURCE_ID,
     fetch: async () => {
-      const items = await readCollection(PEOPLE_PATH_PREFIX, PERSON_RECORD_BLOCK);
+      const read = await readCollection(PEOPLE_PATH_PREFIX, PERSON_RECORD_BLOCK);
+      // The profile block also carries how that page chose to draw itself.
+      // Those are not facts about the person, so a listing never sees them.
+      const items = read.map(({ layout, background, photoShape, ...record }) => record);
       items.sort((a, b) => String(a.name ?? "").localeCompare(String(b.name ?? "")));
       return { items };
     },
