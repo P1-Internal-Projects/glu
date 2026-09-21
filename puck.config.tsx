@@ -28,6 +28,7 @@ import { gluCardGridConfig } from "./components/puck/glu-card-grid";
 import { gluTestimonialSliderConfig } from "./components/puck/glu-testimonial-slider";
 import { gluCtaBannerConfig } from "./components/puck/glu-cta-banner";
 import { gluAccordionConfig } from "./components/puck/glu-accordion";
+import { gluFactGridConfig } from "./components/puck/glu-fact-grid";
 import { gluTimelineConfig } from "./components/puck/glu-timeline";
 import { gluSlideshowConfig } from "./components/puck/glu-slideshow";
 
@@ -46,6 +47,7 @@ export const config = {
         "GLUHero",
         "GLUPageHero",
         "GLUStatsBar",
+        "GLUFactGrid",
         "GLUFeatureSection",
         "GLUCardGrid",
         "GLUTestimonialSlider",
@@ -96,6 +98,7 @@ export const config = {
     GLUHero: gluHeroConfig,
     GLUPageHero: gluPageHeroConfig,
     GLUStatsBar: gluStatsBarConfig,
+    GLUFactGrid: gluFactGridConfig,
     GLUFeatureSection: gluFeatureSectionConfig,
     GLUCardGrid: gluCardGridConfig,
     GLUTestimonialSlider: gluTestimonialSliderConfig,

@@ -92,18 +92,22 @@ const CONTENT = [
       background: "white",
     },
   },
+  // Everything the listing's expanded panel shows and the stats bar does not:
+  // degree, award, college, department, accreditation, code, career outcomes.
+  // Following a permalink should never lose information the listing had.
+  //
+  // This replaced a Heading and a List block. Those sit in a flat 64px side
+  // padding with no max width, while every GLU section is centred and capped
+  // at 1200px, so on a wide screen they started well to the left of the
+  // section above and the page looked misaligned.
   {
-    type: "HeadingBlock",
-    props: { id: "program-outcomes-heading", title: "{{ gluProgram.outcomesHeading }}", level: "h2" },
-  },
-  {
-    type: "ListBlock",
+    type: "GLUFactGrid",
     props: {
-      id: "program-outcomes",
-      ordered: false,
-      // One outcome per line: the List block splits on newlines, and the
-      // fetcher joins the array that way for exactly this reason.
-      items: "{{ gluProgram.careerOutcomesLines }}",
+      id: "program-facts-grid",
+      eyebrow: "",
+      heading: "Program details",
+      background: "offWhite",
+      facts: "{{ gluProgram.facts }}",
     },
   },
   {

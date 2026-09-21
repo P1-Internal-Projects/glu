@@ -257,3 +257,71 @@ describe("PROGRAM_DATASOURCE field docs", () => {
     }
   });
 });
+
+/**
+ * The detail page is reached from the listing, so it must not show less than
+ * the card the visitor just left. The listing's expanded panel lists these;
+ * the four the stats bar already carries are deliberately absent.
+ */
+describe("the facts rows", () => {
+  const params = {
+    urlParams: { code: "ENVS-BS" },
+    searchParams: {},
+    savedPreviewParams: {},
+    fetchImpl: fetch,
+  } as never;
+
+  it("carry every field the listing panel shows", async () => {
+    process.env.GLU_PROGRAM_API_BASE_URL = "https://example.test";
+    stubFetch(() => ({
+      ok: true,
+      json: async () =>
+        row({
+          degreeLevelLabel: "Bachelor's",
+          degreeType: "B.S.",
+          college: "College of Environmental Science",
+          department: "Earth Systems",
+          accreditation: "ABET",
+          careerOutcomes: ["Analyst", "Ranger"],
+        }),
+    }));
+    const out = await PROGRAM_FETCHER.fetch(params);
+    const labels = (out.facts as { label: string }[]).map((f) => f.label);
+    expect(labels).toEqual([
+      "Degree",
+      "Award",
+      "College",
+      "Department",
+      "Accreditation",
+      "Program code",
+      "Career outcomes",
+    ]);
+  });
+
+  it("drop a row the record has no value for, so no empty term renders", async () => {
+    process.env.GLU_PROGRAM_API_BASE_URL = "https://example.test";
+    stubFetch(() => ({
+      ok: true,
+      json: async () => row({ accreditation: null, department: null, careerOutcomes: [] }),
+    }));
+    const out = await PROGRAM_FETCHER.fetch(params);
+    const labels = (out.facts as { label: string }[]).map((f) => f.label);
+    expect(labels).not.toContain("Accreditation");
+    expect(labels).not.toContain("Department");
+    expect(labels).not.toContain("Career outcomes");
+  });
+
+  it("do not repeat what the stats bar already shows", async () => {
+    process.env.GLU_PROGRAM_API_BASE_URL = "https://example.test";
+    stubFetch(() => ({
+      ok: true,
+      json: async () =>
+        row({ credits: 120, duration: "4 years", deliveryModes: ["Online"], startTerms: ["Fall"] }),
+    }));
+    const out = await PROGRAM_FETCHER.fetch(params);
+    const labels = (out.facts as { label: string }[]).map((f) => f.label);
+    for (const statLabel of ["Credit hours", "Typical length", "Delivery", "Starts"]) {
+      expect(labels).not.toContain(statLabel);
+    }
+  });
+});

@@ -159,6 +159,16 @@ export interface ProgramDetail extends Partial<ProgramRecord> {
   /** Facts for a Stats Bar, already in its `{ value, label }` shape. */
   stats: { value: string; label: string }[];
   /**
+   * Everything the listing's expanded panel shows, in a Fact Grid's
+   * `{ label, value }` shape.
+   *
+   * The detail page has to carry at least what the listing does, or following
+   * the permalink loses information. The four headline numbers are left out
+   * because the stats bar above already carries them; a page that states the
+   * credit hours twice reads as unedited rather than as thorough.
+   */
+  facts: { label: string; value: string }[];
+  /**
    * Section labels, supplied by the datasource rather than typed into the
    * template.
    *
@@ -170,7 +180,6 @@ export interface ProgramDetail extends Partial<ProgramRecord> {
    * application to a program that does not exist.
    */
   aboutHeading: string;
-  outcomesHeading: string;
   ctaHeading: string;
   ctaSubtext: string;
   ctaPrimaryLabel: string;
@@ -202,10 +211,8 @@ function programNotFound(code: string): ProgramDetail {
     heroImageUrl: CAMPUS_BANNER_URL,
     bannerImageUrl: CAMPUS_BANNER_URL,
     stats: [],
+    facts: [],
     aboutHeading: "We could not find that program",
-    // Empty on purpose: the List block below it has nothing to show, and a
-    // heading over an empty list is worse than no heading.
-    outcomesHeading: "",
     ctaHeading: "Find the program you are after",
     ctaSubtext:
       "The full catalogue lists every published program, filterable by college and level.",
@@ -231,6 +238,19 @@ function toDetail(record: ProgramRecord): ProgramDetail {
     terms.length ? { value: terms.join(" / "), label: "Starts" } : null,
   ].filter((s): s is { value: string; label: string } => s !== null);
 
+  // The same fields the listing's expanded panel lists, minus the four the
+  // stats bar already shows. Empty values are dropped here as well as in the
+  // component, so the shape the editor previews is the shape that renders.
+  const facts = [
+    { label: "Degree", value: record.degreeLevelLabel ?? "" },
+    { label: "Award", value: record.degreeType ?? "" },
+    { label: "College", value: record.college ?? "" },
+    { label: "Department", value: record.department ?? "" },
+    { label: "Accreditation", value: record.accreditation ?? "" },
+    { label: "Program code", value: record.code ?? "" },
+    { label: "Career outcomes", value: outcomes.join(", ") },
+  ].filter((f) => f.value.trim());
+
   return {
     ...record,
     found: true,
@@ -241,8 +261,8 @@ function toDetail(record: ProgramRecord): ProgramDetail {
     heroImageUrl: record.imageUrl || CAMPUS_BANNER_URL,
     bannerImageUrl: CAMPUS_BANNER_URL,
     stats,
+    facts,
     aboutHeading: "About this program",
-    outcomesHeading: outcomes.length ? "Where graduates go" : "",
     ctaHeading: "Ready to apply?",
     ctaSubtext:
       "Start your application, or browse the rest of the catalogue to compare programs.",
@@ -336,8 +356,8 @@ export const PROGRAM_DATASOURCE: RemoteDatasourceDefinition = {
     { path: "bannerImageUrl", description: "The campus banner. For the page hero, so the program's own photo is not shown twice." },
     { path: "applyUrl", description: "Application link, for a CTA" },
     { path: "stats", description: "Credits, length, delivery and start terms as { value, label } rows. Bind to a Stats Bar's Stats." },
+    { path: "facts", description: "Degree, college, department, accreditation, code and career outcomes as { label, value } rows — everything the listing's expanded panel shows. Bind to a Fact Grid's Facts." },
     { path: "aboutHeading", description: "Heading for the description section. Changes when the code matches nothing." },
-    { path: "outcomesHeading", description: "Heading for the career outcomes list. Empty when there are none, so the heading disappears with the list." },
     { path: "ctaHeading", description: "Heading for the closing banner." },
     { path: "ctaSubtext", description: "Supporting line for the closing banner." },
     { path: "ctaPrimaryLabel", description: "Label for the banner's primary button." },
