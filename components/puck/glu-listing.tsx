@@ -2,13 +2,23 @@
 
 import React from "react";
 import { createDataListBlock } from "@pantheon-systems/puck-css/fields";
-import type { ResolvedItem, LayoutProps } from "@pantheon-systems/puck-css/fields";
-import { colors, radii, spacing, typography } from "../../design-system/tokens";
+import type {
+  ResolvedItem,
+  LayoutProps,
+} from "@pantheon-systems/puck-css/fields";
+import {
+  colors,
+  radii,
+  shadows,
+  spacing,
+  typography,
+} from "../../design-system/tokens";
 import { Card } from "../../design-system/components/card";
 import { Container } from "../../design-system/components/container";
 import { Eyebrow } from "../../design-system/components/typography";
 import { Section } from "../../design-system/components/section";
 import type { SectionBackground } from "../../design-system/components/section";
+import { headshotOrSilhouette } from "../../lib/glu-assets";
 import { formatEventDate } from "./glu-event-header";
 import { GLUProgramCards } from "./glu-program-cards";
 
@@ -29,7 +39,50 @@ import { GLUProgramCards } from "./glu-program-cards";
  * so that would mean a second copy of them in a stylesheet — the factory's
  * config is composed: GLU draws the section, the container and the header, and
  * the factory keeps everything it is good at inside them.
+ *
+ * The presentation options — columns, background, card style, photo shape —
+ * are deliberately a small closed set. Each one is a choice the design system
+ * already has an answer for, so every combination an editor can pick is one the
+ * system has seen; there is no free colour field and no arbitrary width.
  */
+
+export type ListingColumns = "auto" | "2" | "3" | "4";
+export type ListingCardStyle = "elevated" | "flat";
+export type ListingPhotoShape = "circle" | "rounded";
+export type ListingBackground = Extract<
+  SectionBackground,
+  "white" | "offWhite" | "lightBlue" | "navy"
+>;
+
+/** Shared presentation props the section passes down to every mode. */
+export interface ListingPresentation {
+  columns?: ListingColumns;
+  cardStyle?: ListingCardStyle;
+  background?: ListingBackground;
+}
+
+/**
+ * How the section's presentation reaches the cards.
+ *
+ * The factory hands a mode component the resolved items, the show/hide flags
+ * and the mode's OWN extra fields — nothing else from the block. Columns, card
+ * style and background are block-level (they apply to every mode, so declaring
+ * them three times over would be the wrong shape), so the section publishes
+ * them through context and each mode reads them there. A mode rendered outside
+ * the section (Storybook) can still be handed them as props.
+ */
+const ListingPresentationContext = React.createContext<ListingPresentation>({});
+
+function usePresentation(
+  props: ListingPresentation,
+): Required<ListingPresentation> {
+  const ctx = React.useContext(ListingPresentationContext);
+  return {
+    columns: props.columns ?? ctx.columns ?? "auto",
+    cardStyle: props.cardStyle ?? ctx.cardStyle ?? "elevated",
+    background: props.background ?? ctx.background ?? "white",
+  };
+}
 
 type EventRaw = {
   eventType?: string;
@@ -40,35 +93,134 @@ type EventRaw = {
   locale?: string;
 };
 
-function raw(item: ResolvedItem): EventRaw {
-  return (item._raw ?? {}) as EventRaw;
+type PersonRaw = {
+  url?: string;
+  email?: string;
+  phone?: string;
+  territory?: string;
+  focusArea?: string;
+};
+
+function raw<T>(item: ResolvedItem): T {
+  return (item._raw ?? {}) as T;
 }
+
+/**
+ * The grid template for a column choice.
+ *
+ * "auto" packs as many cards as fit above a minimum width. A fixed count asks
+ * for exactly that many, but through the same auto-fit so that on a phone the
+ * floor wins and the grid collapses rather than squeezing four cards into
+ * 360px — inline styles have no media queries, and this needs none.
+ */
+export function gridColumns(
+  columns: ListingColumns | undefined,
+  minPx: number,
+  gap: string,
+): string {
+  if (!columns || columns === "auto") {
+    return `repeat(auto-fit, minmax(min(100%, ${minPx}px), 1fr))`;
+  }
+  const n = Number(columns);
+  const share = `calc((100% - ${gap} * ${n - 1}) / ${n})`;
+  return `repeat(auto-fit, minmax(min(100%, max(${Math.round(minPx * 0.85)}px, ${share})), 1fr))`;
+}
+
+/** Card chrome for a style choice. "flat" drops the border and shadow so the tint carries the grouping. */
+function CardShell({
+  cardStyle,
+  onDark,
+  style,
+  children,
+}: {
+  cardStyle: ListingCardStyle;
+  onDark: boolean;
+  style?: React.CSSProperties;
+  children: React.ReactNode;
+}) {
+  if (cardStyle === "flat") {
+    return (
+      <div
+        style={{
+          backgroundColor: onDark ? "rgba(255,255,255,0.08)" : colors.white,
+          borderRadius: radii.lg,
+          overflow: "hidden",
+          ...style,
+        }}
+      >
+        {children}
+      </div>
+    );
+  }
+  return <Card style={style}>{children}</Card>;
+}
+
+function EmptyState({
+  children,
+  onDark,
+}: {
+  children: React.ReactNode;
+  onDark: boolean;
+}) {
+  return (
+    <p
+      style={{
+        fontFamily: typography.fontBody,
+        fontSize: typography.sizeSm,
+        color: onDark ? "rgba(255,255,255,0.8)" : colors.muted,
+        textAlign: "center",
+        padding: spacing[12],
+        margin: 0,
+      }}
+    >
+      {children}
+    </p>
+  );
+}
+
+type ModeProps = LayoutProps & ListingPresentation & { imagePosition?: string };
 
 function EventCard({
   item,
   showTitle,
   showTeaser,
   showImage,
+  cardStyle,
+  onDark,
 }: {
   item: ResolvedItem;
   showTitle: boolean;
   showTeaser: boolean;
   /** Already combined with the image position by the mode — see `withImage`. */
   showImage: boolean;
+  cardStyle: ListingCardStyle;
+  onDark: boolean;
 }) {
-  const r = raw(item);
+  const r = raw<EventRaw>(item);
   const href = r.url || "";
   const dateLabel = formatEventDate(r.startDate ?? "", r.locale || "en-US");
+  const ink = onDark && cardStyle === "flat" ? colors.white : colors.dark;
+  const soft =
+    onDark && cardStyle === "flat" ? "rgba(255,255,255,0.75)" : colors.muted;
 
   const card = (
-    <Card style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+    <CardShell
+      cardStyle={cardStyle}
+      onDark={onDark}
+      style={{ display: "flex", flexDirection: "column", height: "100%" }}
+    >
       {showImage && item.image ? (
         <img
           src={item.image}
           alt=""
           loading="lazy"
           decoding="async"
-          style={{ width: "100%", height: "168px", objectFit: "cover", display: "block" }}
+          style={{
+            width: "100%",
+            height: "168px",
+            objectFit: "cover",
+            display: "block",
+          }}
         />
       ) : (
         <div
@@ -80,7 +232,14 @@ function EventCard({
         />
       )}
 
-      <div style={{ padding: spacing[5], display: "flex", flexDirection: "column", flex: 1 }}>
+      <div
+        style={{
+          padding: spacing[5],
+          display: "flex",
+          flexDirection: "column",
+          flex: 1,
+        }}
+      >
         <div
           style={{
             display: "flex",
@@ -112,7 +271,7 @@ function EventCard({
               style={{
                 fontFamily: typography.fontBody,
                 fontSize: typography.sizeXs,
-                color: colors.muted,
+                color: soft,
                 fontWeight: typography.weightMedium,
               }}
             >
@@ -128,7 +287,7 @@ function EventCard({
               fontSize: typography.sizeXl,
               fontWeight: typography.weightBold,
               lineHeight: typography.lineHeightSnug,
-              color: colors.dark,
+              color: ink,
               margin: `0 0 ${spacing[2]}`,
             }}
           >
@@ -142,7 +301,7 @@ function EventCard({
               fontFamily: typography.fontBody,
               fontSize: typography.sizeSm,
               lineHeight: typography.lineHeightRelaxed,
-              color: colors.muted,
+              color: soft,
               margin: `0 0 ${spacing[4]}`,
               flex: 1,
             }}
@@ -159,21 +318,26 @@ function EventCard({
             gap: spacing[1],
             fontFamily: typography.fontBody,
             fontSize: typography.sizeXs,
-            color: colors.muted,
+            color: soft,
           }}
         >
           {r.startTime && <span>{r.startTime}</span>}
           {r.location && <span>{r.location}</span>}
         </div>
       </div>
-    </Card>
+    </CardShell>
   );
 
   if (!href) return card;
   return (
     <a
       href={href}
-      style={{ textDecoration: "none", color: "inherit", display: "block", height: "100%" }}
+      style={{
+        textDecoration: "none",
+        color: "inherit",
+        display: "block",
+        height: "100%",
+      }}
     >
       {card}
     </a>
@@ -186,27 +350,20 @@ function EventCards({
   showTeaser,
   showImage,
   imagePosition,
-  columns,
-}: LayoutProps & { imagePosition?: string; columns?: number }) {
+  ...presentation
+}: ModeProps) {
+  const { columns, cardStyle, background } = usePresentation(presentation);
   // The factory always renders its "Image position" control when an image field
   // is mapped, and hands the choice down. These modes lay out one way, so the
   // only meaningful choice is whether the image appears at all — but the
   // control still has to be obeyed, or "None" is a switch that does nothing.
   const withImage = showImage && imagePosition !== "none";
+  const onDark = background === "navy";
   if (items.length === 0) {
     return (
-      <p
-        style={{
-          fontFamily: typography.fontBody,
-          fontSize: typography.sizeSm,
-          color: colors.muted,
-          textAlign: "center",
-          padding: spacing[12],
-          margin: 0,
-        }}
-      >
+      <EmptyState onDark={onDark}>
         No events are scheduled right now.
-      </p>
+      </EmptyState>
     );
   }
 
@@ -214,18 +371,19 @@ function EventCards({
     <div
       style={{
         display: "grid",
-        gridTemplateColumns: `repeat(auto-fit, minmax(min(100%, 280px), 1fr))`,
+        gridTemplateColumns: gridColumns(columns, 280, spacing[6]),
         gap: spacing[6],
-        maxWidth: columns ? `${columns * 400}px` : undefined,
       }}
     >
       {items.map((item, i) => (
         <EventCard
-          key={`${raw(item).url ?? "item"}-${i}`}
+          key={`${raw<EventRaw>(item).url ?? "item"}-${i}`}
           item={item}
           showTitle={showTitle}
           showTeaser={showTeaser}
           showImage={withImage}
+          cardStyle={cardStyle}
+          onDark={onDark}
         />
       ))}
     </div>
@@ -239,37 +397,38 @@ function PersonCards({
   showTeaser,
   showImage,
   imagePosition,
-}: LayoutProps & { imagePosition?: string }) {
+  photoShape = "circle",
+  showContact = false,
+  ...presentation
+}: ModeProps & { photoShape?: ListingPhotoShape; showContact?: boolean }) {
+  const { columns, cardStyle, background } = usePresentation(presentation);
   const withImage = showImage && imagePosition !== "none";
+  const onDark = background === "navy";
+  const flatOnDark = onDark && cardStyle === "flat";
+  const ink = flatOnDark ? colors.white : colors.dark;
+  const soft = flatOnDark ? "rgba(255,255,255,0.75)" : colors.muted;
+  const accent = flatOnDark ? colors.goldLight : colors.crimson;
+
   if (items.length === 0) {
-    return (
-      <p
-        style={{
-          fontFamily: typography.fontBody,
-          fontSize: typography.sizeSm,
-          color: colors.muted,
-          textAlign: "center",
-          padding: spacing[12],
-          margin: 0,
-        }}
-      >
-        No people to show yet.
-      </p>
-    );
+    return <EmptyState onDark={onDark}>No people to show yet.</EmptyState>;
   }
+
+  const photoSize = photoShape === "circle" ? 112 : 132;
 
   return (
     <div
       style={{
         display: "grid",
-        gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 240px), 1fr))",
+        gridTemplateColumns: gridColumns(columns, 240, spacing[6]),
         gap: spacing[6],
       }}
     >
       {items.map((item, i) => {
-        const r = raw(item);
+        const r = raw<PersonRaw>(item);
         const body = (
-          <Card
+          <CardShell
+            cardStyle={cardStyle}
+            onDark={onDark}
             style={{
               display: "flex",
               flexDirection: "column",
@@ -279,18 +438,23 @@ function PersonCards({
               padding: spacing[6],
             }}
           >
-            {withImage && item.image && (
+            {withImage && (
               <img
-                src={item.image}
+                // A record with no photo gets the silhouette rather than a hole
+                // in the grid: the row still reads as a person.
+                src={headshotOrSilhouette(item.image)}
                 alt=""
                 loading="lazy"
                 decoding="async"
                 style={{
-                  width: "104px",
-                  height: "104px",
+                  width: `${photoSize}px`,
+                  height: `${photoSize}px`,
                   objectFit: "cover",
-                  borderRadius: radii.full,
+                  borderRadius: photoShape === "circle" ? radii.full : radii.xl,
                   marginBottom: spacing[4],
+                  boxShadow: shadows.sm,
+                  // Behind the transparent silhouette; a photo covers it.
+                  backgroundColor: flatOnDark ? "rgba(255,255,255,0.12)" : colors.lightBlue,
                 }}
               />
             )}
@@ -300,7 +464,7 @@ function PersonCards({
                   fontFamily: typography.fontHeading,
                   fontSize: typography.sizeLg,
                   fontWeight: typography.weightBold,
-                  color: colors.dark,
+                  color: ink,
                   margin: `0 0 ${spacing[1]}`,
                 }}
               >
@@ -312,7 +476,7 @@ function PersonCards({
                 style={{
                   fontFamily: typography.fontBody,
                   fontSize: typography.sizeSm,
-                  color: colors.crimson,
+                  color: accent,
                   fontWeight: typography.weightSemibold,
                   margin: `0 0 ${spacing[3]}`,
                 }}
@@ -326,21 +490,54 @@ function PersonCards({
                   fontFamily: typography.fontBody,
                   fontSize: typography.sizeSm,
                   lineHeight: typography.lineHeightRelaxed,
-                  color: colors.muted,
+                  color: soft,
                   margin: 0,
                 }}
               >
                 {item.teaser}
               </p>
             )}
-          </Card>
+            {showContact && (r.email || r.phone) && (
+              <div
+                style={{
+                  marginTop: spacing[4],
+                  paddingTop: spacing[4],
+                  borderTop: `1px solid ${flatOnDark ? "rgba(255,255,255,0.2)" : colors.border}`,
+                  width: "100%",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: spacing[1],
+                  fontFamily: typography.fontBody,
+                  fontSize: typography.sizeXs,
+                  color: soft,
+                }}
+              >
+                {r.email && (
+                  <span
+                    style={{
+                      color: accent,
+                      fontWeight: typography.weightMedium,
+                    }}
+                  >
+                    {r.email}
+                  </span>
+                )}
+                {r.phone && <span>{r.phone}</span>}
+              </div>
+            )}
+          </CardShell>
         );
         const href = r.url || "";
         return href ? (
           <a
             key={`${href}-${i}`}
             href={href}
-            style={{ textDecoration: "none", color: "inherit", display: "block", height: "100%" }}
+            style={{
+              textDecoration: "none",
+              color: "inherit",
+              display: "block",
+              height: "100%",
+            }}
           >
             {body}
           </a>
@@ -352,11 +549,11 @@ function PersonCards({
   );
 }
 
-export interface GLUListingSectionProps {
+export interface GLUListingSectionProps extends ListingPresentation {
   eyebrow?: string;
   heading?: string;
   subtext?: string;
-  background?: Extract<SectionBackground, "white" | "offWhite" | "lightBlue">;
+  align?: "center" | "left";
   children: React.ReactNode;
 }
 
@@ -365,7 +562,9 @@ export interface GLUListingSectionProps {
  *
  * Deliberately the same shape as GLUCardGrid's header — centred, 680px, eyebrow
  * over a Playfair h2 over muted subtext — because the two blocks sit next to
- * each other on a page and any difference reads as a mistake.
+ * each other on a page and any difference reads as a mistake. The left-aligned
+ * variant keeps the same measure and simply stops centring it, for pages where
+ * the listing follows a left-aligned feature section.
  *
  * The header is omitted entirely when all three fields are blank, so a listing
  * used as a bare grid does not carry its bottom margin as dead space.
@@ -375,53 +574,81 @@ export function GLUListingSection({
   heading,
   subtext,
   background = "white",
+  columns = "auto",
+  cardStyle = "elevated",
+  align = "center",
   children,
 }: GLUListingSectionProps) {
   const hasHeader = Boolean(eyebrow || heading || subtext);
+  const onDark = background === "navy";
+  const presentation = React.useMemo(
+    () => ({ columns, cardStyle, background }),
+    [columns, cardStyle, background],
+  );
   return (
-    <Section background={background}>
-      <Container>
-        {hasHeader && (
-          <div style={{ textAlign: "center", maxWidth: 680, margin: `0 auto ${spacing[12]}` }}>
-            {eyebrow && <Eyebrow style={{ marginBottom: spacing[3] }}>{eyebrow}</Eyebrow>}
-            {heading && (
-              <h2
-                style={{
-                  fontFamily: typography.fontHeading,
-                  fontSize: typography.size4xl,
-                  fontWeight: typography.weightBold,
-                  color: colors.dark,
-                  lineHeight: typography.lineHeightTight,
-                  margin: `0 0 ${spacing[4]}`,
-                }}
-              >
-                {heading}
-              </h2>
-            )}
-            {subtext && (
-              <p
-                style={{
-                  fontFamily: typography.fontBody,
-                  fontSize: typography.sizeLg,
-                  color: colors.muted,
-                  lineHeight: typography.lineHeightRelaxed,
-                  margin: 0,
-                }}
-              >
-                {subtext}
-              </p>
-            )}
-          </div>
-        )}
-        {children}
-      </Container>
-    </Section>
+    <ListingPresentationContext.Provider value={presentation}>
+      <Section background={background}>
+        <Container>
+          {hasHeader && (
+            <div
+              style={{
+                textAlign: align,
+                maxWidth: 680,
+                margin:
+                  align === "center"
+                    ? `0 auto ${spacing[12]}`
+                    : `0 0 ${spacing[12]}`,
+              }}
+            >
+              {eyebrow && (
+                <Eyebrow light={onDark} style={{ marginBottom: spacing[3] }}>
+                  {eyebrow}
+                </Eyebrow>
+              )}
+              {heading && (
+                <h2
+                  style={{
+                    fontFamily: typography.fontHeading,
+                    fontSize: typography.size4xl,
+                    fontWeight: typography.weightBold,
+                    color: onDark ? colors.white : colors.dark,
+                    lineHeight: typography.lineHeightTight,
+                    margin: `0 0 ${spacing[4]}`,
+                  }}
+                >
+                  {heading}
+                </h2>
+              )}
+              {subtext && (
+                <p
+                  style={{
+                    fontFamily: typography.fontBody,
+                    fontSize: typography.sizeLg,
+                    color: onDark ? "rgba(255,255,255,0.8)" : colors.muted,
+                    lineHeight: typography.lineHeightRelaxed,
+                    margin: 0,
+                  }}
+                >
+                  {subtext}
+                </p>
+              )}
+            </div>
+          )}
+          {children}
+        </Container>
+      </Section>
+    </ListingPresentationContext.Provider>
   );
 }
 
+const IMAGE_TOP_OR_NONE = [
+  { label: "Top", value: "top" },
+  { label: "None", value: "none" },
+];
+
 /**
- * One block, two GLU-branded ways to draw a collection. The mode picker is the
- * factory's; adding a third look means adding an entry here, not another block
+ * One block, three GLU-branded ways to draw a collection. The mode picker is the
+ * factory's; adding a fourth look means adding an entry here, not another block
  * for editors to choose between.
  */
 const baseListing = createDataListBlock({
@@ -430,18 +657,31 @@ const baseListing = createDataListBlock({
     eventCards: {
       label: "Event cards",
       component: EventCards,
-      imagePositions: [
-        { label: "Top", value: "top" },
-        { label: "None", value: "none" },
-      ],
+      imagePositions: IMAGE_TOP_OR_NONE,
     },
     peopleCards: {
       label: "People cards",
       component: PersonCards,
-      imagePositions: [
-        { label: "Top", value: "top" },
-        { label: "None", value: "none" },
-      ],
+      imagePositions: IMAGE_TOP_OR_NONE,
+      fields: {
+        photoShape: {
+          type: "radio",
+          label: "Photo shape",
+          options: [
+            { label: "Circle", value: "circle" },
+            { label: "Rounded", value: "rounded" },
+          ],
+        },
+        showContact: {
+          type: "radio",
+          label: "Contact details",
+          options: [
+            { label: "Show", value: true },
+            { label: "Hide", value: false },
+          ],
+        },
+      },
+      defaultProps: { photoShape: "circle", showContact: false },
     },
     // Text-only by design — see glu-program-cards.tsx. It offers no image
     // position because it renders no image; the factory still requires the
@@ -468,12 +708,22 @@ const baseListing = createDataListBlock({
 // Rendered as a component rather than called as a function: it is Puck's render
 // for the block, and treating it as a child keeps it a render boundary of its
 // own instead of inlining its work into this one.
-const BaseListingRender = baseListing.render as React.ComponentType<Record<string, unknown>>;
+const BaseListingRender = baseListing.render as React.ComponentType<
+  Record<string, unknown>
+>;
 
 const BACKGROUND_OPTIONS = [
   { label: "White", value: "white" },
-  { label: "Off white", value: "offWhite" },
-  { label: "Light blue", value: "lightBlue" },
+  { label: "Off White", value: "offWhite" },
+  { label: "Light Rose", value: "lightBlue" },
+  { label: "Crimson", value: "navy" },
+];
+
+const COLUMN_OPTIONS = [
+  { label: "Fit to width", value: "auto" },
+  { label: "2 columns", value: "2" },
+  { label: "3 columns", value: "3" },
+  { label: "4 columns", value: "4" },
 ];
 
 /**
@@ -486,16 +736,44 @@ const BACKGROUND_OPTIONS = [
  */
 export const gluListing = {
   ...baseListing,
+  ai: {
+    instructions:
+      "A collection of records from a datasource, drawn as GLU cards. Bind `items` to `{{ gluPeople.items }}`, `{{ gluEvents.items }}` or `{{ gluPrograms.items }}` and pick the matching view mode. Use `background: navy` at most once per page, for emphasis. `columns: auto` is right unless the design needs a fixed count.",
+  },
   fields: {
     ...baseListing.fields,
     eyebrow: { type: "text", label: "Eyebrow" },
     subtext: { type: "textarea", label: "Subtext" },
-    background: { type: "select", label: "Background", options: BACKGROUND_OPTIONS },
+    align: {
+      type: "radio",
+      label: "Header alignment",
+      options: [
+        { label: "Center", value: "center" },
+        { label: "Left", value: "left" },
+      ],
+    },
+    columns: { type: "select", label: "Columns", options: COLUMN_OPTIONS },
+    cardStyle: {
+      type: "radio",
+      label: "Card style",
+      options: [
+        { label: "Elevated", value: "elevated" },
+        { label: "Flat", value: "flat" },
+      ],
+    },
+    background: {
+      type: "select",
+      label: "Background",
+      options: BACKGROUND_OPTIONS,
+    },
   },
   defaultProps: {
     ...baseListing.defaultProps,
     eyebrow: "",
     subtext: "",
+    align: "center",
+    columns: "auto",
+    cardStyle: "elevated",
     background: "white",
   },
   // The grouper reads this to lay the sidebar out; without an entry a field is
@@ -504,6 +782,9 @@ export const gluListing = {
     ...baseListing._fieldGroups,
     eyebrow: "content",
     subtext: "content",
+    align: "layout",
+    columns: "layout",
+    cardStyle: "layout",
     background: "layout",
   },
   render: (props: Record<string, unknown>) => (
@@ -511,7 +792,10 @@ export const gluListing = {
       eyebrow={props.eyebrow as string | undefined}
       heading={props.heading as string | undefined}
       subtext={props.subtext as string | undefined}
-      background={props.background as GLUListingSectionProps["background"]}
+      align={props.align as GLUListingSectionProps["align"]}
+      background={props.background as ListingBackground | undefined}
+      columns={props.columns as ListingColumns | undefined}
+      cardStyle={props.cardStyle as ListingCardStyle | undefined}
     >
       <BaseListingRender {...props} heading="" />
     </GLUListingSection>

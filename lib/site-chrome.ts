@@ -90,6 +90,18 @@ const NAV: Record<string, NavDefinition> = {
     ctaLabel: "Solicita tu admisión",
     ctaHref: "/apply",
   },
+  "fr-CA": {
+    logoText: LOGO_TEXT,
+    homeHref: "/",
+    links: [
+      { label: "Admission", href: "/apply" },
+      { label: "Programmes", href: "/academics" },
+      { label: "Frais et aide financière", href: "/cost-aid" },
+      { label: "Vie sur le campus", href: "/campus-life" },
+    ],
+    ctaLabel: "Faire une demande",
+    ctaHref: "/apply",
+  },
 };
 
 const FOOTER: Record<string, FooterDefinition> = {
@@ -165,6 +177,43 @@ const FOOTER: Record<string, FooterDefinition> = {
     ],
     copyright:
       "© 2025 Grand Lakes University. 1887 University Drive, Grand Lakes, Michigan 48901. Todos los derechos reservados.",
+    socialLinks: SOCIAL_LINKS,
+  },
+  "fr-CA": {
+    logoText: LOGO_TEXT,
+    tagline:
+      "Faire progresser le savoir et enrichir les vies par l'excellence en enseignement, en recherche et en engagement communautaire depuis 1887.",
+    columns: [
+      {
+        heading: "Admission",
+        links: [
+          { label: "Comment faire une demande", href: "/apply" },
+          { label: "Dates limites", href: "/apply" },
+          { label: "Conditions d'admission", href: "/apply" },
+          { label: "Visiter le campus", href: "/campus-life" },
+        ],
+      },
+      {
+        heading: "Programmes",
+        links: [
+          { label: "Programmes et majeures", href: "/academics" },
+          { label: "Recherche", href: "/academics" },
+          { label: "Calendrier universitaire", href: "/academics" },
+          { label: "Bibliothèque", href: "/academics" },
+        ],
+      },
+      {
+        heading: "Vie sur le campus",
+        links: [
+          { label: "Résidences", href: "/campus-life" },
+          { label: "Services alimentaires", href: "/campus-life" },
+          { label: "Associations étudiantes", href: "/campus-life" },
+          { label: "Sports", href: "/campus-life" },
+        ],
+      },
+    ],
+    copyright:
+      "© 2025 Grand Lakes University. 1887 University Drive, Grand Lakes, Michigan 48901. Tous droits réservés.",
     socialLinks: SOCIAL_LINKS,
   },
 };

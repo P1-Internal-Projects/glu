@@ -37,6 +37,9 @@ const TEXT_KEYS = new Set([
   "title", "heading", "subheading", "eyebrow", "subtext", "text", "label",
   "description", "summary", "tagline", "copyright", "ctaLabel", "body", "bio",
   "role", "focusArea", "territory", "location", "registrationLabel", "quote",
+  // Counselor profile fields that are prose, not data. `pronouns` stays as
+  // written (a person's pronouns are theirs, not a translation target).
+  "languages", "officeLocation", "officeHours", "bookingLabel",
   "attribution", "caption", "answer", "question", "name", "value", "stat",
   "buttonLabel", "linkLabel", "secondaryLabel", "viewAllLabel", "placeholder",
   "alt", "eventType", "logoText", "heading2", "intro", "blurb",

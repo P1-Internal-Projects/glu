@@ -20,6 +20,7 @@ import { api, mainBranchId, S } from "./p1-admin.mjs";
 
 const LOCALES = [
   { tag: "es-US", prefix: "es" },
+  { tag: "fr-CA", prefix: "fr" },
 ];
 
 /**
