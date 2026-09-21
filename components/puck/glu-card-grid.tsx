@@ -9,7 +9,7 @@ import { Section } from "../../design-system/components/section";
 import { Container } from "../../design-system/components/container";
 import { colors, typography, spacing } from "../../design-system/tokens";
 import { richTextProps } from "./rich-text-props";
-import { cardImage, type CardImageValue } from "../../lib/media-image";
+import { resolveMediaImage, type MediaImageValue } from "../../lib/media-image";
 import { BACKGROUND_AI, EYEBROW_AI, buttonLabelAi, imageAi, linkAi } from "../../lib/ai-hints";
 
 export type GLUCardGridProps = {
@@ -25,7 +25,7 @@ export type GLUCardGridProps = {
      * A media-library value, or a bare URL from before this field was rich.
      * See lib/media-image.ts for why both shapes have to keep working.
      */
-    imageUrl: CardImageValue;
+    imageUrl: MediaImageValue;
     linkHref: string;
     linkLabel: string;
   }[];
@@ -79,7 +79,7 @@ export function GLUCardGridComponent({ eyebrow, heading, subtext, columns, backg
             // Asking for both dimensions is what makes the editor's crop
             // choice visible: the transform only honours fit/gravity/trim when
             // there is a target aspect ratio to crop to. 16:9 matches the box.
-            const image = cardImage(card.imageUrl, { width: 800, height: 450 });
+            const image = resolveMediaImage(card.imageUrl, { width: 800, height: 450 });
             return (
             <Card key={i}>
               {image.src && (

@@ -5,10 +5,16 @@ import Image from "next/image";
 import type { ComponentConfig } from "@puckeditor/core";
 import { colors, typography, spacing, radii } from "../../design-system/tokens";
 import { imageAi } from "../../lib/ai-hints";
+import { CAMPUS_BANNER_URL } from "../../lib/glu-assets";
+import { resolveMediaImage, type MediaImageValue } from "../../lib/media-image";
 
 export type GLUSlideshowProps = {
   slides: {
-    imageUrl: string;
+    /**
+     * A media-library value, or a bare URL from before this field was rich.
+     * See lib/media-image.ts for why both shapes have to keep working.
+     */
+    imageUrl: MediaImageValue;
     heading: string;
     subtext: string;
   }[];
@@ -18,6 +24,45 @@ export type GLUSlideshowProps = {
 };
 
 const HEIGHT_MAP = { md: "420px", lg: "560px", xl: "700px" };
+
+/**
+ * One slide's image, cropped to the band the slideshow actually occupies.
+ *
+ * The transform is asked for a width AND a height on purpose. The editor's
+ * crop rides on the stored URL as fit/gravity or trim params, and the CDN
+ * ignores all of them unless it is given a target aspect ratio — so requesting
+ * a width alone, or letting the image component size it, makes "Smart crop"
+ * and the crop dialog do nothing visible. The height comes from the block's
+ * own setting, so a slideshow set to `xl` crops less aggressively than one set
+ * to `md`, which is what someone drawing a crop in the editor expects.
+ */
+function SlideImage({
+  image,
+  alt,
+  height,
+  priority,
+}: {
+  image: MediaImageValue;
+  alt: string;
+  height: GLUSlideshowProps["height"];
+  priority: boolean;
+}) {
+  const resolved = resolveMediaImage(image, {
+    width: 1920,
+    height: Number.parseInt(HEIGHT_MAP[height] ?? HEIGHT_MAP.lg, 10),
+  });
+  if (!resolved.src) return null;
+  return (
+    <Image
+      src={resolved.src}
+      alt={resolved.alt || alt}
+      fill
+      style={{ objectFit: "cover" }}
+      sizes="100vw"
+      priority={priority}
+    />
+  );
+}
 
 export function GLUSlideshowComponent({ slides, autoPlay, interval, height }: GLUSlideshowProps) {
   const [current, setCurrent] = useState(0);
@@ -77,14 +122,7 @@ export function GLUSlideshowComponent({ slides, autoPlay, interval, height }: GL
             pointerEvents: i === current ? "auto" : "none",
           }}
         >
-          <Image
-            src={s.imageUrl}
-            alt={s.heading}
-            fill
-            style={{ objectFit: "cover" }}
-            sizes="100vw"
-            priority={i === 0}
-          />
+          <SlideImage image={s.imageUrl} alt={s.heading} height={height} priority={i === 0} />
           {/* Dark gradient for legibility */}
           <div
             style={{
@@ -262,7 +300,18 @@ export const gluSlideshowConfig = {
       label: "Slides",
       ai: { instructions: "3–5 slides, each a different place or moment." },
       arrayFields: {
-        imageUrl: { type: "text", label: "Image URL", ai: imageAi("Wide landscape photo, at least 1920px.", { optional: false }) },
+        // The rich media field, not a URL box: it stores the asset, its alt
+        // text and the crop, which is what puts "Custom…" and the crop dialog
+        // in front of an editor. The name stays `imageUrl` so slides already
+        // published keep their images — see lib/media-image.ts.
+        //
+        // `as any` because the plugin registers this field type at runtime,
+        // so it is not in Puck's built-in Field union.
+        imageUrl: {
+          type: "p1-media",
+          label: "Image",
+          ai: imageAi("Wide landscape photo, at least 1920px. Crop it wide — the slide is a shallow band, not a square.", { optional: false }),
+        } as any,
         heading: { type: "text", label: "Heading", ai: { required: true, instructions: "2–6 words naming what is shown." } },
         subtext: { type: "textarea", label: "Subtext", ai: { instructions: "One sentence of context. Leave blank to show only the heading." } },
       },
@@ -292,7 +341,7 @@ export const gluSlideshowConfig = {
     height: "lg",
     slides: [
       {
-        imageUrl: "https://images.unsplash.com/photo-1562774053-701939374585?w=1920&q=80",
+        imageUrl: CAMPUS_BANNER_URL,
         heading: "Campus at the Water's Edge",
         subtext: "Our lakeside campus spans 1,400 acres of natural beauty in the heart of Michigan.",
       },

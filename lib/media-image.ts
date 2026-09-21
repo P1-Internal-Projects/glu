@@ -32,7 +32,7 @@ import { getMediaProps, type MediaFieldValue } from "@pantheon-systems/p1-media"
  * `MediaFieldValue` is already `string | MediaValue`; the nullable arms are
  * for a card an editor has cleared or never filled.
  */
-export type CardImageValue = MediaFieldValue | null | undefined;
+export type MediaImageValue = MediaFieldValue | null | undefined;
 
 export interface ResolvedImage {
   /** Empty when there is no usable image, so callers can skip the markup. */
@@ -66,8 +66,8 @@ const MEDIA_BASE = process.env.NEXT_PUBLIC_MEDIA_BASE_URL || PRODUCTION_MEDIA_BA
  * it has a target aspect ratio — ask for a width alone and a smart crop
  * silently does nothing.
  */
-export function cardImage(
-  value: CardImageValue,
+export function resolveMediaImage(
+  value: MediaImageValue,
   transform: { width: number; height: number; format?: "auto" | "webp" | "jpeg" | "png" | "avif" },
 ): ResolvedImage {
   const media = getMediaProps(value ?? null, {

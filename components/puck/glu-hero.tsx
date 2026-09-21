@@ -6,6 +6,8 @@ import type { ComponentConfig } from "@puckeditor/core";
 import { Button } from "../../design-system/components/button";
 import { colors, typography, spacing } from "../../design-system/tokens";
 import { buttonLabelAi } from "../../lib/ai-hints";
+import { CAMPUS_BANNER_URL } from "../../lib/glu-assets";
+import { resolveMediaImage } from "../../lib/media-image";
 
 export type GLUHeroLayout = "panel" | "fullOverlay" | "lowerBand";
 
@@ -153,9 +155,22 @@ export function GLUHeroComponent({
     </>
   );
 
-  const bg = backgroundImageUrl ? (
+  /**
+   * The hero keeps its plain-URL field, but the crop an editor picks in the
+   * media library now applies.
+   *
+   * It did not before. The picker writes the choice onto the stored URL as
+   * `fit=cover&gravity=auto`, and the CDN ignores that unless the request
+   * also carries a target aspect ratio — so the home page has been storing a
+   * Smart crop that never reached the screen. 1920x600 is the widest the
+   * section gets (`min(85vh, 600px)`), which makes the crop meaningful
+   * without asking for more pixels than are ever shown.
+   */
+  const background = resolveMediaImage(backgroundImageUrl, { width: 1920, height: 600 });
+
+  const bg = background.src ? (
     <Image
-      src={backgroundImageUrl}
+      src={background.src}
       alt=""
       fill
       priority
@@ -336,8 +351,7 @@ export const gluHeroConfig = {
     ctaHref: "/apply",
     secondaryCtaLabel: "Explore Academics",
     secondaryCtaHref: "/academics",
-    backgroundImageUrl:
-      "https://images.unsplash.com/photo-1562774053-701939374585?w=1920&q=80",
+    backgroundImageUrl: CAMPUS_BANNER_URL,
     overlayOpacity: 0.72,
   },
   render: GLUHeroComponent,

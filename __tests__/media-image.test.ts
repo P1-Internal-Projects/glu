@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { cardImage } from "../lib/media-image";
+import { resolveMediaImage } from "../lib/media-image";
 
 const SIZE = { width: 800, height: 450 };
 const CDN = "https://media.p1.pantheon.io";
@@ -12,9 +12,9 @@ const ASSET = `${CDN}/image/site/assets/a1/v1-photo.jpg`;
  * legacy path never becomes a way to render an arbitrary origin from a rich
  * value — that is exactly the case getMediaProps's origin check exists for.
  */
-describe("cardImage", () => {
+describe("resolveMediaImage", () => {
   it("resolves a rich media value and keeps its alt text", () => {
-    const out = cardImage(
+    const out = resolveMediaImage(
       { assetId: "a1", versionId: "v1", url: ASSET, alt: "A quadrangle in summer" },
       SIZE,
     );
@@ -29,13 +29,13 @@ describe("cardImage", () => {
    * would make "Smart crop" and the crop dialog do nothing on screen.
    */
   it("asks the CDN for both dimensions, so a crop actually renders", () => {
-    const out = cardImage({ assetId: "a1", versionId: "v1", url: ASSET }, SIZE);
+    const out = resolveMediaImage({ assetId: "a1", versionId: "v1", url: ASSET }, SIZE);
     expect(out.src).toMatch(/[?&]width=800\b/);
     expect(out.src).toMatch(/[?&]height=450\b/);
   });
 
   it("preserves the crop already on the stored URL", () => {
-    const out = cardImage(
+    const out = resolveMediaImage(
       {
         assetId: "a1",
         versionId: "v1",
@@ -49,7 +49,7 @@ describe("cardImage", () => {
 
   it("renders a legacy URL string from before the field was converted", () => {
     const unsplash = "https://images.unsplash.com/photo-1441974231531?w=800&q=80";
-    const out = cardImage(unsplash, SIZE);
+    const out = resolveMediaImage(unsplash, SIZE);
     expect(out.src).toBe(unsplash);
     expect(out.legacy).toBe(true);
   });
@@ -59,7 +59,7 @@ describe("cardImage", () => {
    * refused is a value someone edited to point elsewhere, and it stays refused.
    */
   it("does not fall back for a rich value pointing at a foreign origin", () => {
-    const out = cardImage(
+    const out = resolveMediaImage(
       { assetId: "a1", versionId: "v1", url: "https://evil.test/tracker.gif" },
       SIZE,
     );
@@ -68,7 +68,7 @@ describe("cardImage", () => {
 
   it("returns an empty src for an unset image, so the card skips the markup", () => {
     for (const value of [null, undefined, ""] as const) {
-      expect(cardImage(value, SIZE).src).toBe("");
+      expect(resolveMediaImage(value, SIZE).src).toBe("");
     }
   });
 });
