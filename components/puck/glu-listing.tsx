@@ -10,6 +10,7 @@ import { Eyebrow } from "../../design-system/components/typography";
 import { Section } from "../../design-system/components/section";
 import type { SectionBackground } from "../../design-system/components/section";
 import { formatEventDate } from "./glu-event-header";
+import { GLUProgramCards } from "./glu-program-cards";
 
 /**
  * A GLU-branded view mode for the data list block.
@@ -441,6 +442,25 @@ const baseListing = createDataListBlock({
         { label: "Top", value: "top" },
         { label: "None", value: "none" },
       ],
+    },
+    // Text-only by design — see glu-program-cards.tsx. It offers no image
+    // position because it renders no image; the factory still requires the
+    // key, so it carries the single honest option rather than pretending.
+    programCards: {
+      label: "Program cards",
+      component: GLUProgramCards,
+      imagePositions: [{ label: "None", value: "none" }],
+      fields: {
+        showCollegeFilter: {
+          type: "radio",
+          label: "College filter",
+          options: [
+            { label: "Show", value: true },
+            { label: "Hide", value: false },
+          ],
+        },
+      },
+      defaultProps: { showCollegeFilter: true },
     },
   },
 });

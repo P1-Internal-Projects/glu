@@ -117,14 +117,37 @@ export async function assertNobodyEditing(
   );
   if (humans.length === 0) return;
 
-  const who = humans.map((a) => a.email ?? a.name ?? a.actorId ?? "someone").join(", ");
+  const name = (a) => a.email ?? a.name ?? a.actorId ?? "someone";
+
+  // Being connected to the branch is not the same as having a document open,
+  // and only the second one is dangerous. The risk this guard exists for is a
+  // session holding a stale in-memory copy of a document and syncing it back
+  // over a script's write — which needs an open document to be stale about.
+  // Someone with the dashboard open, or idle on the branch, is no hazard, and
+  // blocking on that made the guard something to routinely --force past, which
+  // is worse than not having it.
+  const editing = humans.filter(
+    (a) => (a.state ?? "") === "editing" || a.documentId != null,
+  );
+  const editingCount = presence?.summary?.editingCount ?? editing.length;
+
+  if (editingCount === 0 && editing.length === 0) {
+    console.warn(
+      `[presence] ${humans.map(name).join(", ")} connected to this branch but not editing a ` +
+        `document; proceeding. A live editor will pick the change up over realtime sync.`,
+    );
+    return;
+  }
+
+  const who = (editing.length ? editing : humans).map(name).join(", ");
+  const where = editing.map((a) => a.documentPath).filter(Boolean).join(", ");
   if (force) {
-    console.warn(`[presence] ${who} has the editor open; continuing because --force was passed`);
+    console.warn(`[presence] ${who} is editing${where ? ` (${where})` : ""}; continuing because --force was passed`);
     return;
   }
   throw new Error(
-    `${who} currently has this site open in the visual editor. A bulk write now can be ` +
-      `overwritten by that session, emptying the document. Close the editor tab and re-run, ` +
-      `or pass --force if you know it is safe.`,
+    `${who} currently has a document open in the visual editor${where ? `: ${where}` : ""}. A bulk ` +
+      `write now can be overwritten by that session, emptying the document. Close the editor tab ` +
+      `and re-run, or pass --force if you know it is safe.`,
   );
 }

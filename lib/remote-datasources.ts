@@ -1,5 +1,16 @@
 import type { RemoteDatasourceDefinition } from "@pantheon-systems/puck-css/server";
 import { GLU_COLLECTION_DATASOURCES } from "./glu-datasources";
+import { PROGRAMS_DATASOURCE } from "./glu-programs";
+
+/**
+ * The datasources the editor offers, beyond GLU's own collections.
+ *
+ * `urlParams` is supplied by the route matcher rather than a fetcher, and the
+ * two `article` rows come from Content Publisher. The starter kit's SWAPI and
+ * Pokemon samples were removed — they were the only entries here that pointed
+ * at a third-party API, and having them in the picker alongside the real
+ * collections is what made the list hard to read.
+ */
 
 /**
  * The datasources the editor offers, beyond GLU's own collections.
@@ -13,6 +24,7 @@ import { GLU_COLLECTION_DATASOURCES } from "./glu-datasources";
 
 export const REMOTE_DATASOURCE_REGISTRY: RemoteDatasourceDefinition[] = [
   ...GLU_COLLECTION_DATASOURCES,
+  PROGRAMS_DATASOURCE,
   {
     id: "urlParams",
     label: "Route URL params",
