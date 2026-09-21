@@ -7,6 +7,7 @@ import { Container } from "../../design-system/components/container";
 import { Eyebrow } from "../../design-system/components/typography";
 import { colors, radii, shadows, spacing, typography } from "../../design-system/tokens";
 import { headshotOrSilhouette } from "../../lib/glu-assets";
+import { buttonLabelAi } from "../../lib/ai-hints";
 
 /**
  * A staff profile, and the place a person's structured fields live.
@@ -354,16 +355,16 @@ export const gluPersonProfileConfig = {
   fields: {
     name: { type: "text", label: "Full Name", ai: { required: true } },
     pronouns: { type: "text", label: "Pronouns", ai: { instructions: "Optional, e.g. she/her. Leave blank if unknown." } },
-    role: { type: "text", label: "Role / Title" },
+    role: { type: "text", label: "Role / Title", ai: { required: true, instructions: "Official title, e.g. 'Senior Admissions Counselor'." } },
     focusArea: { type: "text", label: "Focus Area", ai: { instructions: "Who this counselor advises, e.g. 'Transfer applicants'." } },
     territory: { type: "text", label: "Territory", ai: { instructions: "Region or states covered." } },
     languages: { type: "text", label: "Languages", ai: { instructions: "Comma-separated, e.g. 'English, Spanish'." } },
     email: { type: "text", label: "Email", ai: { stream: false } },
     phone: { type: "text", label: "Phone", ai: { stream: false } },
-    officeLocation: { type: "text", label: "Office" },
+    officeLocation: { type: "text", label: "Office", ai: { instructions: "Building and room, e.g. 'Visitor Center, Room 120'." } },
     officeHours: { type: "text", label: "Office Hours", ai: { instructions: "Drop-in hours as displayed, e.g. 'Wednesdays 1–4 PM'." } },
     bookingUrl: { type: "text", label: "Booking URL", ai: { stream: false } },
-    bookingLabel: { type: "text", label: "Booking Button Label" },
+    bookingLabel: { type: "text", label: "Booking Button Label", ai: buttonLabelAi("Schedule a conversation") },
     // Rendered as the media library picker, not a text box: lib/media-fields.ts
     // matches this name. The stored value stays a plain CDN URL string, which
     // is what the Counselors listing binds to as `{{ item.photoUrl }}`.
@@ -376,6 +377,7 @@ export const gluPersonProfileConfig = {
         { label: "Photo beside", value: "split" },
         { label: "Centered", value: "centered" },
       ],
+      ai: { instructions: "split unless the rest of the page is centred." },
     },
     background: {
       type: "select",
@@ -386,6 +388,7 @@ export const gluPersonProfileConfig = {
         { label: "Light Rose", value: "lightBlue" },
         { label: "Crimson", value: "crimson" },
       ],
+      ai: { instructions: "white by default. crimson only for a featured profile, and never when the next section is also crimson." },
     },
     photoShape: {
       type: "radio",
@@ -394,6 +397,7 @@ export const gluPersonProfileConfig = {
         { label: "Rounded", value: "rounded" },
         { label: "Circle", value: "circle" },
       ],
+      ai: { instructions: "rounded for the split layout, circle for centered." },
     },
   },
   defaultProps: {

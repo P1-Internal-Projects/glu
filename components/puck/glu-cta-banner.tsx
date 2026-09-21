@@ -6,6 +6,7 @@ import { Button } from "../../design-system/components/button";
 import { Section } from "../../design-system/components/section";
 import { Container } from "../../design-system/components/container";
 import { colors, typography, spacing } from "../../design-system/tokens";
+import { buttonLabelAi, linkAi } from "../../lib/ai-hints";
 
 export type GLUCtaBannerProps = {
   heading: string;
@@ -107,19 +108,22 @@ export const gluCtaBannerConfig = {
       type: "textarea",
       label: "Subtext",
       contentEditable: true,
+      ai: { instructions: "1–2 sentences. Include the deadline or date when there is one." },
     } as any,
     primaryCtaLabel: {
       type: "text",
       label: "Primary CTA Label",
       contentEditable: true,
+      ai: { required: true, ...buttonLabelAi("Start Your Application") },
     } as any,
-    primaryCtaHref: { type: "text", label: "Primary CTA URL" },
+    primaryCtaHref: { type: "text", label: "Primary CTA URL", ai: linkAi("Where the primary button goes.") },
     secondaryCtaLabel: {
       type: "text",
       label: "Secondary CTA Label",
       contentEditable: true,
+      ai: buttonLabelAi("Request Information", { optional: true }),
     } as any,
-    secondaryCtaHref: { type: "text", label: "Secondary CTA URL" },
+    secondaryCtaHref: { type: "text", label: "Secondary CTA URL", ai: linkAi("Where the secondary button goes.", { optional: true }) },
     background: {
       type: "select",
       label: "Background",
@@ -128,6 +132,7 @@ export const gluCtaBannerConfig = {
         { label: "Gold Accent", value: "gold" },
         { label: "Light Rose", value: "lightBlue" },
       ],
+      ai: { instructions: "navy (crimson) for the page's closing CTA; gold for a mid-page nudge; lightBlue only directly after a crimson section." },
     },
   },
   defaultProps: {

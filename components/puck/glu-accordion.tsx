@@ -7,6 +7,7 @@ import { Section } from "../../design-system/components/section";
 import { Container } from "../../design-system/components/container";
 import { colors, typography, spacing, radii } from "../../design-system/tokens";
 import { richTextProps } from "./rich-text-props";
+import { BACKGROUND_AI, EYEBROW_AI } from "../../lib/ai-hints";
 
 export type GLUAccordionProps = {
   eyebrow: string;
@@ -139,11 +140,13 @@ export const gluAccordionConfig = {
       type: "text",
       label: "Eyebrow",
       contentEditable: true,
+      ai: EYEBROW_AI,
     } as any,
     heading: {
       type: "textarea",
       label: "Heading",
       contentEditable: true,
+      ai: { required: true, instructions: "Names what the questions are about, e.g. 'Frequently Asked Questions' or 'Questions I hear most often'." },
     } as any,
     background: {
       type: "select",
@@ -153,13 +156,23 @@ export const gluAccordionConfig = {
         { label: "Off White", value: "offWhite" },
         { label: "Light Rose", value: "lightBlue" },
       ],
+      ai: BACKGROUND_AI,
     },
     items: {
       type: "array",
       label: "FAQ Items",
+      ai: { instructions: "3–6 question/answer pairs, one topic each, most common question first." },
       arrayFields: {
-        question: { type: "text", label: "Question" },
-        answer: { type: "richtext", label: "Answer" },
+        question: {
+          type: "text",
+          label: "Question",
+          ai: { required: true, instructions: "A question a prospective student actually asks, in their words, ending with ?" },
+        },
+        answer: {
+          type: "richtext",
+          label: "Answer",
+          ai: { required: true, instructions: "2–4 sentences with specifics — dates, numbers, the office to contact. Plain prose; no headings." },
+        },
       },
       getItemSummary: (item: { question?: string }, i?: number) => item?.question || `Item #${(i ?? 0) + 1}`,
     },

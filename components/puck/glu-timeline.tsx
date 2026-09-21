@@ -7,6 +7,7 @@ import { Container } from "../../design-system/components/container";
 import { Eyebrow } from "../../design-system/components/typography";
 import { colors, typography, spacing, radii } from "../../design-system/tokens";
 import { richTextProps } from "./rich-text-props";
+import { EYEBROW_AI } from "../../lib/ai-hints";
 
 export type GLUTimelineProps = {
   eyebrow: string;
@@ -177,15 +178,21 @@ export const gluTimelineConfig = {
     instructions: "Timeline — use for history, milestones, or multi-step processes. Each item needs a year, title, and description.",
   },
   fields: {
-    eyebrow: { type: "text", label: "Eyebrow", contentEditable: true } as any,
-    heading: { type: "textarea", label: "Heading", contentEditable: true } as any,
+    eyebrow: { type: "text", label: "Eyebrow", contentEditable: true, ai: EYEBROW_AI } as any,
+    heading: {
+      type: "textarea",
+      label: "Heading",
+      contentEditable: true,
+      ai: { required: true, instructions: "What the sequence tells, e.g. 'A Legacy of Excellence' or 'Your Path to Enrollment'." },
+    } as any,
     items: {
       type: "array",
       label: "Timeline Items",
+      ai: { instructions: "4–6 items in chronological order, earliest first." },
       arrayFields: {
-        year: { type: "text", label: "Year" },
-        title: { type: "text", label: "Title" },
-        description: { type: "richtext", label: "Description" },
+        year: { type: "text", label: "Year", ai: { required: true, instructions: "A four-digit year, or a short date or step label such as 'Nov 1' or 'Step 1'." } },
+        title: { type: "text", label: "Title", ai: { required: true, instructions: "2–5 words." } },
+        description: { type: "richtext", label: "Description", ai: { instructions: "1–2 sentences on what happened or what to do." } },
       },
       getItemSummary: (item: { title?: string }, i?: number) => item?.title || `Item #${(i ?? 0) + 1}`,
     },

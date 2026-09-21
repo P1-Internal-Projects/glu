@@ -9,6 +9,7 @@ import { Section } from "../../design-system/components/section";
 import { Container } from "../../design-system/components/container";
 import { colors, typography, spacing } from "../../design-system/tokens";
 import { richTextProps } from "./rich-text-props";
+import { BACKGROUND_AI, EYEBROW_AI, buttonLabelAi, imageAi, linkAi } from "../../lib/ai-hints";
 
 export type GLUCardGridProps = {
   eyebrow: string;
@@ -141,17 +142,19 @@ export const gluCardGridConfig = {
       type: "text",
       label: "Eyebrow",
       contentEditable: true,
+      ai: EYEBROW_AI,
     } as any,
     heading: {
       type: "textarea",
       label: "Heading",
       contentEditable: true,
-      ai: { required: true },
+      ai: { required: true, instructions: "What the cards have in common, 3–6 words, e.g. 'Find Your Program'." },
     } as any,
     subtext: {
       type: "textarea",
       label: "Subtext",
       contentEditable: true,
+      ai: { instructions: "1–2 sentences under the heading. Leave blank if the heading is enough." },
     } as any,
     columns: {
       type: "select",
@@ -160,6 +163,7 @@ export const gluCardGridConfig = {
         { label: "3 Columns", value: 3 },
         { label: "4 Columns", value: 4 },
       ],
+      ai: { instructions: "3 for cards with descriptions; 4 for compact, title-led cards. Match the card count to fill whole rows." },
     },
     background: {
       type: "select",
@@ -169,16 +173,18 @@ export const gluCardGridConfig = {
         { label: "Off White", value: "offWhite" },
         { label: "Light Rose", value: "lightBlue" },
       ],
+      ai: BACKGROUND_AI,
     },
     cards: {
       type: "array",
       label: "Cards",
+      ai: { instructions: "3, 4, 6 or 8 cards so every row is full. Each card is one program, department, office or story." },
       arrayFields: {
-        title: { type: "text", label: "Title" },
-        description: { type: "richtext", label: "Description" },
-        imageUrl: { type: "text", label: "Image URL" },
-        linkHref: { type: "text", label: "Link URL" },
-        linkLabel: { type: "text", label: "Link Label" },
+        title: { type: "text", label: "Title", ai: { required: true, instructions: "2–5 words, e.g. 'Environmental Science'." } },
+        description: { type: "richtext", label: "Description", ai: { instructions: "1–2 sentences on what makes this one distinctive." } },
+        imageUrl: { type: "text", label: "Image URL", ai: imageAi("Landscape photo for the top of the card.") },
+        linkHref: { type: "text", label: "Link URL", ai: linkAi("The page this card leads to.", { optional: true }) },
+        linkLabel: { type: "text", label: "Link Label", ai: buttonLabelAi("Explore the program", { optional: true }) },
       },
       getItemSummary: (item: { title?: string }, i?: number) => item?.title || `Item #${(i ?? 0) + 1}`,
     },

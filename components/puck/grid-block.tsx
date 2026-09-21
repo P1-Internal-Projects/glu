@@ -54,6 +54,12 @@ const ConnectableCardGrid = Connectable(CardGrid);
 
 export const gridBlock = {
   label: "Card Grid",
+  ai: {
+    // Superseded by GLUListing, which binds the same datasources and draws
+    // on-brand cards. Kept for pages that already use it.
+    exclude: true,
+    instructions: "Unbranded data grid. Use GLUListing instead.",
+  },
   fields: {
     title: { type: "text" as const, label: "Heading" },
     items: {

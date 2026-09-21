@@ -21,6 +21,7 @@ import type { SectionBackground } from "../../design-system/components/section";
 import { headshotOrSilhouette } from "../../lib/glu-assets";
 import { formatEventDate } from "./glu-event-header";
 import { GLUProgramCards } from "./glu-program-cards";
+import { EYEBROW_AI, withFieldAi } from "../../lib/ai-hints";
 
 /**
  * A GLU-branded view mode for the data list block.
@@ -741,9 +742,53 @@ export const gluListing = {
       "A collection of records from a datasource, drawn as GLU cards. Bind `items` to `{{ gluPeople.items }}`, `{{ gluEvents.items }}` or `{{ gluPrograms.items }}` and pick the matching view mode. Use `background: navy` at most once per page, for emphasis. `columns: auto` is right unless the design needs a fixed count.",
   },
   fields: {
-    ...baseListing.fields,
-    eyebrow: { type: "text", label: "Eyebrow" },
-    subtext: { type: "textarea", label: "Subtext" },
+    // The factory's binding, mapping and collection fields, annotated for the
+    // agent: which datasource pairs with which mode, and which `{{ item.x }}`
+    // paths each one exposes. These hints are the contract the fetchers keep.
+    ...withFieldAi(baseListing.fields as Record<string, unknown>, {
+      heading: { instructions: "Section heading, e.g. 'Meet Your Counselors' or 'Upcoming Events'." },
+      datasourceId: {
+        stream: false,
+        instructions: "gluPeople (counselors), gluEvents (events) or gluPrograms (academic programs). Must match viewMode.",
+      },
+      viewMode: { instructions: "peopleCards for gluPeople, eventCards for gluEvents, programCards for gluPrograms." },
+      titleField: { stream: false, instructions: "{{ item.name }} for people; {{ item.title }} for events and programs." },
+      subtitleField: {
+        stream: false,
+        instructions: "{{ item.role }} for people; {{ item.eventType }} for events; {{ item.degreeType }} for programs.",
+      },
+      teaserField: { stream: false, instructions: "{{ item.focusArea }} for people; {{ item.summary }} for events and programs." },
+      imageField: {
+        stream: false,
+        instructions: "{{ item.photoUrl }} for people; {{ item.imageUrl }} for events. Blank for programs (text-only cards).",
+      },
+      iconField: { exclude: true },
+      imagePosition: { instructions: "top to show images, none to hide them." },
+      imageLoading: { instructions: "lazy unless this is the first section on the page." },
+      groupBy: { instructions: "Leave blank; grouping is not used on GLU pages." },
+      startAt: { instructions: "1." },
+      status: { instructions: "Published." },
+      sortBy: {
+        stream: false,
+        instructions: "{{ item.name }} for people, {{ item.startDate }} for events, {{ item.title }} for programs.",
+      },
+      sortDir: { instructions: "asc." },
+      filterField: {
+        stream: false,
+        instructions: "{{ item.locale }} — always, paired with filterContains, so a page lists only records in its own language.",
+      },
+      filterContains: { stream: false, instructions: "The page's locale tag: en-US, es-US or fr-CA." },
+      maxItems: { instructions: "0 for the whole collection; 3 or 4 for a teaser beneath another section." },
+      photoShape: { instructions: "circle for a roster; rounded to echo a profile page above." },
+      showContact: { instructions: "Show for a directory page; hide when cards link to profile pages." },
+      showCollegeFilter: { instructions: "Show on the full catalog page; hide for a short teaser." },
+    }),
+    eyebrow: { type: "text", label: "Eyebrow", ai: EYEBROW_AI },
+    subtext: {
+      type: "textarea",
+      label: "Subtext",
+      ai: { instructions: "1–2 sentences under the heading. Leave blank if the heading is enough." },
+    },
     align: {
       type: "radio",
       label: "Header alignment",
@@ -751,8 +796,14 @@ export const gluListing = {
         { label: "Center", value: "center" },
         { label: "Left", value: "left" },
       ],
+      ai: { instructions: "center, matching the other GLU sections; left only after a left-aligned feature section." },
     },
-    columns: { type: "select", label: "Columns", options: COLUMN_OPTIONS },
+    columns: {
+      type: "select",
+      label: "Columns",
+      options: COLUMN_OPTIONS,
+      ai: { instructions: "auto unless the design needs a fixed count; 4 for a full roster, 3 for events." },
+    },
     cardStyle: {
       type: "radio",
       label: "Card style",
@@ -760,11 +811,13 @@ export const gluListing = {
         { label: "Elevated", value: "elevated" },
         { label: "Flat", value: "flat" },
       ],
+      ai: { instructions: "elevated on white; flat on a tinted or crimson background." },
     },
     background: {
       type: "select",
       label: "Background",
       options: BACKGROUND_OPTIONS,
+      ai: { instructions: "Alternate with neighbouring sections. navy (crimson) at most once per page, for emphasis." },
     },
   },
   defaultProps: {

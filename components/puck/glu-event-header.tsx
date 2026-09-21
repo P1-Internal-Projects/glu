@@ -4,6 +4,7 @@ import React from "react";
 import type { ComponentConfig } from "@puckeditor/core";
 import { Button } from "../../design-system/components/button";
 import { colors, layout, radii, spacing, typography } from "../../design-system/tokens";
+import { buttonLabelAi, imageAi, linkAi } from "../../lib/ai-hints";
 
 /**
  * The masthead of a single event page, and the place an event's structured
@@ -222,16 +223,17 @@ export const gluEventHeaderConfig = {
         { label: "Deadline", value: "Deadline" },
         { label: "Information Session", value: "Information Session" },
       ],
+      ai: { instructions: "The closest type; it becomes the badge on listing cards and a filter value." },
     },
-    title: { type: "text", label: "Event Title" },
-    summary: { type: "textarea", label: "Summary" },
-    startDate: { type: "text", label: "Date (YYYY-MM-DD)" },
-    startTime: { type: "text", label: "Start Time" },
-    endTime: { type: "text", label: "End Time" },
-    location: { type: "text", label: "Location" },
-    registrationUrl: { type: "text", label: "Registration URL" },
-    registrationLabel: { type: "text", label: "Registration Button Label" },
-    imageUrl: { type: "text", label: "Background Image URL" },
+    title: { type: "text", label: "Event Title", ai: { required: true, instructions: "The event's official name, e.g. 'Fall Open House 2026'." } },
+    summary: { type: "textarea", label: "Summary", ai: { required: true, instructions: "1–2 sentences for the listing card: who it is for and what happens." } },
+    startDate: { type: "text", label: "Date (YYYY-MM-DD)", ai: { required: true, stream: false, instructions: "YYYY-MM-DD exactly — listings sort and format on it." } },
+    startTime: { type: "text", label: "Start Time", ai: { instructions: "As displayed, e.g. '9:00 AM'. Blank for all-day items and deadlines." } },
+    endTime: { type: "text", label: "End Time", ai: { instructions: "As displayed, e.g. '3:00 PM'. Blank if open-ended." } },
+    location: { type: "text", label: "Location", ai: { instructions: "Building and room, or 'Online'." } },
+    registrationUrl: { type: "text", label: "Registration URL", ai: linkAi("Where to register or RSVP.", { optional: true }) },
+    registrationLabel: { type: "text", label: "Registration Button Label", ai: buttonLabelAi("Register") },
+    imageUrl: { type: "text", label: "Background Image URL", ai: imageAi("Wide photo behind the masthead; also the listing card image.") },
   },
   defaultProps: {
     eventType: "Open House",
