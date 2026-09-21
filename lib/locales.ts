@@ -36,6 +36,8 @@ export const DEFAULT_LOCALE = "en-US";
 export const LOCALES: LocaleDefinition[] = [
   { tag: "en-US", prefix: "", native: "English", english: "English (United States)", dir: "ltr" },
   { tag: "es-US", prefix: "es", native: "Español", english: "Spanish (United States)", dir: "ltr" },
+  // Added for the Montréal campus launch: Canadian French, served under /fr.
+  { tag: "fr-CA", prefix: "fr", native: "Français", english: "French (Canada)", dir: "ltr" },
 ];
 
 /**
