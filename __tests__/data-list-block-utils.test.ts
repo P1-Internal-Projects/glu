@@ -48,8 +48,8 @@ describe("data-list-block utils", () => {
       const { resolveField } = await import(
         "@pantheon-systems/puck-css/fields"
       );
-      const item = { name: "Luke" };
-      expect(resolveField(item, "{{ item.name }}")).toBe("Luke");
+      const item = { name: "Marisol Vega" };
+      expect(resolveField(item, "{{ item.name }}")).toBe("Marisol Vega");
     });
 
     it("returns empty string for missing fields", async () => {
@@ -65,7 +65,7 @@ describe("data-list-block utils", () => {
       const { resolveItemFields } = await import(
         "@pantheon-systems/puck-css/fields"
       );
-      const item = { name: "Luke", desc: "Jedi", img: "/luke.png" };
+      const item = { name: "Marisol Vega", desc: "Admissions counselor", img: "/marisol.png" };
       const result = resolveItemFields(item, {
         titleField: "{{ item.name }}",
         subtitleField: "",
@@ -73,10 +73,10 @@ describe("data-list-block utils", () => {
         imageField: "{{ item.img }}",
         iconField: "",
       });
-      expect(result.title).toBe("Luke");
+      expect(result.title).toBe("Marisol Vega");
       expect(result.subtitle).toBe("");
-      expect(result.teaser).toBe("Jedi");
-      expect(result.image).toBe("/luke.png");
+      expect(result.teaser).toBe("Admissions counselor");
+      expect(result.image).toBe("/marisol.png");
       expect(result.icon).toBe("");
       expect(result._raw).toBe(item);
     });

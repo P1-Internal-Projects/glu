@@ -42,143 +42,19 @@ function getFetcher(id: string) {
   return f;
 }
 
-describe("swapi fetcher", () => {
-  const fetcher = getFetcher("swapi");
-
-  it("returns {} when no id is available", async () => {
-    const result = await fetcher.fetch(makeFetcherParams());
-    expect(result).toEqual({});
-  });
-
-  it("returns {} on non-OK response", async () => {
-    const fetchImpl = vi.fn().mockResolvedValue({
-      ok: false,
-      status: 404,
-      json: async () => ({}),
-    });
-    const result = await fetcher.fetch(makeFetcherParams({
-      searchParams: { id: "1" },
-      fetchImpl,
-    }));
-    expect(result).toEqual({});
-    expect(fetchImpl).toHaveBeenCalledWith("https://swapi.info/api/people/1");
-  });
-
-  it("returns parsed JSON on success", async () => {
-    const payload = { name: "Luke Skywalker", height: "172" };
-    const fetchImpl = vi.fn().mockResolvedValue({
-      ok: true,
-      json: async () => payload,
-    });
-    const result = await fetcher.fetch(makeFetcherParams({
-      searchParams: { id: "1" },
-      fetchImpl,
-    }));
-    expect(result).toEqual(payload);
-  });
-
-  it("uses urlParams.id when searchParams has no id", async () => {
-    const fetchImpl = vi.fn().mockResolvedValue({
-      ok: true,
-      json: async () => ({ name: "FromPath" }),
-    });
-    const result = await fetcher.fetch(makeFetcherParams({
-      urlParams: { id: "5" },
-      fetchImpl,
-    }));
-    expect(result).toEqual({ name: "FromPath" });
-    expect(fetchImpl).toHaveBeenCalledWith("https://swapi.info/api/people/5");
-  });
-
-  it("prefers query id over path id", async () => {
-    const fetchImpl = vi.fn().mockResolvedValue({
-      ok: true,
-      json: async () => ({ name: "Q" }),
-    });
-    await fetcher.fetch(makeFetcherParams({
-      searchParams: { id: "2" },
-      urlParams: { id: "9" },
-      fetchImpl,
-    }));
-    expect(fetchImpl).toHaveBeenCalledWith("https://swapi.info/api/people/2");
-  });
-});
-
-describe("swapi_list fetcher", () => {
-  const fetcher = getFetcher("swapi_list");
-
-  it("maps results to { items: [...] }", async () => {
-    const fetchImpl = vi.fn().mockResolvedValue({
-      ok: true,
-      json: async () => [
-        { name: "Luke", url: "https://swapi.info/api/people/1" },
-      ],
-    });
-    const result = await fetcher.fetch(makeFetcherParams({ fetchImpl }));
-    expect(result).toEqual({
-      items: [{ id: "1", name: "Luke", url: "https://swapi.info/api/people/1" }],
-    });
-    expect(fetchImpl).toHaveBeenCalledWith("https://swapi.info/api/people");
-  });
-});
-
-describe("monster fetcher", () => {
-  const fetcher = getFetcher("monster");
-
-  it("returns {} when no index available", async () => {
-    const result = await fetcher.fetch(makeFetcherParams());
-    expect(result).toEqual({});
-  });
-
-  it("returns parsed pokemon on success", async () => {
-    const payload = {
-      data: {
-        getPokemon: {
-          key: "bulbasaur",
-          species: "Bulbasaur",
-          num: 1,
-          types: ["Grass", "Poison"],
-        },
-      },
-    };
-    const fetchImpl = vi.fn().mockResolvedValue({
-      ok: true,
-      json: async () => payload,
-    });
-    const result = await fetcher.fetch(makeFetcherParams({
-      searchParams: { monster: "bulbasaur" },
-      fetchImpl,
-    }));
-    expect(result).toEqual({
-      key: "bulbasaur",
-      species: "Bulbasaur",
-      num: 1,
-      types: ["Grass", "Poison"],
-      index: "bulbasaur",
-      name: "Bulbasaur",
-      url: "/pokemon/bulbasaur",
-    });
-  });
-});
-
-describe("monster_list fetcher", () => {
-  const fetcher = getFetcher("monster_list");
-
-  it("maps results to { items: [...] }", async () => {
-    const fetchImpl = vi.fn().mockResolvedValue({
-      ok: true,
-      json: async () => ({
-        data: {
-          getAllPokemon: [
-            { key: "bulbasaur", species: "Bulbasaur" },
-          ],
-        },
-      }),
-    });
-    const result = await fetcher.fetch(makeFetcherParams({ fetchImpl }));
-    expect(result).toEqual({
-      items: [{ key: "bulbasaur", species: "Bulbasaur", index: "bulbasaur", name: "Bulbasaur", url: "/pokemon/bulbasaur" }],
-    });
+/**
+ * The registry is what the editor's datasource picker shows, so an accidental
+ * re-import of a sample API would surface as a row in front of an editor
+ * rather than as a failing render.
+ */
+describe("the registered fetchers", () => {
+  it("are GLU's own collections and Content Publisher, nothing third-party", () => {
+    expect(REMOTE_DATASOURCE_FETCHERS.map((f) => f.id).sort()).toEqual([
+      "article",
+      "article_list",
+      "gluEvents",
+      "gluPeople",
+    ]);
   });
 });
 
