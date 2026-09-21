@@ -1,0 +1,70 @@
+/* GLU's answers to the P1 component library's tokens.
+ *
+ * p1-tokens.css (installed from components.p1.pantheon.io, and ours to edit)
+ * declares every --p1-* variable with a neutral default. Nothing in a library
+ * block reads a colour directly; they all go through these variables. So
+ * adopting a block into the GLU design system is this file, not a fork of the
+ * block: every value here is one of GLU's own tokens from
+ * design-system/tokens.ts, spelled the same so the two cannot drift.
+ *
+ * Loaded after p1-tokens.css so these win by order, not specificity.
+ */
+:root {
+  /* Surfaces and ink */
+  --p1-surface-default: #ffffff;        /* colors.white */
+  --p1-surface-subtle: #FFF5F5;         /* colors.offWhite */
+  --p1-surface-inverse: #1A0505;        /* colors.dark */
+  --p1-surface-dark: #6B0010;           /* colors.crimsonDark */
+  --p1-fg-default: #1A0505;             /* colors.dark */
+  --p1-fg-muted: #6B4040;               /* colors.muted */
+  --p1-fg-inverse: #ffffff;
+  --p1-border: #EDD5D5;                 /* colors.border */
+  --p1-border-strong: #C0392B;          /* colors.blue */
+  --p1-border-subtle: #EDD5D5;
+
+  /* Accent: the library's one "branded" tone becomes GLU crimson, with gold
+     for its on-dark counterpart. */
+  --p1-accent: #8B0015;                 /* colors.crimson */
+  --p1-accent-hover: #6B0010;           /* colors.crimsonDark */
+  --p1-on-accent: #ffffff;
+
+  /* Gradients resolve to the crimson → gold sweep GLU cards already use. */
+  --p1-gradient-from: #8B0015;
+  --p1-gradient-via: #B22030;           /* colors.crimsonLight */
+  --p1-gradient-to: #C8922A;            /* colors.gold */
+
+  /* Status */
+  --p1-success: #1a7a4a;                /* colors.success */
+  --p1-critical: #c0392b;               /* colors.error */
+  --p1-warning: #C8922A;                /* colors.gold */
+
+  /* Type: Playfair for headings, Inter for everything else, GLU's scale. */
+  --p1-font-heading: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  --p1-font-body: Inter, 'Helvetica Neue', Arial, sans-serif;
+  --p1-text-xl: 1.25rem;
+  --p1-text-2xl: 1.875rem;              /* size3xl */
+  --p1-text-3xl: 2.25rem;               /* size4xl */
+  --p1-text-4xl: 3rem;                  /* size5xl */
+
+  /* Shape and rhythm */
+  --p1-radius-sm: 0.25rem;
+  --p1-radius-card: 0.5rem;             /* radii.lg — GLU cards are tighter than the library default */
+  --p1-radius-xl: 1rem;
+  --p1-section-y: 5rem;                 /* layout.sectionPaddingY */
+  --p1-block-padding-block: 5rem;       /* every GLU section carries 5rem top and bottom */
+  --p1-block-padding-inline: 1.5rem;
+  --p1-container-default: 1200px;       /* layout.containerMax */
+  --p1-container-wide: 1200px;
+
+  /* Elevation, in GLU's crimson-tinted shadows */
+  --p1-shadow-sm: 0 1px 3px rgba(139,0,21,0.08);
+  --p1-shadow-md: 0 4px 12px rgba(139,0,21,0.12);
+  --p1-shadow-lg: 0 8px 24px rgba(139,0,21,0.16);
+}
+
+/* Library headings pick up the display face; the tokens file has no hook for
+   this, so it is the one selector-level rule in the adaptation. */
+[class^="p1-"][class$="__heading"],
+[class*=" p1-"][class*="__heading"] {
+  font-family: var(--p1-font-heading);
+}

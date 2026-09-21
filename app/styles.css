@@ -1,4 +1,11 @@
 @import "tailwindcss";
+/* The P1 component library's token layer and block chrome, installed by
+   `shadcn add @p1/tokens` and owned by this repo. p1-theme.css follows and
+   resolves every --p1-* token to a GLU token, so a block taken off the shelf
+   from components.p1.pantheon.io renders in GLU's palette and type. */
+@import "./p1-tokens.css";
+@import "./p1-base.css";
+@import "./p1-theme.css";
 @plugin "@tailwindcss/typography";
 
 /* Scoped via :has() rather than a bare `body {...}` selector so this reset

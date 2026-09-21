@@ -31,6 +31,12 @@ import { gluAccordionConfig } from "./components/puck/glu-accordion";
 import { gluTimelineConfig } from "./components/puck/glu-timeline";
 import { gluSlideshowConfig } from "./components/puck/glu-slideshow";
 
+// Off the shelf from components.p1.pantheon.io (`shadcn add @p1/team-grid`).
+// The block's code is ours now; its look comes from app/p1-theme.css, which
+// resolves the library's --p1-* tokens to GLU's, so it sits in the same
+// palette and type as the blocks above without a line of it being edited.
+import { TeamGridBlock } from "./components/puck/blocks/team-grid/team-grid.block";
+
 export const config = {
   root: puckRoot,
   categories: {
@@ -48,6 +54,10 @@ export const config = {
         "GLUTimeline",
         "GLUSlideshow",
       ],
+    },
+    p1Library: {
+      title: "P1 Component Library",
+      components: ["P1TeamGrid"],
     },
     pcc: {
       title: "Content Publisher",
@@ -93,6 +103,14 @@ export const config = {
     GLUAccordion: gluAccordionConfig,
     GLUTimeline: gluTimelineConfig,
     GLUSlideshow: gluSlideshowConfig,
+    P1TeamGrid: {
+      ...TeamGridBlock,
+      label: "P1 Team Grid",
+      ai: {
+        instructions:
+          "Grid of people with avatar, name, role and bio, from the P1 component library. For a static team (leadership, a department) whose members are typed in by hand. For counselors, use GLUListing bound to gluPeople instead — that one stays in sync with the counselor pages.",
+      },
+    },
     ...pccConfigs,
     GLUEventHeader: gluEventHeaderConfig,
     GLUPersonProfile: gluPersonProfileConfig,
