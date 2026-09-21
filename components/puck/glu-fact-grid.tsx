@@ -154,8 +154,22 @@ export const gluFactGridConfig = {
       type: "array",
       label: "Facts",
       arrayFields: {
-        label: { type: "text", label: "Label (e.g. Accreditation)" },
-        value: { type: "text", label: "Value" },
+        label: {
+          type: "text",
+          label: "Label (e.g. Accreditation)",
+          ai: {
+            required: true,
+            instructions: "A short noun naming the fact, 1-3 words. Not a sentence and not a question.",
+          },
+        },
+        value: {
+          type: "text",
+          label: "Value",
+          ai: {
+            required: true,
+            instructions: "The fact itself, kept short — a figure, a name, a comma-separated list. A row with no value is dropped.",
+          },
+        },
       },
       getItemSummary: (item: { label?: string }, i?: number) =>
         item?.label || `Fact #${(i ?? 0) + 1}`,

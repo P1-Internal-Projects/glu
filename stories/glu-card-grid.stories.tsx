@@ -58,3 +58,82 @@ export const FourColumn: Story = {
     }],
   },
 };
+
+/**
+ * The image field is now the rich `p1-media` type, so a card can hold a media
+ * value rather than a URL. These two stories are the pair that matters after
+ * that change: what an editor picks from the library today, and what the
+ * cards published before the change still hold.
+ */
+
+const CAMPUS = "https://media.p1.pantheon.io/image/92f403e4-b910-4a1d-bb22-7e2c02edf5c3/assets/cc682a18-70f0-48a4-b831-6ebf199954b4/c11b0445-e2c1-4485-82dd-43f66d18d806-glu-hero.jpeg";
+
+/**
+ * A media value carrying its own alt text, and a crop the editor drew in the
+ * dialog. The trim params ride on the stored URL and survive the transform.
+ */
+export const RichMediaValues: Story = {
+  args: {
+    ...ThreeColumn.args,
+    heading: "Picked from the media library",
+    cards: [
+      {
+        title: "Smart crop",
+        description: "Stored with fit=cover and gravity=auto, so the subject survives the 16:9 box.",
+        imageUrl: {
+          assetId: "cc682a18-70f0-48a4-b831-6ebf199954b4",
+          versionId: "c11b0445-e2c1-4485-82dd-43f66d18d806",
+          url: `${CAMPUS}?fit=cover&gravity=auto`,
+          alt: "The main quadrangle on a summer morning",
+        },
+        linkHref: "/academics",
+        linkLabel: "Explore the program",
+      },
+      {
+        title: "Custom crop",
+        description: "A rectangle drawn in the crop dialog, carried as trim params on the URL.",
+        imageUrl: {
+          assetId: "cc682a18-70f0-48a4-b831-6ebf199954b4",
+          versionId: "c11b0445-e2c1-4485-82dd-43f66d18d806",
+          url: `${CAMPUS}?trim.left=600&trim.top=300&trim.width=1400&trim.height=788`,
+          alt: "The entrance arch, cropped close",
+        },
+        linkHref: "/academics",
+        linkLabel: "Explore the program",
+      },
+      {
+        title: "No crop",
+        description: "Fit in: the whole frame, scaled down to the box.",
+        imageUrl: {
+          assetId: "cc682a18-70f0-48a4-b831-6ebf199954b4",
+          versionId: "c11b0445-e2c1-4485-82dd-43f66d18d806",
+          url: `${CAMPUS}?fit=scale-down`,
+          alt: "The main quadrangle, uncropped",
+        },
+        linkHref: "/academics",
+        linkLabel: "Explore the program",
+      },
+    ],
+  },
+};
+
+/**
+ * Cards published before the field was converted still hold a plain URL, and
+ * on this site those URLs are not on the media CDN. They keep rendering —
+ * see lib/media-image.ts for why that fallback exists and when it can go.
+ */
+export const LegacyUrlStrings: Story = {
+  args: {
+    ...ThreeColumn.args,
+    heading: "Stored before the field was rich",
+  },
+};
+
+/** A card with no image at all: the frame is skipped, not left blank. */
+export const NoImage: Story = {
+  args: {
+    ...ThreeColumn.args,
+    heading: "Text-only cards",
+    cards: cards.map((c) => ({ ...c, imageUrl: "" })),
+  },
+};
