@@ -36,6 +36,7 @@ import { gluSlideshowConfig } from "./components/puck/glu-slideshow";
 // resolves the library's --p1-* tokens to GLU's, so it sits in the same
 // palette and type as the blocks above without a line of it being edited.
 import { TeamGridBlock } from "./components/puck/blocks/team-grid/team-grid.block";
+import { withFieldAi } from "./lib/ai-hints";
 
 export const config = {
   root: puckRoot,
@@ -108,8 +109,16 @@ export const config = {
       label: "P1 Team Grid",
       ai: {
         instructions:
-          "Grid of people with avatar, name, role and bio, from the P1 component library. For a static team (leadership, a department) whose members are typed in by hand. For counselors, use GLUListing bound to gluPeople instead — that one stays in sync with the counselor pages.",
+          "Hand-typed team grid (leadership, a department) from the P1 component library. For counselors, use GLUListing bound to gluPeople instead — that one stays in sync with the counselor pages.",
       },
+      fields: withFieldAi(TeamGridBlock.fields as Record<string, unknown>, {
+        columns: { instructions: "3 for up to six people; 4 for a larger team." },
+        shape: { instructions: "circle for headshots; rounded for environmental photos." },
+        tone: { instructions: "white, or light directly after a white section." },
+        members: {
+          instructions: "Real people only, never invented names. Leave avatar blank when there is no photo — the block draws a placeholder.",
+        },
+      }) as typeof TeamGridBlock.fields,
     },
     ...pccConfigs,
     GLUEventHeader: gluEventHeaderConfig,

@@ -2,9 +2,21 @@ import { blockPaddingClass } from "./block-padding";
 
 export const quoteBlock = {
   label: "Quote",
+  ai: {
+    instructions:
+      "Single pull quote in body copy. For several student voices use GLUTestimonialSlider instead.",
+  },
   fields: {
-    quote: { type: "textarea" as const, label: "Quote" },
-    attribution: { type: "text" as const, label: "Attribution" },
+    quote: {
+      type: "textarea" as const,
+      label: "Quote",
+      ai: { required: true, instructions: "1–2 sentences, verbatim, without surrounding quotation marks." },
+    },
+    attribution: {
+      type: "text" as const,
+      label: "Attribution",
+      ai: { instructions: "Name and role, e.g. 'Marisol Vega, Senior Admissions Counselor'. Leave blank if unknown — never invent a person." },
+    },
   },
   defaultProps: {
     quote: "A short quotation goes here.",

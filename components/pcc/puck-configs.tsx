@@ -41,6 +41,7 @@ export const pccConfigs = {
       breadcrumbs: {
         type: "array" as const,
         label: "Breadcrumbs",
+        ai: { instructions: "Home, then the section (e.g. Newsroom) — 2 items. Do not include the article itself." },
         getItemSummary: (item: { label: string }) => item.label || "Crumb",
         arrayFields: {
           label: { type: "text" as const, contentEditable: true, ai: { required: true, instructions: "Breadcrumb label. Examples: 'Home', 'Newsroom'" } },
@@ -56,15 +57,17 @@ export const pccConfigs = {
       tags: {
         type: "array" as const,
         label: "Tags",
+        ai: { instructions: "0–4 topic tags. Auto-filled from PCC if contentId is set." },
         getItemSummary: (item: { label: string }) => item.label || "Tag",
         arrayFields: {
-          label: { type: "text" as const, contentEditable: true },
+          label: { type: "text" as const, contentEditable: true, ai: { required: true, instructions: "1–2 words, e.g. 'Research' or 'Campus Life'." } },
           variant: {
             type: "select" as const,
             options: [
               { label: "Filled", value: "filled" },
               { label: "Outline", value: "outline" },
             ],
+            ai: { instructions: "filled for the first tag, outline for the rest." },
           },
         },
         defaultItemProps: {
@@ -77,6 +80,7 @@ export const pccConfigs = {
       showShareButtons: {
         type: "radio" as const,
         label: "Show Share Buttons",
+        ai: { instructions: "Yes on public articles; No on internal notices." },
         options: [
           { label: "Yes", value: true },
           { label: "No", value: false },
@@ -86,6 +90,7 @@ export const pccConfigs = {
       backgroundType: {
         type: "select" as const,
         label: "Background Type",
+        ai: { instructions: "image unless the article has a video header; color when there is no media at all." },
         options: [
           { label: "Image", value: "image" },
           { label: "Video", value: "video" },
@@ -102,6 +107,7 @@ export const pccConfigs = {
           { label: "Medium (500px)", value: "medium" },
           { label: "Large (600px)", value: "large" },
         ],
+        ai: { instructions: "medium by default; large only with a strong background image." },
       },
     },
     defaultProps: {
@@ -140,6 +146,7 @@ export const pccConfigs = {
       maxWidth: {
         type: "select" as const,
         label: "Content Width",
+        ai: { instructions: "lg for articles; md for short notices." },
         options: [
           { label: "Small (576px)", value: "sm" },
           { label: "Medium (672px)", value: "md" },
@@ -151,10 +158,12 @@ export const pccConfigs = {
       bodyClassName: {
         type: "text" as const,
         label: "Body CSS Classes (optional)",
+        ai: { exclude: true },
       },
       containerClassName: {
         type: "text" as const,
         label: "Container CSS Classes (optional)",
+        ai: { exclude: true },
       },
     },
     defaultProps: {

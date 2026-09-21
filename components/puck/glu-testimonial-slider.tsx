@@ -7,6 +7,7 @@ import { Eyebrow } from "../../design-system/components/typography";
 import { Section } from "../../design-system/components/section";
 import { Container } from "../../design-system/components/container";
 import { colors, typography, spacing, radii } from "../../design-system/tokens";
+import { EYEBROW_AI, imageAi } from "../../lib/ai-hints";
 
 export type GLUTestimonialSliderProps = {
   eyebrow: string;
@@ -202,6 +203,7 @@ export const gluTestimonialSliderConfig = {
       type: "text",
       label: "Eyebrow",
       contentEditable: true,
+      ai: EYEBROW_AI,
     } as any,
     heading: {
       type: "textarea",
@@ -212,11 +214,12 @@ export const gluTestimonialSliderConfig = {
     testimonials: {
       type: "array",
       label: "Testimonials",
+      ai: { instructions: "3–4 voices from different programs. Use real quotes when given; otherwise write plausible student voices and mark the page for review." },
       arrayFields: {
-        quote: { type: "textarea", label: "Quote" },
-        name: { type: "text", label: "Name" },
-        program: { type: "text", label: "Program / Year" },
-        imageUrl: { type: "text", label: "Photo URL" },
+        quote: { type: "textarea", label: "Quote", ai: { required: true, instructions: "1–3 sentences in the student's own voice, with one specific detail. No quotation marks." } },
+        name: { type: "text", label: "Name", ai: { required: true, instructions: "First and last name." } },
+        program: { type: "text", label: "Program / Year", ai: { instructions: "'Program, Class of YYYY', e.g. 'Environmental Science, Class of 2025'." } },
+        imageUrl: { type: "text", label: "Photo URL", ai: imageAi("Square headshot.") },
       },
       getItemSummary: (item: { name?: string }, i?: number) => item?.name || `Item #${(i ?? 0) + 1}`,
     },

@@ -24,7 +24,11 @@ const buildFields = (rootProps?: Record<string, unknown>) => ({
     label: "Page Title",
     ai: { required: true, instructions: "Page title used for SEO and browser tab." },
   },
-  description: { type: "textarea" as const, label: "Page Description" },
+  description: {
+    type: "textarea" as const,
+    label: "Page Description",
+    ai: { instructions: "1–2 sentences for search results, under 160 characters, naming the page's subject and audience." },
+  },
   // GLU-specific: Content Publisher article pages bind their body through this id.
   pccContentId: {
     type: "text" as const,
@@ -34,8 +38,41 @@ const buildFields = (rootProps?: Record<string, unknown>) => ({
         "PCC article ID — only set on Content Publisher article pages. Leave empty for standard pages.",
     },
   },
-  ...createSeoRootFields(rootProps),
+  ...withSeoAi(createSeoRootFields(rootProps)),
 });
+
+/**
+ * The package's social-sharing fields, with hints. Every one inherits from the
+ * page title and description when blank, and the agent should leave them that
+ * way unless a page needs a different share card.
+ */
+function withSeoAi<T extends ReturnType<typeof createSeoRootFields>>(fields: T): T {
+  const hints: Record<string, NonNullable<import("@puckeditor/core").BaseField["ai"]>> = {
+    ogTitle: { instructions: "Leave blank to inherit the page title." },
+    ogDescription: { instructions: "Leave blank to inherit the page description." },
+    ogType: { instructions: "website; article only for Content Publisher article pages." },
+    ogImage: { stream: false, instructions: "Media library image, 1200×630. Leave blank to inherit the site default." },
+    ogLocale: { exclude: true },
+    twitterCard: { instructions: "summary_large_image." },
+    twitterTitle: { instructions: "Leave blank to inherit the page title." },
+    twitterImage: { stream: false, instructions: "Leave blank to reuse ogImage." },
+  };
+  const meta = fields._meta as { objectFields: Record<string, Record<string, unknown>> };
+  const objectFields = Object.fromEntries(
+    Object.entries(meta.objectFields).map(([name, field]) => [
+      name,
+      hints[name] ? { ...field, ai: hints[name] } : field,
+    ]),
+  );
+  return {
+    ...fields,
+    _meta: {
+      ...meta,
+      ai: { instructions: "Social sharing overrides. Leave every field blank unless the brief asks for a specific share card." },
+      objectFields,
+    },
+  } as T;
+}
 
 export const puckRoot = {
   ai: {

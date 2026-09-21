@@ -9,11 +9,16 @@ const levelClass: Record<"h1" | "h2" | "h3" | "h4", string> = {
 
 export const headingBlock = {
   label: "Heading",
+  ai: {
+    instructions:
+      "Plain heading inside body copy, between Paragraph and List blocks. GLU sections carry their own headings. Never h1: the hero or profile is the page's h1.",
+  },
   fields: {
-    title: { type: "text" as const, label: "Text" },
+    title: { type: "text" as const, label: "Text", ai: { required: true, instructions: "Sentence case, under 10 words." } },
     level: {
       type: "select" as const,
       label: "Level",
+      ai: { instructions: "h2 for a topic within body copy, h3 beneath it. Do not use h1." },
       options: [
         { label: "H1", value: "h1" },
         { label: "H2", value: "h2" },

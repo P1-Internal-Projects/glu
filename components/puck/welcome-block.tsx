@@ -2,6 +2,10 @@ import { WelcomeBlockRender } from "./welcome-block-render";
 
 export const welcomeBlock = {
   label: "P1 Welcome",
+  ai: {
+    exclude: true,
+    instructions: "Starter-kit welcome screen. Never place on a GLU page.",
+  },
   fields: {
     heading: { type: "text" as const, label: "Heading (signed out)" },
     description: { type: "textarea" as const, label: "Description (signed out)" },

@@ -1,7 +1,18 @@
 export const spacerBlock = {
   label: "Spacer",
+  ai: {
+    instructions:
+      "Vertical space between body-copy blocks. Rarely needed: GLU sections space themselves.",
+  },
   fields: {
-    height: { type: "number" as const, label: "Height (px)", min: 8, max: 240, step: 4 },
+    height: {
+      type: "number" as const,
+      label: "Height (px)",
+      min: 8,
+      max: 240,
+      step: 4,
+      ai: { instructions: "Multiple of 8; 24–96 is the usual range." },
+    },
   },
   defaultProps: {
     height: 48,

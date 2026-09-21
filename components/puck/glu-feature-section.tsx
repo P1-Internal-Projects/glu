@@ -9,6 +9,7 @@ import { Section } from "../../design-system/components/section";
 import { Container } from "../../design-system/components/container";
 import { colors, typography, spacing, radii, shadows } from "../../design-system/tokens";
 import { richTextProps } from "./rich-text-props";
+import { BACKGROUND_AI, EYEBROW_AI, buttonLabelAi, imageAi, linkAi } from "../../lib/ai-hints";
 
 export type GLUFeatureSectionProps = {
   eyebrow: string;
@@ -110,6 +111,7 @@ export const gluFeatureSectionConfig = {
       type: "text",
       label: "Eyebrow",
       contentEditable: true,
+      ai: EYEBROW_AI,
     } as any,
     heading: {
       type: "textarea",
@@ -127,10 +129,15 @@ export const gluFeatureSectionConfig = {
       type: "text",
       label: "CTA Label",
       contentEditable: true,
+      ai: buttonLabelAi("Explore Research", { optional: true }),
     } as any,
-    ctaHref: { type: "text", label: "CTA URL", ai: { stream: false } },
-    imageUrl: { type: "text", label: "Image URL", ai: { stream: false } },
-    imageAlt: { type: "text", label: "Image Alt Text" },
+    ctaHref: { type: "text", label: "CTA URL", ai: linkAi("Where the button goes.", { optional: true }) },
+    imageUrl: { type: "text", label: "Image URL", ai: imageAi("Photo for the image column, roughly 4:3.") },
+    imageAlt: {
+      type: "text",
+      label: "Image Alt Text",
+      ai: { instructions: "Describe the photo in one sentence. Required whenever imageUrl is set." },
+    },
     imagePosition: {
       type: "select",
       label: "Image Position",
@@ -138,6 +145,7 @@ export const gluFeatureSectionConfig = {
         { label: "Right", value: "right" },
         { label: "Left", value: "left" },
       ],
+      ai: { instructions: "Alternate right/left across consecutive feature sections." },
     },
     background: {
       type: "select",
@@ -147,6 +155,7 @@ export const gluFeatureSectionConfig = {
         { label: "Off White", value: "offWhite" },
         { label: "Light Rose", value: "lightBlue" },
       ],
+      ai: BACKGROUND_AI,
     },
   },
   defaultProps: {

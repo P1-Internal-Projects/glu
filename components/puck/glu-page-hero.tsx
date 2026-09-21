@@ -5,6 +5,7 @@ import Image from "next/image";
 import type { ComponentConfig } from "@puckeditor/core";
 import { Eyebrow } from "../../design-system/components/typography";
 import { colors, typography, layout, spacing } from "../../design-system/tokens";
+import { linkAi } from "../../lib/ai-hints";
 
 export type GLUPageHeroProps = {
   eyebrow: string;
@@ -109,6 +110,7 @@ export const gluPageHeroConfig = {
       type: "text",
       label: "Eyebrow",
       contentEditable: true,
+      ai: { instructions: "The section of the site this page belongs to, e.g. 'Admissions' or 'Grand Lakes University'." },
     } as any,
     heading: {
       type: "textarea",
@@ -119,9 +121,10 @@ export const gluPageHeroConfig = {
     breadcrumbs: {
       type: "array",
       label: "Breadcrumbs",
+      ai: { instructions: "Home, then the section, then this page's parent if any — 2–3 items. Do not include the current page." },
       arrayFields: {
-        label: { type: "text", label: "Label" },
-        href: { type: "text", label: "URL" },
+        label: { type: "text", label: "Label", ai: { required: true, instructions: "The page's nav name, e.g. 'Home' or 'Admissions'." } },
+        href: { type: "text", label: "URL", ai: linkAi("That page's path.") },
       },
       getItemSummary: (item: { label?: string }, i?: number) => item?.label || `Item #${(i ?? 0) + 1}`,
     },

@@ -7,6 +7,10 @@ import { sanitizeRichtextHtml } from "./sanitize-richtext";
 
 export const paragraphBlock = {
   label: "Paragraph",
+  ai: {
+    instructions:
+      "Body copy in rich text — the block for prose between GLU sections or under a Heading. One idea per paragraph; use several blocks for several paragraphs.",
+  },
   fields: {
     text: richtextField,
   },

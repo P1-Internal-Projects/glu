@@ -5,6 +5,7 @@ import Image from "next/image";
 import type { ComponentConfig } from "@puckeditor/core";
 import { Button } from "../../design-system/components/button";
 import { colors, typography, spacing } from "../../design-system/tokens";
+import { buttonLabelAi } from "../../lib/ai-hints";
 
 export type GLUHeroLayout = "panel" | "fullOverlay" | "lowerBand";
 
@@ -318,9 +319,9 @@ export const gluHeroConfig = {
     eyebrow: { type: "text", label: "Eyebrow Text", contentEditable: true, ai: { instructions: "Short label above the heading, e.g. 'Undergraduate Admissions'. 2-5 words." } },
     heading: { type: "textarea", label: "Heading", contentEditable: true, ai: { required: true, instructions: "Bold, inspiring headline for Grand Lakes University. Action-oriented, 6-10 words." } },
     subtext: { type: "textarea", label: "Subtext", contentEditable: true, ai: { instructions: "1-2 sentences expanding on the heading. Mention outcomes or a key differentiator." } },
-    ctaLabel: { type: "text", label: "Primary CTA Label", contentEditable: true },
+    ctaLabel: { type: "text", label: "Primary CTA Label", contentEditable: true, ai: { required: true, ...buttonLabelAi("Start Your Application") } },
     ctaHref: { type: "text", label: "Primary CTA URL", ai: { stream: false } },
-    secondaryCtaLabel: { type: "text", label: "Secondary CTA Label", contentEditable: true },
+    secondaryCtaLabel: { type: "text", label: "Secondary CTA Label", contentEditable: true, ai: buttonLabelAi("Explore Academics", { optional: true }) },
     secondaryCtaHref: { type: "text", label: "Secondary CTA URL", ai: { stream: false } },
     backgroundImageUrl: { type: "text", label: "Background Image URL", ai: { stream: false, instructions: "URL of a high-quality campus or program photo." } },
     overlayOpacity: { type: "number", label: "Overlay Opacity (0–1)", min: 0, max: 1, ai: { instructions: "Crimson overlay strength for the Full Overlay layout. (Side Panel and Lower Band use a fixed tint.)" } },

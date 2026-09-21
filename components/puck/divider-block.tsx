@@ -1,5 +1,9 @@
 export const dividerBlock = {
   label: "Divider",
+  ai: {
+    instructions:
+      "Thin horizontal rule between text blocks. Not needed between GLU sections, which space themselves.",
+  },
   fields: {},
   defaultProps: {},
   render: () => (

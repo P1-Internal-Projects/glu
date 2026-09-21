@@ -1,14 +1,24 @@
 import { blockPaddingClass } from "./block-padding";
+import { imageAi } from "../../lib/ai-hints";
 
 export const imageBlock = {
   label: "Image",
+  ai: {
+    instructions:
+      "Plain image with optional caption in body copy. Prefer MediaFigureBlock, which picks from the media library with cropping; use this only for an image that already has a URL.",
+  },
   fields: {
-    src: { type: "text" as const, label: "Image URL" },
-    alt: { type: "text" as const, label: "Alt text" },
-    caption: { type: "textarea" as const, label: "Caption (optional)" },
+    src: { type: "text" as const, label: "Image URL", ai: imageAi("The image to show.", { optional: false }) },
+    alt: {
+      type: "text" as const,
+      label: "Alt text",
+      ai: { instructions: "Describe what is in the image for someone who cannot see it, one sentence. Blank only if purely decorative." },
+    },
+    caption: { type: "textarea" as const, label: "Caption (optional)", ai: { instructions: "One sentence, optional. Leave blank if the image explains itself." } },
     loading: {
       type: "radio" as const,
       label: "Loading",
+      ai: { instructions: "lazy unless the image is the first thing on the page." },
       options: [
         { label: "Lazy", value: "lazy" },
         { label: "Eager", value: "eager" },

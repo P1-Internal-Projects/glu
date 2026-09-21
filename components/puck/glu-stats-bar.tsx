@@ -97,6 +97,7 @@ export const gluStatsBarConfig = {
       type: "text",
       label: "Section Heading (optional)",
       contentEditable: true,
+      ai: { instructions: "Short framing line, e.g. 'Grand Lakes by the Numbers'. Leave blank directly under a hero." },
     } as any,
     background: {
       type: "select",
@@ -106,13 +107,15 @@ export const gluStatsBarConfig = {
         { label: "Gold Accent", value: "gold" },
         { label: "White", value: "white" },
       ],
+      ai: { instructions: "navy straight after a hero; white between light sections; gold sparingly." },
     },
     stats: {
       type: "array",
       label: "Stats",
+      ai: { instructions: "Exactly 3 or 4 figures, only ones that are true of Grand Lakes." },
       arrayFields: {
-        value: { type: "text", label: "Value (e.g. 15,000)" },
-        label: { type: "text", label: "Label (e.g. Students)" },
+        value: { type: "text", label: "Value (e.g. 15,000)", ai: { required: true, instructions: "The number as displayed, with its unit: '15,000', '42%', '$450M', '120+'." } },
+        label: { type: "text", label: "Label (e.g. Students)", ai: { required: true, instructions: "2–3 word noun phrase, e.g. 'Enrolled Students'." } },
       },
       getItemSummary: (item: { label?: string }, i?: number) => item?.label || `Item #${(i ?? 0) + 1}`,
     },

@@ -5,10 +5,15 @@ const MARKDOWN_LINK_LINE = /^\[([^\]]*)\]\(([^)]+)\)$/;
 
 export const listBlock = {
   label: "List",
+  ai: {
+    instructions:
+      "Bulleted or numbered list in body copy. One item per line; a line may be a markdown link like [Visit campus](/campus-life).",
+  },
   fields: {
     ordered: {
       type: "radio" as const,
       label: "Style",
+      ai: { instructions: "Numbered only when the order matters (steps, deadlines); otherwise bulleted." },
       options: [
         { label: "Bulleted", value: false },
         { label: "Numbered", value: true },
@@ -17,6 +22,7 @@ export const listBlock = {
     items: {
       type: "textarea" as const,
       label: "Items (one per line)",
+      ai: { required: true, instructions: "3–7 items, one per line, parallel phrasing, no trailing periods." },
     },
   },
   defaultProps: {

@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback, useRef } from "react";
 import Image from "next/image";
 import type { ComponentConfig } from "@puckeditor/core";
 import { colors, typography, spacing, radii } from "../../design-system/tokens";
+import { imageAi } from "../../lib/ai-hints";
 
 export type GLUSlideshowProps = {
   slides: {
@@ -259,15 +260,21 @@ export const gluSlideshowConfig = {
     slides: {
       type: "array",
       label: "Slides",
+      ai: { instructions: "3–5 slides, each a different place or moment." },
       arrayFields: {
-        imageUrl: { type: "text", label: "Image URL" },
-        heading: { type: "text", label: "Heading" },
-        subtext: { type: "textarea", label: "Subtext" },
+        imageUrl: { type: "text", label: "Image URL", ai: imageAi("Wide landscape photo, at least 1920px.", { optional: false }) },
+        heading: { type: "text", label: "Heading", ai: { required: true, instructions: "2–6 words naming what is shown." } },
+        subtext: { type: "textarea", label: "Subtext", ai: { instructions: "One sentence of context. Leave blank to show only the heading." } },
       },
       getItemSummary: (item: { heading?: string }, i?: number) => item?.heading || `Item #${(i ?? 0) + 1}`,
     },
-    autoPlay: { type: "radio", label: "Auto-play", options: [{ label: "Yes", value: true }, { label: "No", value: false }] },
-    interval: { type: "number", label: "Interval (seconds)", min: 2, max: 30 },
+    autoPlay: {
+      type: "radio",
+      label: "Auto-play",
+      options: [{ label: "Yes", value: true }, { label: "No", value: false }],
+      ai: { instructions: "Yes for an ambient gallery; No when slide text needs to be read." },
+    },
+    interval: { type: "number", label: "Interval (seconds)", min: 2, max: 30, ai: { instructions: "5–8 seconds." } },
     height: {
       type: "radio",
       label: "Height",
@@ -276,6 +283,7 @@ export const gluSlideshowConfig = {
         { label: "Large (560px)", value: "lg" },
         { label: "Extra-large (700px)", value: "xl" },
       ],
+      ai: { instructions: "lg by default; xl only as a home-page opener; md inside a text-heavy page." },
     },
   },
   defaultProps: {
