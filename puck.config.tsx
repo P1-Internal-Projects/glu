@@ -31,6 +31,7 @@ import { gluAccordionConfig } from "./components/puck/glu-accordion";
 import { gluFactGridConfig } from "./components/puck/glu-fact-grid";
 import { gluTimelineConfig } from "./components/puck/glu-timeline";
 import { gluSlideshowConfig } from "./components/puck/glu-slideshow";
+import { gluArticleSectionConfig } from "./components/puck/glu-article-section";
 
 // Off the shelf from components.p1.pantheon.io (`shadcn add @p1/team-grid`).
 // The block's code is ours now; its look comes from app/p1-theme.css, which
@@ -56,6 +57,7 @@ export const config = {
         "GLUAccordion",
         "GLUTimeline",
         "GLUSlideshow",
+        "GLUArticleSection",
       ],
     },
     p1Library: {
@@ -107,6 +109,7 @@ export const config = {
     GLUAccordion: gluAccordionConfig,
     GLUTimeline: gluTimelineConfig,
     GLUSlideshow: gluSlideshowConfig,
+    GLUArticleSection: gluArticleSectionConfig,
     P1TeamGrid: {
       ...TeamGridBlock,
       label: "P1 Team Grid",

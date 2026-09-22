@@ -28,9 +28,57 @@ const ALLOWED_TAGS = [
   "a",
   "code",
   "span",
+  // Block formatting the toolbar can produce. These were missing while the
+  // editor happily emitted them, so an author styled a heading, saw it in the
+  // canvas, and lost it on the public page: Puck hydrates richtext into
+  // elements in the editor (rendered as-is, never sanitized) and hands the
+  // public render a string, which comes through here. Silent, one-way loss.
+  "h2",
+  "h3",
+  "h4",
+  "blockquote",
+  "pre",
+  "hr",
 ];
 
-const ALLOWED_ATTR = ["href", "target", "rel"];
+/**
+ * `h1` is deliberately NOT allowed.
+ *
+ * The page hero is the page's h1 — the same rule HeadingBlock states in its own
+ * field hints. A second one inside body copy is an outline error rather than a
+ * formatting choice, and this is the boundary that can still catch it.
+ */
+
+const ALLOWED_ATTR = ["href", "target", "rel", "style"];
+
+/** The only declarations `style` may carry — see the hook below. */
+const ALIGNMENTS = new Set(["left", "center", "right", "justify"]);
+
+/**
+ * `style` is allowed for one reason: the toolbar's text-align control writes
+ * `style="text-align: center"`, and dropping the attribute wholesale would be
+ * the same silent loss the tags above just fixed.
+ *
+ * It is not allowed to mean anything else. DOMPurify sanitizes CSS values, but
+ * it would still pass `position: fixed` or a `background-image: url(...)` that
+ * turns body copy into an overlay or a request to a third party. So the hook
+ * reduces every style attribute to a single recognized text-align, or removes
+ * it. Registered once at module load; DOMPurify dedupes by reference.
+ */
+DOMPurify.addHook("afterSanitizeAttributes", (node) => {
+  // Duck-typed rather than `node instanceof Element`: this runs under SSR as
+  // well as in the browser, and there the global does not exist — the DOM comes
+  // from isomorphic-dompurify's own jsdom. `instanceof` threw
+  // "Element is not defined" for every call, server-side included.
+  const el = node as unknown as Element;
+  if (typeof el?.getAttribute !== "function" || !el.hasAttribute("style")) return;
+  const align = /text-align\s*:\s*([a-z]+)/i.exec(el.getAttribute("style") ?? "")?.[1];
+  if (align && ALIGNMENTS.has(align.toLowerCase())) {
+    el.setAttribute("style", `text-align: ${align.toLowerCase()}`);
+  } else {
+    el.removeAttribute("style");
+  }
+});
 
 export function sanitizeRichtextHtml(html: string): string {
   return DOMPurify.sanitize(html, {
