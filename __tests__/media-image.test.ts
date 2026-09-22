@@ -24,14 +24,55 @@ describe("resolveMediaImage", () => {
   });
 
   /**
-   * Both dimensions have to reach the URL. The transform only honours the
-   * editor's crop when it has a target ratio to crop to, so a width alone
-   * would make "Smart crop" and the crop dialog do nothing on screen.
+   * A URL carrying no crop instruction gets the width alone. The CDN preserves
+   * the source ratio whether or not a height is sent — measured 1224x800 with
+   * one and 2546x1664 without, both 1.53 — so a height here crops nothing and
+   * costs half the pixels.
    */
-  it("asks the CDN for both dimensions, so a crop actually renders", () => {
+  it("asks for the width alone when the URL carries no crop instruction", () => {
     const out = resolveMediaImage({ assetId: "a1", versionId: "v1", url: ASSET }, SIZE);
     expect(out.src).toMatch(/[?&]width=800\b/);
+    expect(out.src).not.toMatch(/[?&]height=/);
+  });
+
+  /**
+   * Only a smart crop needs the height; it is the one mode that cannot crop
+   * without a box to crop to. Everywhere else the CDN returns the same aspect
+   * ratio with or without it, so the height only shrinks what is fetched while
+   * `object-fit: cover` frames it identically either way.
+   */
+  it("keeps the height for a smart crop, which has no box without it", () => {
+    const out = resolveMediaImage(
+      { assetId: "a1", versionId: "v1", url: `${ASSET}?fit=cover&gravity=auto` },
+      SIZE,
+    );
+    expect(out.src).toMatch(/[?&]width=800\b/);
     expect(out.src).toMatch(/[?&]height=450\b/);
+  });
+
+  /** "Fit in" returns the source ratio regardless, so a height is pure loss. */
+  it("omits the height for fit-in, which would only downscale", () => {
+    const out = resolveMediaImage(
+      { assetId: "a1", versionId: "v1", url: `${ASSET}?fit=scale-down` },
+      SIZE,
+    );
+    expect(out.src).toMatch(/[?&]width=800\b/);
+    expect(out.src).not.toMatch(/[?&]height=/);
+  });
+
+  /** A hand-drawn rectangle is the framing already, and outranks `fit`. */
+  it("omits the height once the editor has drawn a crop", () => {
+    const out = resolveMediaImage(
+      {
+        assetId: "a1",
+        versionId: "v1",
+        url: `${ASSET}?fit=cover&trim.left=0&trim.top=500&trim.width=2546&trim.height=1150`,
+      },
+      SIZE,
+    );
+    expect(out.src).toMatch(/[?&]width=800\b/);
+    expect(out.src).not.toMatch(/[?&]height=450/);
+    expect(out.src).toContain("trim.height=1150");
   });
 
   it("preserves the crop already on the stored URL", () => {
