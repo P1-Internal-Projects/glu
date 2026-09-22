@@ -5,9 +5,9 @@ import Image from "next/image";
 import type { ComponentConfig } from "@puckeditor/core";
 import { Button } from "../../design-system/components/button";
 import { colors, typography, spacing } from "../../design-system/tokens";
-import { buttonLabelAi } from "../../lib/ai-hints";
+import { buttonLabelAi, imageAi } from "../../lib/ai-hints";
 import { CAMPUS_BANNER_URL } from "../../lib/glu-assets";
-import { resolveMediaImage } from "../../lib/media-image";
+import { resolveMediaImage, type MediaImageValue } from "../../lib/media-image";
 
 export type GLUHeroLayout = "panel" | "fullOverlay" | "lowerBand";
 
@@ -19,7 +19,11 @@ export type GLUHeroProps = {
   ctaHref: string;
   secondaryCtaLabel: string;
   secondaryCtaHref: string;
-  backgroundImageUrl: string;
+  /**
+   * A media-library value, or a bare URL from before this field was rich.
+   * See lib/media-image.ts for why both shapes have to keep working.
+   */
+  backgroundImageUrl: MediaImageValue;
   overlayOpacity: number;
   layout?: GLUHeroLayout;
 };
@@ -156,17 +160,19 @@ export function GLUHeroComponent({
   );
 
   /**
-   * The hero keeps its plain-URL field, but the crop an editor picks in the
-   * media library now applies.
+   * 2560 wide, not the 1920 this asked for first. The section is full-bleed,
+   * so on a wide or retina display 1920 is already being stretched, and the
+   * library's own hero photograph is 2546px — asking for 1920 threw away a
+   * quarter of the pixels it had. Height keeps the 3.2:1 the section shows;
+   * `resolveMediaImage` drops it for a hand-drawn crop, which needs no box.
    *
-   * It did not before. The picker writes the choice onto the stored URL as
-   * `fit=cover&gravity=auto`, and the CDN ignores that unless the request
-   * also carries a target aspect ratio — so the home page has been storing a
-   * Smart crop that never reached the screen. 1920x600 is the widest the
-   * section gets (`min(85vh, 600px)`), which makes the crop meaningful
-   * without asking for more pixels than are ever shown.
+   * Above roughly 2560 there is nothing left to win: the stored asset is the
+   * ceiling, and a larger request upscales rather than sharpens.
+   *
+   * The alt carried by the media value is deliberately dropped: this image is
+   * decoration behind the h1, so an empty alt is the correct announcement.
    */
-  const background = resolveMediaImage(backgroundImageUrl, { width: 1920, height: 600 });
+  const background = resolveMediaImage(backgroundImageUrl, { width: 2560, height: 800 });
 
   const bg = background.src ? (
     <Image
@@ -315,7 +321,7 @@ export function GLUHeroComponent({
 export const gluHeroConfig = {
   label: "GLU Hero",
   ai: {
-    instructions: "Landing hero — place after GLUNav on home/program pages. Needs background image URL. Use GLUPageHero for interior pages.",
+    instructions: "Landing hero — place after GLUNav on home/program pages. Needs a background image from the media library. Use GLUPageHero for interior pages.",
   },
   fields: {
     layout: {
@@ -338,7 +344,18 @@ export const gluHeroConfig = {
     ctaHref: { type: "text", label: "Primary CTA URL", ai: { stream: false } },
     secondaryCtaLabel: { type: "text", label: "Secondary CTA Label", contentEditable: true, ai: buttonLabelAi("Explore Academics", { optional: true }) },
     secondaryCtaHref: { type: "text", label: "Secondary CTA URL", ai: { stream: false } },
-    backgroundImageUrl: { type: "text", label: "Background Image URL", ai: { stream: false, instructions: "URL of a high-quality campus or program photo." } },
+    // The rich media field, not a URL box: it stores the asset, its alt text
+    // and the crop, which is what puts "Custom…" and the crop dialog in front
+    // of an editor. The name stays `backgroundImageUrl` so heroes already
+    // published keep their images — see lib/media-image.ts.
+    //
+    // `as any` because the plugin registers this field type at runtime, so it
+    // is not in Puck's built-in Field union.
+    backgroundImageUrl: {
+      type: "p1-media",
+      label: "Background Image",
+      ai: imageAi("Wide campus or program photo behind the headline. Crop it to 16:5 — the section is a shallow band.", { optional: false }),
+    } as any,
     overlayOpacity: { type: "number", label: "Overlay Opacity (0–1)", min: 0, max: 1, ai: { instructions: "Crimson overlay strength for the Full Overlay layout. (Side Panel and Lower Band use a fixed tint.)" } },
   },
   defaultProps: {
