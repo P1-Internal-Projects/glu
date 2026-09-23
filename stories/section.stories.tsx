@@ -20,14 +20,17 @@ const Content = () => (
 
 export const White: Story = { render: () => <Section background="white"><Content /></Section> };
 export const OffWhite: Story = { render: () => <Section background="offWhite"><Content /></Section> };
-export const Navy: Story = {
+// `navy` and `lightBlue` are the stored prop values, kept because published
+// documents hold them. The colours are crimson and light rose, so the story
+// names and the copy say that.
+export const Crimson: Story = {
   render: () => (
     <Section background="navy">
       <Container>
-        <H2 style={{ marginBottom: 16, color: "white" }}>Navy Section</H2>
-        <Body style={{ color: "rgba(255,255,255,0.85)" }}>White text on navy background for high-contrast sections.</Body>
+        <H2 style={{ marginBottom: 16, color: "white" }}>Crimson Section</H2>
+        <Body style={{ color: "rgba(255,255,255,0.85)" }}>White text on crimson for high-contrast sections. The prop value is still <code>navy</code>.</Body>
       </Container>
     </Section>
   ),
 };
-export const LightBlue: Story = { render: () => <Section background="lightBlue"><Content /></Section> };
+export const LightRose: Story = { render: () => <Section background="lightBlue"><Content /></Section> };

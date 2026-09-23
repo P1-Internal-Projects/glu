@@ -17,5 +17,5 @@ const stats = [
   { value: "$450M", label: "Annual Research Funding" },
 ];
 
-export const Navy: Story = { args: { heading: "Grand Lakes by the Numbers", stats, background: "navy" } };
+export const Crimson: Story = { args: { heading: "Grand Lakes by the Numbers", stats, background: "navy" } };
 export const White: Story = { args: { heading: "Grand Lakes by the Numbers", stats, background: "white" } };

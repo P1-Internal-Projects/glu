@@ -8,7 +8,7 @@ type Story = StoryObj;
 const SHADOWS: { name: keyof typeof shadows; note: string }[] = [
   { name: "sm", note: "Card at rest (design-system/components/card.tsx)" },
   { name: "md", note: "Card on hover — the only interactive elevation change in the library" },
-  { name: "lg", note: "Testimonial card panel on the navy testimonial section" },
+  { name: "lg", note: "Testimonial card panel on the crimson testimonial section" },
   { name: "xl", note: "Defined in tokens but not currently used by any component" },
 ];
 

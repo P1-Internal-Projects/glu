@@ -41,7 +41,7 @@ export type GLUPersonProfileProps = {
   photoUrl: string;
   bio: string;
   layout: "split" | "centered";
-  background: "white" | "offWhite" | "lightBlue" | "crimson";
+  background: "white" | "offWhite" | "lightBlue" | "navy";
   photoShape: "rounded" | "circle";
 };
 
@@ -49,7 +49,11 @@ const BG: Record<GLUPersonProfileProps["background"], string> = {
   white: colors.white,
   offWhite: colors.offWhite,
   lightBlue: colors.lightBlue,
-  crimson: colors.crimson,
+  // `navy` is the stored value every other GLU section uses for this colour,
+  // and the colour is crimson — the name is a leftover the editor label
+  // ("Crimson") already corrects. Kept in step with the rest rather than
+  // being the one component with its own spelling.
+  navy: colors.crimson,
 };
 
 function Chip({ label, value, onDark }: { label: string; value: string; onDark: boolean }) {
@@ -199,7 +203,7 @@ export function GLUPersonProfile(props: GLUPersonProfileProps) {
     background = "white",
     photoShape = "rounded",
   } = props;
-  const onDark = background === "crimson";
+  const onDark = background === "navy";
   const centered = layout === "centered";
   const src = headshotOrSilhouette(photoUrl);
   const ink = onDark ? colors.white : colors.dark;
@@ -386,9 +390,9 @@ export const gluPersonProfileConfig = {
         { label: "White", value: "white" },
         { label: "Off White", value: "offWhite" },
         { label: "Light Rose", value: "lightBlue" },
-        { label: "Crimson", value: "crimson" },
+        { label: "Crimson", value: "navy" },
       ],
-      ai: { instructions: "white by default. crimson only for a featured profile, and never when the next section is also crimson." },
+      ai: { instructions: "white by default. navy (crimson) only for a featured profile, and never when the next section is also crimson." },
     },
     photoShape: {
       type: "radio",

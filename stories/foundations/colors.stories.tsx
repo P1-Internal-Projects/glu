@@ -65,7 +65,7 @@ export const Palette: Story = {
       />
       <SwatchGrid
         title="Secondary"
-        swatches={[{ name: "Blue", tokenPath: "colors.blue", hex: colors.blue }]}
+        swatches={[{ name: "Accent Red", tokenPath: "colors.blue", hex: colors.blue }]}
       />
       <SwatchGrid
         title="Neutrals & surfaces"
@@ -91,10 +91,16 @@ export const Palette: Story = {
         ]}
       />
       <p style={{ maxWidth: 640, fontSize: "0.8125rem", color: colors.muted, marginTop: 8 }}>
-        Note: <code>colors.navy</code> was renamed to <code>colors.crimson</code> on 2026-07-29 —
-        the value (<code>#8B0015</code>) is a deep crimson, not navy blue. Puck field option values
-        like <code>background: "navy"</code> on GLUStatsBar/GLUCtaBanner were left as-is (already
-        serialized into published pages); only the internal token name changed.
+        Nothing in this palette is blue. <code>colors.navy</code> was renamed to{" "}
+        <code>colors.crimson</code> on 2026-07-29 — the value (<code>#8B0015</code>) is a deep
+        crimson. Two token names still read blue and are not:{" "}
+        <code>colors.blue</code> is the accent red <code>#C0392B</code>, and{" "}
+        <code>colors.lightBlue</code> is the light rose <code>#FDECEA</code>.
+        <br />
+        These, and the Puck option values <code>background: "navy"</code> and{" "}
+        <code>"lightBlue"</code>, are left alone on purpose: they are serialized into published
+        pages, so renaming them is a content migration rather than a rename. Every label an
+        author or a reader sees says crimson and light rose.
       </p>
     </div>
   ),

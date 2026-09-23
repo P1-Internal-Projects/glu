@@ -14,7 +14,7 @@ const meta: Meta<typeof GLUPersonProfile> = {
   parameters: { layout: "fullscreen" },
   argTypes: {
     layout: { control: "radio", options: ["split", "centered"] },
-    background: { control: "select", options: ["white", "offWhite", "lightBlue", "crimson"] },
+    background: { control: "select", options: ["white", "offWhite", "lightBlue", "navy"] },
     photoShape: { control: "radio", options: ["rounded", "circle"] },
   },
 };
@@ -72,7 +72,10 @@ export const Centered: Story = {
 };
 
 export const Crimson: Story = {
-  args: { ...marisol, background: "crimson" },
+  // The stored value is `navy`, as on every other GLU section. This component
+  // used to spell it `crimson` — the only one that did — which made the same
+  // colour two different values depending on the block.
+  args: { ...marisol, background: "navy" },
 };
 
 /** The silhouette holds the layout when a record has no headshot. */

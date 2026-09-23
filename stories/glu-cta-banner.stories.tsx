@@ -19,5 +19,8 @@ const base = {
   secondaryCtaHref: "/contact",
 };
 
-export const Navy: Story = { args: { ...base, background: "navy" as const } };
-export const LightBlue: Story = { args: { ...base, background: "lightBlue" as const } };
+// Story names follow the colour, not the stored value: `navy` and `lightBlue`
+// are leftovers from before the crimson palette and are kept only because
+// published documents hold them.
+export const Crimson: Story = { args: { ...base, background: "navy" as const } };
+export const LightRose: Story = { args: { ...base, background: "lightBlue" as const } };
