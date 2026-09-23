@@ -38,11 +38,16 @@ import { gluArticleSectionConfig } from "./components/puck/glu-article-section";
 // resolves the library's --p1-* tokens to GLU's, so it sits in the same
 // palette and type as the blocks above without a line of it being edited.
 import { TeamGridBlock } from "./components/puck/blocks/team-grid/team-grid.block";
+// Blocks installed from the registry after 0.16 register in blocks/index.ts and
+// arrive through these two spreads. Team Grid predates that and stays below,
+// where it carries GLU's AI hints.
+import { p1Blocks, p1Categories } from "./components/puck/blocks";
 import { withFieldAi } from "./lib/ai-hints";
 
 export const config = {
   root: puckRoot,
   categories: {
+    ...p1Categories,
     glu: {
       title: "Grand Lakes University",
       components: [
@@ -98,6 +103,7 @@ export const config = {
     },
   },
   components: {
+    ...p1Blocks,
     GLUHero: gluHeroConfig,
     GLUPageHero: gluPageHeroConfig,
     GLUStatsBar: gluStatsBarConfig,

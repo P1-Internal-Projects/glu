@@ -12,6 +12,12 @@ import DOMPurify from "isomorphic-dompurify";
  * `<script>`, `<img onerror>`, `javascript:`/`data:` hrefs — is stripped.
  *
  * Runs in both Node (SSR) and the browser via isomorphic-dompurify.
+ *
+ * Starter kit 0.16 moved this into `@pantheon-systems/puck-css/sanitize-richtext`
+ * and deletes the template's copy. GLU keeps its own: the package version is
+ * additive-only but permanently forbids `style` (so text-align is lost) and has
+ * no h4, pre or hr. Its defaults are a subset of this list; re-check that
+ * before ever switching over.
  */
 const ALLOWED_TAGS = [
   "p",
@@ -39,6 +45,9 @@ const ALLOWED_TAGS = [
   "blockquote",
   "pre",
   "hr",
+  // Highlight. puck-css 0.16's own sanitizer allows it, so its toolbar can
+  // produce it; see the note on keeping this file below.
+  "mark",
 ];
 
 /**
