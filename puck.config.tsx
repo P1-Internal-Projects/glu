@@ -27,6 +27,7 @@ import { gluFeatureSectionConfig } from "./components/puck/glu-feature-section";
 import { gluCardGridConfig } from "./components/puck/glu-card-grid";
 import { gluTestimonialSliderConfig } from "./components/puck/glu-testimonial-slider";
 import { gluCtaBannerConfig } from "./components/puck/glu-cta-banner";
+import { gluAnnouncementBannerConfig } from "./components/puck/glu-announcement-banner";
 import { gluAccordionConfig } from "./components/puck/glu-accordion";
 import { gluFactGridConfig } from "./components/puck/glu-fact-grid";
 import { gluTimelineConfig } from "./components/puck/glu-timeline";
@@ -51,6 +52,7 @@ export const config = {
     glu: {
       title: "Grand Lakes University",
       components: [
+        "GLUAnnouncementBanner",
         "GLUHero",
         "GLUPageHero",
         "GLUStatsBar",
@@ -104,6 +106,7 @@ export const config = {
   },
   components: {
     ...p1Blocks,
+    GLUAnnouncementBanner: gluAnnouncementBannerConfig,
     GLUHero: gluHeroConfig,
     GLUPageHero: gluPageHeroConfig,
     GLUStatsBar: gluStatsBarConfig,
