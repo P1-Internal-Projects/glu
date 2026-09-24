@@ -36,7 +36,7 @@ const VARIANT_LABEL: Record<AnnouncementVariant, string> = {
 const VARIANT_BACKGROUND: Record<AnnouncementVariant, Exclude<AnnouncementBackground, "default">> = {
   news: "lightBlue",
   alert: "gold",
-  weather: "dark",
+  weather: "crimsonDark",
   emergency: "crimson",
 };
 

@@ -36,7 +36,7 @@ describe("GLUAnnouncementBanner", () => {
   });
 
   it("uses the variant's background unless one is chosen", () => {
-    expect(html({ variant: "weather" })).toContain("background-color:#1A0505");
+    expect(html({ variant: "weather" })).toContain("background-color:#6B0010");
     expect(html({ variant: "weather", background: "gold" })).toContain("background-color:#C8922A");
   });
 
