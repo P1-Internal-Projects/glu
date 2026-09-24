@@ -17,20 +17,18 @@
   },
   "dependencies": {
     "@pantheon-systems/cpub-react-sdk": "^5.2.1",
-    "@pantheon-systems/css-client": "^0.15.0",
-    "@pantheon-systems/p1-ai-chat": "^0.7.0",
+    "@pantheon-systems/css-client": "^0.16.0",
     "@pantheon-systems/p1-media": "^0.4.6",
-    "@pantheon-systems/p1-next-sdk": "^0.15.0",
+    "@pantheon-systems/p1-next-sdk": "^0.16.0",
     "@pantheon-systems/pcc-react-sdk": "^5.2.0",
-    "@pantheon-systems/pds-toolkit-react": "2.0.0-alpha.66",
-    "@pantheon-systems/puck-css": "^0.15.0",
+    "@pantheon-systems/pds-toolkit-react": "2.0.0-alpha.87",
+    "@pantheon-systems/puck-css": "^0.16.0",
     "@puckeditor/core": "^0.21.1",
     "@tailwindcss/postcss": "^4.2.2",
     "@tailwindcss/typography": "^0.5.16",
     "classnames": "^2.5.1",
     "isomorphic-dompurify": "^3.18.0",
-    "launchdarkly-react-client-sdk": "^3.9.2",
-    "next": "^16.2.12",
+    "next": "^16.3.3",
     "postcss": "^8.5.25",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
@@ -58,6 +56,6 @@
     "vitest": "^4.1.5"
   },
   "p1": {
-    "templateVersion": "0.15.0"
+    "templateVersion": "0.16.0"
   }
 }

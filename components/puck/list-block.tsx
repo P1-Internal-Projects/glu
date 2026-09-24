@@ -4,7 +4,7 @@ import { blockPaddingClass } from "./block-padding";
 const MARKDOWN_LINK_LINE = /^\[([^\]]*)\]\(([^)]+)\)$/;
 
 export const listBlock = {
-  label: "List",
+  label: "Text List",
   ai: {
     instructions:
       "Bulleted or numbered list in body copy. One item per line; a line may be a markdown link like [Visit campus](/campus-life).",
