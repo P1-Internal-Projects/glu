@@ -220,14 +220,14 @@ export const gluArticleSectionConfig = {
     heading: "",
     background: "white",
     width: "prose",
-    body: [
-      {
-        type: "ParagraphBlock",
-        props: {
-          text: "<p>Replace this with the section's copy. Add Heading, Media Figure and Quote blocks alongside it.</p>",
-        },
-      },
-    ],
+    // Starts empty on purpose. It used to hold one starter ParagraphBlock, but
+    // puck-css 0.16's live drawer thumbnails render defaultProps with an id on
+    // the top-level block only, so that child had no id and every editor load
+    // logged React's "unique key" warning from Puck's SlotRenderInternal. A
+    // fixed id is not the answer: Puck keeps existing ids when inserting, so
+    // every new section would share it. Restore the starter paragraph once
+    // LiveThumbnail populates nested slot ids the way Puck's insert does.
+    body: [],
   },
   render: GLUArticleSectionComponent,
 } as unknown as ComponentConfig<GLUArticleSectionProps>;
