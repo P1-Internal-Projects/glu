@@ -95,3 +95,11 @@ describe("SiteChrome bare", () => {
     expect(out).not.toContain("Skip to main content");
   });
 });
+
+describe("GLUVideo inline", () => {
+  it("runs the full width at 16:9, not held to the content column", () => {
+    const out = renderToStaticMarkup(<GLUVideoComponent {...BASE} size="inline" />);
+    expect(out).toMatch(/^<div style="width:100%;aspect-ratio:16 \/ 9/);
+    expect(out).not.toContain("max-width");
+  });
+});

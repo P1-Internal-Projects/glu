@@ -2,7 +2,7 @@
 
 import React from "react";
 import type { ComponentConfig } from "@puckeditor/core";
-import { colors, typography, spacing, layout } from "../../design-system/tokens";
+import { colors, typography, spacing } from "../../design-system/tokens";
 import { imageAi } from "../../lib/ai-hints";
 import { resolveMediaImage, type MediaImageValue } from "../../lib/media-image";
 
@@ -208,13 +208,9 @@ export function GLUVideoComponent({
     );
   }
 
-  if (size === "fullscreen") return <div style={frame}>{body}</div>;
-
-  return (
-    <div style={{ maxWidth: layout.containerMax, margin: "0 auto", padding: `${spacing[8]} ${spacing[4]}` }}>
-      <div style={frame}>{body}</div>
-    </div>
-  );
+  // Both sizes run edge to edge: inline is the full browser width at 16:9,
+  // not held to the content column.
+  return <div style={frame}>{body}</div>;
 }
 
 const yesNo = [
@@ -249,7 +245,7 @@ export const gluVideoConfig = {
       label: "Size",
       options: [
         { label: "Fill the screen", value: "fullscreen" },
-        { label: "Inline (16:9)", value: "inline" },
+        { label: "Full width (16:9)", value: "inline" },
       ],
       ai: { instructions: "fullscreen on a Full-screen page layout; inline on a standard page." },
     },
