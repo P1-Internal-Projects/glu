@@ -29,6 +29,19 @@ const buildFields = (rootProps?: Record<string, unknown>) => ({
     label: "Page Description",
     ai: { instructions: "1–2 sentences for search results, under 160 characters, naming the page's subject and audience." },
   },
+  // A demo or kiosk page: the blocks and nothing else — no nav, no footer.
+  pageLayout: {
+    type: "radio" as const,
+    label: "Page Layout",
+    options: [
+      { label: "Standard (nav and footer)", value: "standard" },
+      { label: "Full-screen (no nav or footer)", value: "bare" },
+    ],
+    ai: {
+      instructions:
+        "standard for every normal page. bare only for a page that is just one full-screen block, such as a demo video.",
+    },
+  },
   // GLU-specific: Content Publisher article pages bind their body through this id.
   pccContentId: {
     type: "text" as const,
@@ -77,7 +90,7 @@ function withSeoAi<T extends ReturnType<typeof createSeoRootFields>>(fields: T):
 export const puckRoot = {
   ai: {
     instructions:
-      "Page root. The site nav and footer render automatically and are NOT blocks — never add them. Page body order: GLUHero (or GLUPageHero for interior) → GLUStatsBar → GLUFeatureSection(s) → GLUCardGrid → GLUTestimonialSlider → GLUCtaBanner. Set pccContentId only on Content Publisher article pages.",
+      "Page root. The site nav and footer render automatically and are NOT blocks — never add them (pageLayout bare turns them off for a full-screen page such as a demo video). Page body order: GLUHero (or GLUPageHero for interior) → GLUStatsBar → GLUFeatureSection(s) → GLUCardGrid → GLUTestimonialSlider → GLUCtaBanner. Set pccContentId only on Content Publisher article pages.",
   },
   fields: buildFields(),
   /**
@@ -89,6 +102,7 @@ export const puckRoot = {
     buildFields(data.props ?? {}),
   defaultProps: {
     title: DEFAULT_EDITOR_ROOT_TITLE,
+    pageLayout: "standard",
     pccContentId: "",
   },
   /**
@@ -107,13 +121,16 @@ export const puckRoot = {
     children?: ReactNode;
     title?: string;
     pccContentId?: string;
+    pageLayout?: "standard" | "bare";
     locale?: string;
   }) => {
-    const { children, pccContentId, title, locale } = props;
+    const { children, pccContentId, title, locale, pageLayout } = props;
     return (
       <PCCPageProvider contentId={pccContentId || null} articleTitle={title || null}>
         <div className="font-sans antialiased">
-          <SiteChrome locale={locale}>{children}</SiteChrome>
+          <SiteChrome locale={locale} bare={pageLayout === "bare"}>
+            {children}
+          </SiteChrome>
         </div>
       </PCCPageProvider>
     );

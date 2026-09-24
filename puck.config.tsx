@@ -28,6 +28,7 @@ import { gluCardGridConfig } from "./components/puck/glu-card-grid";
 import { gluTestimonialSliderConfig } from "./components/puck/glu-testimonial-slider";
 import { gluCtaBannerConfig } from "./components/puck/glu-cta-banner";
 import { gluAnnouncementBannerConfig } from "./components/puck/glu-announcement-banner";
+import { gluVideoConfig } from "./components/puck/glu-video";
 import { gluAccordionConfig } from "./components/puck/glu-accordion";
 import { gluFactGridConfig } from "./components/puck/glu-fact-grid";
 import { gluTimelineConfig } from "./components/puck/glu-timeline";
@@ -64,6 +65,7 @@ export const config = {
         "GLUAccordion",
         "GLUTimeline",
         "GLUSlideshow",
+        "GLUVideo",
         "GLUArticleSection",
       ],
     },
@@ -118,6 +120,7 @@ export const config = {
     GLUAccordion: gluAccordionConfig,
     GLUTimeline: gluTimelineConfig,
     GLUSlideshow: gluSlideshowConfig,
+    GLUVideo: gluVideoConfig,
     GLUArticleSection: gluArticleSectionConfig,
     P1TeamGrid: {
       ...TeamGridBlock,

@@ -10,12 +10,12 @@ export default meta;
 
 type Story = StoryObj<typeof GLUAnnouncementBannerComponent>;
 
-// Placeholder copy: the banner has no source content to draw on.
+// The block's default copy.
 const base = {
-  title: "Announcement title",
-  description: "A short description of the announcement.",
-  buttonLabel: "Learn More",
-  buttonHref: "#",
+  title: "Winter Weather Alert!",
+  description: "Campus is closed today due to inclement weather.",
+  buttonLabel: "learn more",
+  buttonHref: "/weather-updates",
   background: "default" as const,
   customIcon: null,
   dismissible: true,

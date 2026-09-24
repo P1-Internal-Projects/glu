@@ -43,9 +43,12 @@ function useChromeLocale(explicit?: string): string {
 
 export function SiteChrome({
   locale,
+  bare = false,
   children,
 }: {
   locale?: string;
+  /** A full-screen page (Page Layout: Full-screen): no nav, footer or skip link. */
+  bare?: boolean;
   children?: React.ReactNode;
 }) {
   const tag = useChromeLocale(locale);
@@ -57,6 +60,14 @@ export function SiteChrome({
    * is inside this element, so it is the nearest ancestor for all content and
    * assistive technology resolves the page's real language from it.
    */
+  if (bare) {
+    return (
+      <div lang={tag} dir={dir}>
+        <main id="main-content">{children}</main>
+      </div>
+    );
+  }
+
   return (
     <div lang={tag} dir={dir}>
       <a className="glu-skip-link" href="#main-content">

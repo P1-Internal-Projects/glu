@@ -231,10 +231,14 @@ export function Client({
     ? { ...data, root: { ...data.root, props: { ...data.root?.props, locale } } }
     : data;
 
+  // A full-screen page is shown as-is, so the signed-in editor's floating
+  // widget stays off it. It is still editable from /p1.
+  const bare = (data.root?.props as { pageLayout?: string } | undefined)?.pageLayout === "bare";
+
   return (
     <>
       <RenderClient config={config} data={localizedData} />
-      {pageMetadata && <P1EditWidget route={pageMetadata.route} />}
+      {pageMetadata && !bare && <P1EditWidget route={pageMetadata.route} />}
     </>
   );
 }
