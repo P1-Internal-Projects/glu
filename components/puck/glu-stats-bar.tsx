@@ -9,20 +9,28 @@ import { colors, typography, spacing } from "../../design-system/tokens";
 export type GLUStatsBarProps = {
   heading: string;
   stats: { value: string; label: string }[];
-  background: "navy" | "gold" | "white";
+  /**
+   * Stored values predate the crimson palette and are kept because published
+   * pages hold them: `navy` is crimson. `gold` rendered white and `white`
+   * rendered the blush off-white until they were made to mean what they say.
+   */
+  background: "navy" | "crimsonDark" | "gold" | "white";
+};
+
+/** Section colour, number colour, label colour and divider per background. */
+const THEMES: Record<GLUStatsBarProps["background"], { bg: string; value: string; label: string; heading: string; divider: string }> = {
+  navy: { bg: colors.crimson, value: colors.gold, label: "rgba(255,255,255,0.8)", heading: colors.white, divider: "rgba(255,255,255,0.15)" },
+  crimsonDark: { bg: colors.crimsonDark, value: colors.gold, label: "rgba(255,255,255,0.8)", heading: colors.white, divider: "rgba(255,255,255,0.15)" },
+  // Dark text throughout: white on gold is about 2.6:1.
+  gold: { bg: colors.gold, value: colors.crimsonDark, label: colors.dark, heading: colors.dark, divider: "rgba(26,5,5,0.2)" },
+  white: { bg: colors.white, value: colors.crimson, label: colors.muted, heading: colors.muted, divider: colors.border },
 };
 
 export function GLUStatsBarComponent({ heading, stats, background }: GLUStatsBarProps) {
-  const isNavy = background === "navy";
-  const isGold = background === "gold";
-
-  const bgMap = { navy: "navy", gold: "white", white: "offWhite" } as const;
-  const valuColor = isNavy ? colors.gold : isGold ? colors.crimson : colors.crimson;
-  const labelColor = isNavy ? "rgba(255,255,255,0.8)" : colors.muted;
-  const dividerColor = isNavy ? "rgba(255,255,255,0.15)" : colors.border;
+  const theme = THEMES[background] ?? THEMES.navy;
 
   return (
-    <Section background={bgMap[background]} paddingY={spacing[12]}>
+    <Section paddingY={spacing[12]} style={{ backgroundColor: theme.bg }}>
       <Container>
         {heading && (
           <p
@@ -32,7 +40,7 @@ export function GLUStatsBarComponent({ heading, stats, background }: GLUStatsBar
               fontWeight: typography.weightSemibold,
               letterSpacing: "0.08em",
               textTransform: "uppercase" as const,
-              color: isNavy ? colors.white : colors.muted,
+              color: theme.heading,
               textAlign: "center" as const,
               margin: `0 0 ${spacing[8]}`,
             }}
@@ -53,7 +61,7 @@ export function GLUStatsBarComponent({ heading, stats, background }: GLUStatsBar
               style={{
                 textAlign: "center" as const,
                 padding: `${spacing[4]} ${spacing[6]}`,
-                borderRight: i < stats.length - 1 ? `1px solid ${dividerColor}` : "none",
+                borderRight: i < stats.length - 1 ? `1px solid ${theme.divider}` : "none",
               }}
             >
               <div
@@ -61,8 +69,7 @@ export function GLUStatsBarComponent({ heading, stats, background }: GLUStatsBar
                   fontFamily: typography.fontHeading,
                   fontSize: typography.size4xl,
                   fontWeight: typography.weightBold,
-                  color: valuColor,
-                  backgroundColor: isNavy ? colors.crimson : isGold ? colors.white : colors.offWhite,
+                  color: theme.value,
                   lineHeight: 1,
                   marginBottom: spacing[2],
                 }}
@@ -73,7 +80,7 @@ export function GLUStatsBarComponent({ heading, stats, background }: GLUStatsBar
                 style={{
                   fontFamily: typography.fontBody,
                   fontSize: typography.sizeSm,
-                  color: labelColor,
+                  color: theme.label,
                   lineHeight: typography.lineHeightNormal,
                 }}
               >
@@ -104,10 +111,11 @@ export const gluStatsBarConfig = {
       label: "Background",
       options: [
         { label: "Crimson", value: "navy" },
-        { label: "Gold Accent", value: "gold" },
+        { label: "Deep Crimson", value: "crimsonDark" },
+        { label: "Gold", value: "gold" },
         { label: "White", value: "white" },
       ],
-      ai: { instructions: "navy straight after a hero; white between light sections; gold sparingly." },
+      ai: { instructions: "navy (crimson) straight after a hero; crimsonDark next to another crimson section; white between light sections; gold sparingly." },
     },
     stats: {
       type: "array",

@@ -17,5 +17,10 @@ const stats = [
   { value: "$450M", label: "Annual Research Funding" },
 ];
 
-export const Crimson: Story = { args: { heading: "Grand Lakes by the Numbers", stats, background: "navy" } };
-export const White: Story = { args: { heading: "Grand Lakes by the Numbers", stats, background: "white" } };
+const heading = "Grand Lakes by the Numbers";
+
+// `navy` is the stored value for crimson, kept because published pages hold it.
+export const Crimson: Story = { args: { heading, stats, background: "navy" } };
+export const DeepCrimson: Story = { args: { heading, stats, background: "crimsonDark" } };
+export const Gold: Story = { args: { heading, stats, background: "gold" } };
+export const White: Story = { args: { heading, stats, background: "white" } };
