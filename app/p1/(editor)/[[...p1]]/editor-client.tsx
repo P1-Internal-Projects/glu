@@ -8,7 +8,6 @@ import {
 } from "@pantheon-systems/p1-next-sdk";
 import { P1ChatbotProvider, useP1Chatbot } from "@pantheon-systems/p1-next-sdk/chatbot";
 import { createMediaPlugin } from "@pantheon-systems/p1-media";
-import type { Checkpoint } from "@pantheon-systems/puck-css";
 
 import "@pantheon-systems/p1-next-sdk/editor.css";
 
@@ -52,13 +51,5 @@ export const EditorClientWrapper = createP1EditorClient({
   useExtensions: useEditorExtensions,
   pluginOptions: {
     logoUrl: P1_ASSETS.LOGO_URL,
-  },
-  overrideOptions: {
-    onPublishSuccess: (checkpoint: Checkpoint) => {
-      alert(`Published: ${checkpoint.name ?? checkpoint.id}`);
-    },
-    onPublishError: (err: Error) => {
-      alert(`Publish failed: ${err.message}`);
-    },
   },
 });
