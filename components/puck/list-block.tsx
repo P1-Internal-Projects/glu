@@ -1,4 +1,6 @@
 import { blockPaddingClass } from "./block-padding";
+import { bodyCopyStyle, bodyLinkStyle, proseVars } from "../../design-system/components/body-copy";
+import { colors } from "../../design-system/tokens";
 
 /** One line = `[label](href)` (from a datasource's `markdownLinks` token or arg form) or plain text. */
 const MARKDOWN_LINK_LINE = /^\[([^\]]*)\]\(([^)]+)\)$/;
@@ -38,7 +40,11 @@ export const listBlock = {
     const listClass = ordered ? "list-decimal" : "list-disc";
     return (
       <div className={blockPaddingClass}>
-        <ListTag className={`m-0 max-w-prose space-y-1 pl-6 leading-relaxed ${listClass}`}>
+        {/* Crimson markers, as in Paragraph's lists: `::marker` takes the list's colour. */}
+        <ListTag
+          className={`m-0 max-w-prose space-y-1 pl-6 ${listClass} marker:text-[var(--glu-marker)]`}
+          style={{ ...bodyCopyStyle, ...proseVars, ["--glu-marker" as string]: colors.crimson }}
+        >
           {lines.map((line, i) => {
             const m = line.match(MARKDOWN_LINK_LINE);
             if (m) {
@@ -56,10 +62,7 @@ export const listBlock = {
               }
               return (
                 <li key={i} className="break-words">
-                  <a
-                    href={href}
-                    className="text-blue-700 underline decoration-blue-700/40 underline-offset-2 hover:decoration-blue-700"
-                  >
+                  <a href={href} style={bodyLinkStyle}>
                     {m[1]}
                   </a>
                 </li>
