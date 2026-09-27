@@ -1,4 +1,6 @@
 import { blockPaddingClass } from "./block-padding";
+import { colors, typography, spacing } from "../../design-system/tokens";
+import { bodyCopyStyle } from "../../design-system/components/body-copy";
 
 export const quoteBlock = {
   label: "Quote",
@@ -23,12 +25,28 @@ export const quoteBlock = {
     attribution: "",
   },
   render: ({ quote, attribution }: { quote?: string; attribution?: string }) => (
+    // The GLU pull quote: crimson rule, the heading face in italic, and a muted
+    // attribution — the same treatment as the testimonial slider's quotes.
     <blockquote
-      className={`m-0 max-w-prose border-l-4 border-neutral-300 pl-6 ${blockPaddingClass}`}
+      className={`m-0 max-w-prose ${blockPaddingClass}`}
+      style={{ borderLeft: `4px solid ${colors.crimson}`, paddingLeft: spacing[6] }}
     >
-      <p className="m-0 text-lg italic leading-relaxed">{quote}</p>
+      <p
+        style={{
+          margin: 0,
+          fontFamily: typography.fontHeading,
+          fontStyle: "italic",
+          fontSize: typography.sizeXl,
+          lineHeight: typography.lineHeightSnug,
+          color: colors.dark,
+        }}
+      >
+        {quote}
+      </p>
       {attribution ? (
-        <footer className="mt-3 text-base text-neutral-600">— {attribution}</footer>
+        <footer style={{ ...bodyCopyStyle, marginTop: spacing[3], fontSize: typography.sizeSm, color: colors.muted }}>
+          — {attribution}
+        </footer>
       ) : null}
     </blockquote>
   ),
