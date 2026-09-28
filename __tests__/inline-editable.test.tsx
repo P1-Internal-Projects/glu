@@ -75,7 +75,7 @@ describe("glu-accordion", () => {
       items: [{ question: "Is this long question text truncated safely?", answer: "Yes." }],
     });
     expect(html).toContain("Is this long question text truncated safely?");
-    expect(html).toContain('id="accordion-0"');
+    expect(html).toMatch(/id="accordion[^"]*-0"/);
   });
 
   it("renders an inline-editable question without throwing", () => {
@@ -84,7 +84,7 @@ describe("glu-accordion", () => {
       items: [{ question: editable("edit-question"), answer: "Yes." }],
     });
     expect(html).toContain("edit-question");
-    expect(html).toContain('id="accordion-0"');
+    expect(html).toMatch(/id="accordion[^"]*-0"/);
   });
 });
 

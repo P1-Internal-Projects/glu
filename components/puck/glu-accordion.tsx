@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useId, useState } from "react";
 import type { ComponentConfig, RichText } from "@puckeditor/core";
 import { Eyebrow } from "../../design-system/components/typography";
 import { Section } from "../../design-system/components/section";
@@ -20,16 +20,18 @@ function AccordionItem({
   question,
   answer,
   index,
+  uid,
 }: {
   question: string;
   answer: RichText;
   index: number;
+  uid: string;
 }) {
   const [open, setOpen] = useState(false);
   // Derived from the item's position rather than the question text: when the
   // Question field is contentEditable, `question` is a React element in the
   // editor, not a string, so it cannot be sliced for an id.
-  const id = `accordion-${index}`;
+  const id = `${uid}-${index}`;
 
   return (
     <div
@@ -111,6 +113,8 @@ function AccordionItem({
 }
 
 export function GLUAccordionComponent({ eyebrow, heading, background, items }: GLUAccordionProps) {
+  // Unique per accordion, so several on one page (the FAQ page has four) never share item ids.
+  const uid = `accordion${useId().replace(/:/g, "")}`;
   return (
     <Section background={background}>
       <Container>
@@ -132,7 +136,7 @@ export function GLUAccordionComponent({ eyebrow, heading, background, items }: G
           </h2>
           <div style={{ borderTop: `1px solid ${colors.border}` }}>
             {items.map((item, i) => (
-              <AccordionItem key={i} question={item.question} answer={item.answer} index={i} />
+              <AccordionItem key={i} question={item.question} answer={item.answer} index={i} uid={uid} />
             ))}
           </div>
         </div>
