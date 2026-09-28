@@ -103,7 +103,7 @@ export function GLUPageHeroComponent({ eyebrow, heading, breadcrumbs = [], backg
 export const gluPageHeroConfig = {
   label: "GLU Page Hero",
   ai: {
-    instructions: "Interior page hero — use instead of GLUHero on sub-pages. Shorter, includes breadcrumb navigation.",
+    instructions: "First section on an interior page; only a GLUAnnouncementBanner may sit above it. Use instead of GLUHero on sub-pages. Shorter, includes breadcrumb navigation.",
   },
   fields: {
     eyebrow: {
