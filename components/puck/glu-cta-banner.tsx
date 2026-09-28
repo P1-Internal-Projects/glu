@@ -95,7 +95,7 @@ export function GLUCtaBannerComponent({
 export const gluCtaBannerConfig = {
   label: "GLU CTA Banner",
   ai: {
-    instructions: "CTA banner — near page bottom to drive action. Use navy or gold background. Primary CTA required, secondary optional.",
+    instructions: "Never first and never above a hero. Usually the last section, to drive action; a promotional banner may sit directly after the hero instead. Background: navy (labelled Crimson) for the closing CTA, gold for a mid-page nudge, lightBlue (Light Rose) only after a crimson section. Primary CTA required, secondary optional.",
   },
   fields: {
     heading: {

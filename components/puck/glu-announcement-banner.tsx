@@ -310,7 +310,7 @@ export const gluAnnouncementBannerConfig = {
   label: "GLU Announcement Banner",
   ai: {
     instructions:
-      "Thin one-line announcement strip. Place it FIRST in the page body, above the hero. One per page. Keep it to a single line of text on desktop.",
+      "First in the page body, above the hero; never below it. Thin one-line announcement strip, one per page. Keep it to a single line of text on desktop.",
   },
   fields: {
     variant: {

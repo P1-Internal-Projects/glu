@@ -321,7 +321,7 @@ export function GLUHeroComponent({
 export const gluHeroConfig = {
   label: "GLU Hero",
   ai: {
-    instructions: "Landing hero — place after GLUNav on home/program pages. Needs a background image from the media library. Use GLUPageHero for interior pages.",
+    instructions: "First section on the page; only a GLUAnnouncementBanner may sit above it. Landing hero for the home page and hub pages; use GLUPageHero on interior pages. Needs a background image from the media library. The site nav is not a block: it renders around every page.",
   },
   fields: {
     layout: {
