@@ -783,10 +783,11 @@ export const gluListing = {
       showContact: { instructions: "Show for a directory page; hide when cards link to profile pages." },
       showCollegeFilter: { instructions: "Show on the full catalog page; hide for a short teaser." },
     }),
-    eyebrow: { type: "text", label: "Eyebrow", ai: EYEBROW_AI },
+    eyebrow: { type: "text", label: "Eyebrow", contentEditable: true, ai: EYEBROW_AI },
     subtext: {
       type: "textarea",
       label: "Subtext",
+      contentEditable: true,
       ai: { instructions: "1–2 sentences under the heading. Leave blank if the heading is enough." },
     },
     align: {

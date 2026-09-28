@@ -12,11 +12,13 @@ export const quoteBlock = {
     quote: {
       type: "textarea" as const,
       label: "Quote",
+      contentEditable: true,
       ai: { required: true, instructions: "1–2 sentences, verbatim, without surrounding quotation marks." },
     },
     attribution: {
       type: "text" as const,
       label: "Attribution",
+      contentEditable: true,
       ai: { instructions: "Name and role, e.g. 'Marisol Vega, Senior Admissions Counselor'. Leave blank if unknown — never invent a person." },
     },
   },

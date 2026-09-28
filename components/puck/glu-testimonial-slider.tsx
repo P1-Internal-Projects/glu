@@ -78,7 +78,10 @@ export function GLUTestimonialSliderComponent({ eyebrow, heading, testimonials }
               >
                 <Image
                   src={t.imageUrl}
-                  alt={t.name}
+                  // `t.name` is a React element in the editor when the Name
+                  // field is contentEditable — an `alt` attribute can only
+                  // take a string.
+                  alt={typeof t.name === "string" ? t.name : ""}
                   fill
                   style={{ objectFit: "cover" }}
                   sizes="80px"
@@ -216,9 +219,9 @@ export const gluTestimonialSliderConfig = {
       label: "Testimonials",
       ai: { instructions: "3–4 voices from different programs. Use real quotes when given; otherwise write plausible student voices and mark the page for review." },
       arrayFields: {
-        quote: { type: "textarea", label: "Quote", ai: { required: true, instructions: "1–3 sentences in the student's own voice, with one specific detail. No quotation marks." } },
-        name: { type: "text", label: "Name", ai: { required: true, instructions: "First and last name." } },
-        program: { type: "text", label: "Program / Year", ai: { instructions: "'Program, Class of YYYY', e.g. 'Environmental Science, Class of 2025'." } },
+        quote: { type: "textarea", label: "Quote", contentEditable: true, ai: { required: true, instructions: "1–3 sentences in the student's own voice, with one specific detail. No quotation marks." } },
+        name: { type: "text", label: "Name", contentEditable: true, ai: { required: true, instructions: "First and last name." } },
+        program: { type: "text", label: "Program / Year", contentEditable: true, ai: { instructions: "'Program, Class of YYYY', e.g. 'Environmental Science, Class of 2025'." } },
         imageUrl: { type: "text", label: "Photo URL", ai: imageAi("Square headshot.") },
       },
       getItemSummary: (item: { name?: string }, i?: number) => item?.name || `Item #${(i ?? 0) + 1}`,
