@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import type { ComponentConfig } from "@puckeditor/core";
+import { createUsePuck, type ComponentConfig } from "@puckeditor/core";
 import { colors, typography, spacing, radii, layout } from "../../design-system/tokens";
 import { buttonLabelAi, imageAi, linkAi } from "../../lib/ai-hints";
 import { resolveMediaImage, type MediaImageValue } from "../../lib/media-image";
@@ -12,8 +12,12 @@ export type AnnouncementVariant = "news" | "alert" | "weather" | "emergency";
  * The palette colours an editor may put behind the banner, by token name.
  * `default` defers to the variant, so a banner switched from News to
  * Emergency changes colour with it unless the editor has chosen one.
+ * Canonical, current stored values.
  */
-export type AnnouncementBackground = "default" | "crimson" | "crimsonDark" | "gold" | "dark" | "lightBlue" | "offWhite" | "white";
+export type AnnouncementBackground = "default" | "crimson" | "crimsonDark" | "gold" | "dark" | "rose" | "offWhite" | "white";
+
+/** Legacy stored value from before the crimson rebrand — normalizes to `rose`. */
+export type LegacyAnnouncementBackground = "lightBlue";
 
 export type GLUAnnouncementBannerProps = {
   variant: AnnouncementVariant;
@@ -21,7 +25,7 @@ export type GLUAnnouncementBannerProps = {
   description: string;
   buttonLabel: string;
   buttonHref: string;
-  background: AnnouncementBackground;
+  background: AnnouncementBackground | LegacyAnnouncementBackground;
   customIcon: MediaImageValue;
   dismissible: boolean;
 };
@@ -34,11 +38,18 @@ const VARIANT_LABEL: Record<AnnouncementVariant, string> = {
 };
 
 const VARIANT_BACKGROUND: Record<AnnouncementVariant, Exclude<AnnouncementBackground, "default">> = {
-  news: "lightBlue",
+  news: "rose",
   alert: "gold",
   weather: "crimsonDark",
   emergency: "crimson",
 };
+
+/** Maps the legacy `lightBlue` stored value to its current name: rose. */
+function normalizeAnnouncementBackground(
+  background: AnnouncementBackground | LegacyAnnouncementBackground,
+): AnnouncementBackground {
+  return background === "lightBlue" ? "rose" : background;
+}
 
 /**
  * Text colour per background. Gold takes dark text: white on #C8922A is
@@ -124,7 +135,61 @@ function writeDismissed(key: string) {
   }
 }
 
-export function GLUAnnouncementBannerComponent({
+/**
+ * A typed `usePuck` selector hook, created once at module scope per the
+ * package's own guidance (avoids the unselected `usePuck()`'s re-render
+ * warning). Only ever used from `PlacementCheck`, which is only ever mounted
+ * while `puck.isEditing` is true — i.e. inside `<Puck>` — because calling it
+ * outside that provider throws ("usePuck must be used inside <Puck>").
+ */
+const usePuckSelector = createUsePuck();
+
+/**
+ * Renders nothing itself; calls back with whether this banner (by id) sits
+ * anywhere but index 0 of the page's top-level content. Split out from the
+ * main component so the hook — which requires a `<Puck>` provider — is only
+ * ever invoked from the editor, never from the public render path.
+ *
+ * `isEditing` (from the `puck` render prop) is the only signal this component
+ * has that a `<Puck>` provider is actually present, and it can be true in a
+ * context with no provider — a unit test or a Storybook story rendering with
+ * `puck={{ isEditing: true }}` for other reasons (the codebase's own tests do
+ * this; see __tests__/glu-announcement-banner.test.tsx). A render-time
+ * try/catch around the hook call handles that case.
+ *
+ * This is safe despite `react-hooks/rules-of-hooks` normally forbidding a
+ * hook in a try/catch: whether a `<Puck>` ancestor exists is fixed by the
+ * component tree's structure and cannot change across re-renders of the same
+ * mounted instance, so the hook either always throws here or never does —
+ * the number of hooks called by this component is stable per instance, which
+ * is exactly what the rule exists to guarantee. A React error boundary was
+ * tried first, but the legacy synchronous server renderer used by this
+ * repo's tests does not retry a boundary's children after a render-phase
+ * throw, so it does not actually recover here — only the try/catch does.
+ */
+function PlacementCheck({
+  id,
+  children,
+}: {
+  id: string | undefined;
+  children: (misplaced: boolean) => React.ReactNode;
+}) {
+  let content: unknown[] = [];
+  try {
+    // eslint-disable-next-line react-hooks/rules-of-hooks -- see the doc comment above: this hook's presence is fixed per mounted instance, never conditional across renders of the same instance.
+    content = usePuckSelector((s) => s.appState.data.content) as unknown[];
+  } catch {
+    // No <Puck> provider in scope — nothing to flag.
+    content = [];
+  }
+  const index = content.findIndex((block) => (block as { props?: { id?: string } })?.props?.id === id);
+  // -1 (not found, or no provider to ask) is not flagged — only a confirmed
+  // position after the first is.
+  const misplaced = index > 0;
+  return <>{children(misplaced)}</>;
+}
+
+function GLUAnnouncementBannerBody({
   variant = "news",
   title,
   description,
@@ -133,21 +198,16 @@ export function GLUAnnouncementBannerComponent({
   background = "default",
   customIcon,
   dismissible,
-  puck,
-}: GLUAnnouncementBannerProps & { puck?: { isEditing?: boolean } }) {
-  const isEditing = Boolean(puck?.isEditing);
-  const key = dismissKey({ variant, title, description });
-  const [dismissed, setDismissed] = useState(false);
-
-  // Read after mount: storage is not available on the server, and reading it
-  // during render would make the first client render disagree with the HTML.
-  useEffect(() => {
-    if (dismissible && !isEditing) setDismissed(readDismissed(key));
-  }, [dismissible, isEditing, key]);
-
-  if (dismissed) return null;
-
-  const bgToken = background === "default" ? VARIANT_BACKGROUND[variant] : background;
+  isEditing,
+  misplaced,
+  onDismissClick,
+}: GLUAnnouncementBannerProps & {
+  isEditing: boolean;
+  misplaced: boolean;
+  onDismissClick: () => void;
+}) {
+  const normalizedBg = normalizeAnnouncementBackground(background);
+  const bgToken = normalizedBg === "default" ? VARIANT_BACKGROUND[variant] : normalizedBg;
   const onDark = ON_DARK.has(bgToken);
   const fg = onDark ? colors.white : colors.dark;
   // Muted text on gold is ~3:1, so gold keeps full-strength text throughout.
@@ -158,14 +218,6 @@ export function GLUAnnouncementBannerComponent({
   const icon = resolveMediaImage(customIcon, { width: 40, height: 40 });
   const label = VARIANT_LABEL[variant];
 
-  const onDismiss = () => {
-    // In the editor the button is shown but inert, so the block can't vanish
-    // from the canvas while it is being edited.
-    if (isEditing) return;
-    writeDismissed(key);
-    setDismissed(true);
-  };
-
   return (
     <section
       aria-label={`${label} announcement`}
@@ -175,8 +227,29 @@ export function GLUAnnouncementBannerComponent({
         color: fg,
         borderBottom: bgToken === "white" || bgToken === "offWhite" ? `1px solid ${colors.border}` : undefined,
         fontFamily: typography.fontBody,
+        // Editor-only: a banner that isn't the page's first block is flagged
+        // visibly rather than silently allowed — the published page drops it
+        // instead (see lib/announcement-placement.ts).
+        ...(isEditing && misplaced
+          ? { outline: `2px dashed ${colors.error}`, outlineOffset: "-2px" }
+          : {}),
       }}
     >
+      {isEditing && misplaced && (
+        <div
+          style={{
+            backgroundColor: colors.error,
+            color: colors.white,
+            fontFamily: typography.fontBody,
+            fontSize: typography.sizeXs,
+            fontWeight: typography.weightSemibold,
+            textAlign: "center" as const,
+            padding: `${spacing[1]} ${spacing[3]}`,
+          }}
+        >
+          Announcement banners only show at the top of the page
+        </div>
+      )}
       <div
         style={{
           maxWidth: layout.containerMax,
@@ -269,7 +342,7 @@ export function GLUAnnouncementBannerComponent({
         {dismissible && (
           <button
             type="button"
-            onClick={onDismiss}
+            onClick={onDismissClick}
             aria-label={`Dismiss ${label.toLowerCase()} announcement`}
             style={{
               flexShrink: 0,
@@ -306,11 +379,63 @@ export function GLUAnnouncementBannerComponent({
   );
 }
 
+export function GLUAnnouncementBannerComponent(
+  props: GLUAnnouncementBannerProps & { puck?: { isEditing?: boolean }; id?: string },
+) {
+  const { variant = "news", title, description, dismissible, puck, id } = props;
+  const isEditing = Boolean(puck?.isEditing);
+  const key = dismissKey({ variant, title, description });
+  const [dismissed, setDismissed] = useState(false);
+
+  // Read after mount: storage is not available on the server, and reading it
+  // during render would make the first client render disagree with the HTML.
+  useEffect(() => {
+    if (dismissible && !isEditing) setDismissed(readDismissed(key));
+  }, [dismissible, isEditing, key]);
+
+  if (dismissed) return null;
+
+  const onDismissClick = () => {
+    // In the editor the button is shown but inert, so the block can't vanish
+    // from the canvas while it is being edited.
+    if (isEditing) return;
+    writeDismissed(key);
+    setDismissed(true);
+  };
+
+  // The placement check needs `<Puck>` context, which only exists in the
+  // editor — so it (and its hook) is only ever mounted when isEditing.
+  if (!isEditing) {
+    return (
+      <GLUAnnouncementBannerBody
+        {...props}
+        isEditing={false}
+        misplaced={false}
+        onDismissClick={onDismissClick}
+      />
+    );
+  }
+
+  return (
+    <PlacementCheck id={id}>
+      {(misplaced) => (
+        <GLUAnnouncementBannerBody
+          {...props}
+          isEditing
+          misplaced={misplaced}
+          onDismissClick={onDismissClick}
+        />
+      )}
+    </PlacementCheck>
+  );
+}
+
 export const gluAnnouncementBannerConfig = {
   label: "GLU Announcement Banner",
   ai: {
     instructions:
-      "First in the page body, above the hero; never below it. Thin one-line announcement strip, one per page. Keep it to a single line of text on desktop.",
+      "PLACEMENT RULES: this is a site-notice strip only — news, an alert, a weather closure, or an emergency. It is NEVER used to promote a campaign, an event or a page; that is GLUCtaBanner's job (a gold GLUCtaBanner directly after the hero). It must always be the very first block on the page (content[0]), above the hero — never anywhere else, and never a second one on the same page. At most one per page. " +
+      "Thin one-line announcement strip. Keep it to a single line of text on desktop.",
   },
   fields: {
     variant: {
@@ -324,7 +449,7 @@ export const gluAnnouncementBannerConfig = {
       ],
       ai: {
         instructions:
-          "news for general campus news; alert for a deadline or service change; weather for closures or delays due to weather; emergency only for an active safety situation.",
+          "These four are the only values — there is no \"announcement\" or \"promo\" variant. news for general campus news; alert for a deadline or service change; weather for closures or delays due to weather; emergency only for an active safety situation. To promote a campaign, event or page, use GLUCtaBanner instead, not this component.",
       },
     },
     title: {
@@ -366,7 +491,7 @@ export const gluAnnouncementBannerConfig = {
         { label: "Deep Crimson", value: "crimsonDark" },
         { label: "Gold", value: "gold" },
         { label: "Near Black", value: "dark" },
-        { label: "Light Rose", value: "lightBlue" },
+        { label: "Light Rose", value: "rose" },
         { label: "Off-White", value: "offWhite" },
         { label: "White", value: "white" },
       ],

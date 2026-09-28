@@ -18,6 +18,18 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { api, mainBranchId, S } from "./p1-admin.mjs";
+import { createHash } from "node:crypto";
+
+/**
+ * Deterministic block id for a migrated component, matching the mapping the
+ * content migration uses. Ids created by this script must line up exactly
+ * with ids already written to existing pages, so this is computed rather than
+ * hard-coded as a plain slug like "template-record".
+ */
+function newId(type, old) {
+  const h = createHash("sha256").update(`${type}:${old}`).digest("hex");
+  return `${type}-${h.slice(0, 8)}-${h.slice(8, 12)}-4${h.slice(13, 16)}-${"89ab"[parseInt(h[16], 16) & 3]}${h.slice(17, 20)}-${h.slice(20, 32)}`;
+}
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 
@@ -134,7 +146,7 @@ function ctaBanner(id, { heading, subtext }) {
       primaryCtaHref: "/apply",
       secondaryCtaLabel: "Plan a Visit",
       secondaryCtaHref: "/visit/open-house",
-      background: "navy",
+      background: "crimson",
     },
   };
 }
@@ -153,7 +165,7 @@ function counselorBody() {
     {
       type: "GLUAccordion",
       props: {
-        id: "template-faq",
+        id: newId("GLUAccordion", "template-faq"),
         eyebrow: "How I can help",
         heading: "Questions I hear most often",
         background: "white",
@@ -176,14 +188,14 @@ function counselorBody() {
         ],
       },
     },
-    upcomingEventsListing("template-events", {
+    upcomingEventsListing(newId("GLUListing", "template-events"), {
       eyebrow: "Meet in person",
       heading: "Upcoming Events",
       subtext:
         "Sessions, tours and deadlines where you can talk with an admissions counselor.",
-      background: "lightBlue",
+      background: "rose",
     }),
-    ctaBanner("template-cta", {
+    ctaBanner(newId("GLUCtaBanner", "template-cta"), {
       heading: "Ready to take the next step?",
       subtext:
         "Start your application, or come see the campus first. Either way, your counselor is one email away.",
@@ -197,17 +209,17 @@ function eventBody() {
     {
       type: "ParagraphBlock",
       props: {
-        id: "template-body",
+        id: newId("ParagraphBlock", "template-body"),
         text: "Describe what happens at this event, who it is for, and anything to bring or prepare.",
       },
     },
-    upcomingEventsListing("template-more-events", {
+    upcomingEventsListing(newId("GLUListing", "template-more-events"), {
       eyebrow: "More to come",
       heading: "Other Upcoming Events",
       subtext: "",
       background: "offWhite",
     }),
-    ctaBanner("template-cta", {
+    ctaBanner(newId("GLUCtaBanner", "template-cta"), {
       heading: "Can't make this one?",
       subtext:
         "Schedule a conversation with an admissions counselor, or start your application whenever you are ready.",
@@ -241,12 +253,12 @@ function templateSnapshot({ label, description, defaultUrlPattern, recordBlock, 
     root: {
       props: {
         _template: { label, description, deprecated: false, defaultUrlPattern },
-        _pinMap: { "template-record": true },
+        _pinMap: { [newId(recordBlock, "template-record")]: true },
       },
     },
     zones: {},
     content: [
-      { type: recordBlock, props: { id: "template-record", ...recordDefaults } },
+      { type: recordBlock, props: { id: newId(recordBlock, "template-record"), ...recordDefaults } },
       ...body(),
     ],
   };
@@ -295,8 +307,8 @@ async function upsertPage(branchId, { path, templateId, title, recordBlock, reco
     root: { props: { title, description: record.summary ?? record.bio ?? "" } },
     zones: {},
     content: [
-      { type: recordBlock, props: { id: "template-record", ...record } },
-      { type: "ParagraphBlock", props: { id: "template-body", text: body } },
+      { type: recordBlock, props: { id: newId(recordBlock, "template-record"), ...record } },
+      { type: "ParagraphBlock", props: { id: newId("ParagraphBlock", "template-body"), text: body } },
     ],
   };
 

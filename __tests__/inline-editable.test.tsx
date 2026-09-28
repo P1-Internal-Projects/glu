@@ -385,7 +385,7 @@ describe("glu-stats-bar", () => {
     expect(statFields.label.contentEditable).toBe(true);
   });
 
-  const base = { heading: "By the numbers", background: "navy" as const };
+  const base = { heading: "By the numbers", background: "crimson" as const };
 
   it("renders string value/label", () => {
     const html = renderWith(GLUStatsBarComponent, { ...base, stats: [{ value: "15,000", label: "Students" }] });

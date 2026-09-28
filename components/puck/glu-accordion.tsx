@@ -3,7 +3,7 @@
 import React, { useId, useState } from "react";
 import type { ComponentConfig, RichText } from "@puckeditor/core";
 import { Eyebrow } from "../../design-system/components/typography";
-import { Section } from "../../design-system/components/section";
+import { Section, type LegacySectionBackground } from "../../design-system/components/section";
 import { Container } from "../../design-system/components/container";
 import { colors, typography, spacing, radii } from "../../design-system/tokens";
 import { richTextProps } from "./rich-text-props";
@@ -12,7 +12,7 @@ import { BACKGROUND_AI, EYEBROW_AI } from "../../lib/ai-hints";
 export type GLUAccordionProps = {
   eyebrow: string;
   heading: string;
-  background: "white" | "offWhite" | "lightBlue";
+  background: "white" | "offWhite" | "rose" | LegacySectionBackground;
   items: { question: string; answer: RichText }[];
 };
 
@@ -73,7 +73,7 @@ function AccordionItem({
             width: 24,
             height: 24,
             borderRadius: radii.full,
-            backgroundColor: open ? colors.crimson : colors.lightBlue,
+            backgroundColor: open ? colors.crimson : colors.rose,
             color: open ? colors.white : colors.crimson,
             display: "flex",
             alignItems: "center",
@@ -169,7 +169,7 @@ export const gluAccordionConfig = {
       options: [
         { label: "White", value: "white" },
         { label: "Off White", value: "offWhite" },
-        { label: "Light Rose", value: "lightBlue" },
+        { label: "Light Rose", value: "rose" },
       ],
       ai: BACKGROUND_AI,
     },

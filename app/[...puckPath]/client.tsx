@@ -6,6 +6,7 @@ import { RenderClient, performLogout, P1_LOGGED_IN_KEY } from "@pantheon-systems
 import config from "../../puck.config";
 import { readLocaleFromPath } from "../../lib/locales";
 import { runWidgetLogout } from "./widget-logout";
+import { filterMisplacedAnnouncementBanners } from "../../lib/announcement-placement";
 
 function EditIcon() {
   return (
@@ -235,9 +236,17 @@ export function Client({
   // widget stays off it. It is still editable from /p1.
   const bare = (data.root?.props as { pageLayout?: string } | undefined)?.pageLayout === "bare";
 
+  // This is the visitor-facing surface (the editor lives under app/p1), so
+  // enforcing the Announcement Banner's placement rule here — never applied
+  // in the editor — is the one guard that always runs.
+  const renderedData = {
+    ...localizedData,
+    content: filterMisplacedAnnouncementBanners(localizedData.content),
+  };
+
   return (
     <>
-      <RenderClient config={config} data={localizedData} />
+      <RenderClient config={config} data={renderedData} />
       {pageMetadata && !bare && <P1EditWidget route={pageMetadata.route} />}
     </>
   );

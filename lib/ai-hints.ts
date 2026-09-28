@@ -38,7 +38,7 @@ export const EYEBROW_AI: FieldAi = {
 
 /** The light section backgrounds every GLU section offers. */
 export const BACKGROUND_AI: FieldAi = {
-  instructions: "Alternate with the neighbouring sections so no two adjacent sections share a background. white is the default; offWhite and lightBlue are tints.",
+  instructions: "Alternate with the neighbouring sections so no two adjacent sections share a background. white is the default; offWhite and rose are tints.",
 };
 
 /**

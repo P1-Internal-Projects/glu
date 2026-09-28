@@ -41,7 +41,7 @@ function AccordionDemo() {
         style={{
           width: 24, height: 24, borderRadius: radii.full, display: "flex", alignItems: "center", justifyContent: "center",
           fontSize: "1rem", transition: "background-color 0.2s",
-          backgroundColor: open ? colors.crimson : colors.lightBlue,
+          backgroundColor: open ? colors.crimson : colors.rose,
           color: open ? colors.white : colors.crimson,
         }}
       >

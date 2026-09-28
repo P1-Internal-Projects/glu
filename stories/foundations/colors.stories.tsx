@@ -65,14 +65,14 @@ export const Palette: Story = {
       />
       <SwatchGrid
         title="Secondary"
-        swatches={[{ name: "Accent Red", tokenPath: "colors.blue", hex: colors.blue }]}
+        swatches={[{ name: "Accent Red", tokenPath: "colors.accentRed", hex: colors.accentRed }]}
       />
       <SwatchGrid
         title="Neutrals & surfaces"
         swatches={[
           { name: "White", tokenPath: "colors.white", hex: colors.white },
           { name: "Off White", tokenPath: "colors.offWhite", hex: colors.offWhite },
-          { name: "Light Rose", tokenPath: "colors.lightBlue", hex: colors.lightBlue },
+          { name: "Light Rose", tokenPath: "colors.rose", hex: colors.rose },
           { name: "Border", tokenPath: "colors.border", hex: colors.border },
         ]}
       />
@@ -93,14 +93,15 @@ export const Palette: Story = {
       <p style={{ maxWidth: 640, fontSize: "0.8125rem", color: colors.muted, marginTop: 8 }}>
         Nothing in this palette is blue. <code>colors.navy</code> was renamed to{" "}
         <code>colors.crimson</code> on 2026-07-29 — the value (<code>#8B0015</code>) is a deep
-        crimson. Two token names still read blue and are not:{" "}
-        <code>colors.blue</code> is the accent red <code>#C0392B</code>, and{" "}
-        <code>colors.lightBlue</code> is the light rose <code>#FDECEA</code>.
+        crimson. <code>colors.blue</code> and <code>colors.lightBlue</code> were themselves renamed
+        to <code>colors.accentRed</code> (<code>#C0392B</code>) and <code>colors.rose</code>{" "}
+        (<code>#FDECEA</code>) so the token names match the colours they hold.
         <br />
-        These, and the Puck option values <code>background: "navy"</code> and{" "}
-        <code>"lightBlue"</code>, are left alone on purpose: they are serialized into published
-        pages, so renaming them is a content migration rather than a rename. Every label an
-        author or a reader sees says crimson and light rose.
+        Puck&rsquo;s stored option values were renamed the same way &mdash;{" "}
+        <code>background: &quot;navy&quot;</code> and <code>&quot;lightBlue&quot;</code> are now{" "}
+        <code>&quot;crimson&quot;</code> and <code>&quot;rose&quot;</code>. The
+        old values are still accepted and normalized so the hundreds of published pages that hold
+        them keep rendering unchanged until content is migrated separately.
       </p>
     </div>
   ),

@@ -113,7 +113,7 @@ export function GLULocaleSwitcher() {
                     fontSize: typography.sizeSm,
                     color: isActive ? colors.crimson : colors.dark,
                     fontWeight: isActive ? typography.weightSemibold : typography.weightNormal,
-                    backgroundColor: isActive ? colors.lightBlue : "transparent",
+                    backgroundColor: isActive ? colors.rose : "transparent",
                   }}
                 >
                   <span>{l.native}</span>

@@ -40,6 +40,16 @@ describe("GLUAnnouncementBanner", () => {
     expect(html({ variant: "weather", background: "gold" })).toContain("background-color:#C8922A");
   });
 
+  it("renders the news variant's default rose background", () => {
+    expect(html({ variant: "news" })).toContain("background-color:#FDECEA");
+  });
+
+  it("still renders rose for the legacy lightBlue stored value", () => {
+    expect(html({ variant: "weather", background: "lightBlue" as GLUAnnouncementBannerProps["background"] })).toContain(
+      "background-color:#FDECEA",
+    );
+  });
+
   it("puts dark text on gold, where white would fail contrast", () => {
     expect(html({ variant: "alert" })).toMatch(/background-color:#C8922A;color:#1A0505/);
   });
@@ -65,5 +75,17 @@ describe("GLUAnnouncementBanner", () => {
     const a = dismissKey(BASE);
     expect(dismissKey({ ...BASE })).toBe(a);
     expect(dismissKey({ ...BASE, title: "New title" })).not.toBe(a);
+  });
+
+  it("does not show the misplacement warning outside the editor", () => {
+    expect(html()).not.toContain("only show at the top of the page");
+  });
+
+  it("does not crash, and shows no warning, when isEditing is true without a <Puck> provider", () => {
+    // The placement check needs `<Puck>` context to know the block's index;
+    // outside one (as here, and as in a test or a story) it degrades to "not
+    // flagged" rather than throwing.
+    expect(() => html({ puck: { isEditing: true } })).not.toThrow();
+    expect(html({ puck: { isEditing: true } })).not.toContain("only show at the top of the page");
   });
 });

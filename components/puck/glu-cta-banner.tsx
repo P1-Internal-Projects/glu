@@ -3,7 +3,7 @@
 import React from "react";
 import type { ComponentConfig } from "@puckeditor/core";
 import { Button } from "../../design-system/components/button";
-import { Section } from "../../design-system/components/section";
+import { Section, normalizeBackground, type LegacySectionBackground } from "../../design-system/components/section";
 import { Container } from "../../design-system/components/container";
 import { colors, typography, spacing } from "../../design-system/tokens";
 import { buttonLabelAi, linkAi } from "../../lib/ai-hints";
@@ -15,7 +15,7 @@ export type GLUCtaBannerProps = {
   primaryCtaHref: string;
   secondaryCtaLabel: string;
   secondaryCtaHref: string;
-  background: "navy" | "gold" | "lightBlue";
+  background: "crimson" | "gold" | "rose" | LegacySectionBackground;
 };
 
 export function GLUCtaBannerComponent({
@@ -27,12 +27,13 @@ export function GLUCtaBannerComponent({
   secondaryCtaHref,
   background,
 }: GLUCtaBannerProps) {
-  const isNavy = background === "navy";
+  const normalized = normalizeBackground(background);
+  const isCrimson = normalized === "crimson";
   const isGold = background === "gold";
 
-  const sectionBg = isNavy ? "navy" : isGold ? "white" : "lightBlue";
-  const headingColor = isNavy ? colors.white : colors.dark;
-  const subtextColor = isNavy ? "rgba(255,255,255,0.8)" : colors.muted;
+  const sectionBg = isCrimson ? "crimson" : isGold ? "white" : "rose";
+  const headingColor = isCrimson ? colors.white : colors.dark;
+  const subtextColor = isCrimson ? "rgba(255,255,255,0.8)" : colors.muted;
 
   return (
     <Section background={sectionBg} paddingY={spacing[16]}>
@@ -80,7 +81,7 @@ export function GLUCtaBannerComponent({
                 variant="outline"
                 size="lg"
                 href={secondaryCtaHref}
-                style={isNavy ? { borderColor: colors.white, color: colors.white } : {}}
+                style={isCrimson ? { borderColor: colors.white, color: colors.white } : {}}
               >
                 {secondaryCtaLabel}
               </Button>
@@ -95,7 +96,7 @@ export function GLUCtaBannerComponent({
 export const gluCtaBannerConfig = {
   label: "GLU CTA Banner",
   ai: {
-    instructions: "Never first and never above a hero. Usually the last section, to drive action; a promotional banner may sit directly after the hero instead. Background: navy (labelled Crimson) for the closing CTA, gold for a mid-page nudge, lightBlue (Light Rose) only after a crimson section. Primary CTA required, secondary optional.",
+    instructions: "This is the component for promoting a campaign, event or page — including a promo banner directly after the hero. Never first and never above a hero. Usually the last section, to drive action; a promotional banner may sit directly after the hero instead. Background: crimson for the closing CTA, gold for a mid-page nudge, rose only after a crimson section. Primary CTA required, secondary optional.",
   },
   fields: {
     heading: {
@@ -128,11 +129,11 @@ export const gluCtaBannerConfig = {
       type: "select",
       label: "Background",
       options: [
-        { label: "Crimson", value: "navy" },
+        { label: "Crimson", value: "crimson" },
         { label: "Gold Accent", value: "gold" },
-        { label: "Light Rose", value: "lightBlue" },
+        { label: "Light Rose", value: "rose" },
       ],
-      ai: { instructions: "navy (crimson) for the page's closing CTA; gold for a mid-page nudge; lightBlue only directly after a crimson section." },
+      ai: { instructions: "crimson for the page's closing CTA; gold for a mid-page nudge; rose only directly after a crimson section." },
     },
   },
   defaultProps: {
@@ -142,7 +143,7 @@ export const gluCtaBannerConfig = {
     primaryCtaHref: "/apply",
     secondaryCtaLabel: "Request Information",
     secondaryCtaHref: "/contact",
-    background: "navy",
+    background: "crimson",
   },
   render: GLUCtaBannerComponent,
 } as ComponentConfig<GLUCtaBannerProps>;

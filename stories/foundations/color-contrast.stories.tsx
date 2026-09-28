@@ -39,7 +39,7 @@ const PAIRINGS: { name: string; fg: string; bg: string; usage: string }[] = [
   { name: "Crimson on white", fg: colors.crimson, bg: colors.white, usage: "Eyebrow, links, outline button (button.tsx, typography.tsx)" },
   { name: "Muted on white", fg: colors.muted, bg: colors.white, usage: "Body muted variant, captions (typography.tsx)" },
   { name: "Dark on off-white", fg: colors.dark, bg: colors.offWhite, usage: "Section/Card light backgrounds" },
-  { name: "Dark on light rose", fg: colors.dark, bg: colors.lightBlue, usage: "GLUAccordion / GLUCardGrid lightBlue variant" },
+  { name: "Dark on light rose", fg: colors.dark, bg: colors.rose, usage: "GLUAccordion / GLUCardGrid rose variant" },
   { name: "White on crimson", fg: colors.white, bg: colors.crimson, usage: "GLUHero / GLUNav heading & CTA text" },
   { name: "White on crimson dark", fg: colors.white, bg: colors.crimsonDark, usage: "GLUNav mobile menu links (glu-nav.tsx)" },
   { name: "Gold on crimson dark", fg: colors.gold, bg: colors.crimsonDark, usage: "GLUFooter column headings (glu-footer.tsx)" },

@@ -16,8 +16,8 @@ import {
 import { Card } from "../../design-system/components/card";
 import { Container } from "../../design-system/components/container";
 import { Eyebrow } from "../../design-system/components/typography";
-import { Section } from "../../design-system/components/section";
-import type { SectionBackground } from "../../design-system/components/section";
+import { Section, normalizeBackground } from "../../design-system/components/section";
+import type { SectionBackground, LegacySectionBackground } from "../../design-system/components/section";
 import { headshotOrSilhouette } from "../../lib/glu-assets";
 import { formatEventDate } from "./glu-event-header";
 import { GLUProgramCards } from "./glu-program-cards";
@@ -50,10 +50,9 @@ import { EYEBROW_AI, withFieldAi } from "../../lib/ai-hints";
 export type ListingColumns = "auto" | "2" | "3" | "4";
 export type ListingCardStyle = "elevated" | "flat";
 export type ListingPhotoShape = "circle" | "rounded";
-export type ListingBackground = Extract<
-  SectionBackground,
-  "white" | "offWhite" | "lightBlue" | "navy"
->;
+export type ListingBackground =
+  | Extract<SectionBackground, "white" | "offWhite" | "rose" | "crimson">
+  | LegacySectionBackground;
 
 /** Shared presentation props the section passes down to every mode. */
 export interface ListingPresentation {
@@ -81,7 +80,7 @@ function usePresentation(
   return {
     columns: props.columns ?? ctx.columns ?? "auto",
     cardStyle: props.cardStyle ?? ctx.cardStyle ?? "elevated",
-    background: props.background ?? ctx.background ?? "white",
+    background: normalizeBackground(props.background ?? ctx.background ?? "white") as ListingBackground,
   };
 }
 
@@ -259,7 +258,7 @@ function EventCard({
                 letterSpacing: "0.08em",
                 textTransform: "uppercase",
                 color: colors.crimson,
-                backgroundColor: colors.lightBlue,
+                backgroundColor: colors.rose,
                 borderRadius: radii.full,
                 padding: `${spacing[1]} ${spacing[3]}`,
               }}
@@ -359,7 +358,7 @@ function EventCards({
   // only meaningful choice is whether the image appears at all — but the
   // control still has to be obeyed, or "None" is a switch that does nothing.
   const withImage = showImage && imagePosition !== "none";
-  const onDark = background === "navy";
+  const onDark = background === "crimson";
   if (items.length === 0) {
     return (
       <EmptyState onDark={onDark}>
@@ -404,7 +403,7 @@ function PersonCards({
 }: ModeProps & { photoShape?: ListingPhotoShape; showContact?: boolean }) {
   const { columns, cardStyle, background } = usePresentation(presentation);
   const withImage = showImage && imagePosition !== "none";
-  const onDark = background === "navy";
+  const onDark = background === "crimson";
   const flatOnDark = onDark && cardStyle === "flat";
   const ink = flatOnDark ? colors.white : colors.dark;
   const soft = flatOnDark ? "rgba(255,255,255,0.75)" : colors.muted;
@@ -455,7 +454,7 @@ function PersonCards({
                   marginBottom: spacing[4],
                   boxShadow: shadows.sm,
                   // Behind the transparent silhouette; a photo covers it.
-                  backgroundColor: flatOnDark ? "rgba(255,255,255,0.12)" : colors.lightBlue,
+                  backgroundColor: flatOnDark ? "rgba(255,255,255,0.12)" : colors.rose,
                 }}
               />
             )}
@@ -581,7 +580,7 @@ export function GLUListingSection({
   children,
 }: GLUListingSectionProps) {
   const hasHeader = Boolean(eyebrow || heading || subtext);
-  const onDark = background === "navy";
+  const onDark = background === "crimson";
   const presentation = React.useMemo(
     () => ({ columns, cardStyle, background }),
     [columns, cardStyle, background],
@@ -716,8 +715,8 @@ const BaseListingRender = baseListing.render as React.ComponentType<
 const BACKGROUND_OPTIONS = [
   { label: "White", value: "white" },
   { label: "Off White", value: "offWhite" },
-  { label: "Light Rose", value: "lightBlue" },
-  { label: "Crimson", value: "navy" },
+  { label: "Light Rose", value: "rose" },
+  { label: "Crimson", value: "crimson" },
 ];
 
 const COLUMN_OPTIONS = [
@@ -739,7 +738,7 @@ export const gluListing = {
   ...baseListing,
   ai: {
     instructions:
-      "A collection of records from a datasource, drawn as GLU cards. Bind `items` to `{{ gluPeople.items }}`, `{{ gluEvents.items }}` or `{{ gluPrograms.items }}` and pick the matching view mode. Use `background: navy` at most once per page, for emphasis. `columns: auto` is right unless the design needs a fixed count.",
+      "A collection of records from a datasource, drawn as GLU cards. Bind `items` to `{{ gluPeople.items }}`, `{{ gluEvents.items }}` or `{{ gluPrograms.items }}` and pick the matching view mode. Use `background: crimson` at most once per page, for emphasis. `columns: auto` is right unless the design needs a fixed count.",
   },
   fields: {
     // The factory's binding, mapping and collection fields, annotated for the
@@ -818,7 +817,7 @@ export const gluListing = {
       type: "select",
       label: "Background",
       options: BACKGROUND_OPTIONS,
-      ai: { instructions: "Alternate with neighbouring sections. navy (crimson) at most once per page, for emphasis." },
+      ai: { instructions: "Alternate with neighbouring sections. crimson at most once per page, for emphasis." },
     },
   },
   defaultProps: {

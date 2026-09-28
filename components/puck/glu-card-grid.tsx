@@ -5,7 +5,7 @@ import Image from "next/image";
 import type { ComponentConfig, RichText } from "@puckeditor/core";
 import { Card } from "../../design-system/components/card";
 import { Eyebrow } from "../../design-system/components/typography";
-import { Section } from "../../design-system/components/section";
+import { Section, type LegacySectionBackground } from "../../design-system/components/section";
 import { Container } from "../../design-system/components/container";
 import { colors, typography, spacing } from "../../design-system/tokens";
 import { richTextProps } from "./rich-text-props";
@@ -17,7 +17,7 @@ export type GLUCardGridProps = {
   heading: string;
   subtext: string;
   columns: 3 | 4;
-  background: "white" | "offWhite" | "lightBlue";
+  background: "white" | "offWhite" | "rose" | LegacySectionBackground;
   cards: {
     title: string;
     description: RichText;
@@ -127,7 +127,7 @@ export function GLUCardGridComponent({ eyebrow, heading, subtext, columns, backg
                       fontFamily: typography.fontBody,
                       fontSize: typography.sizeSm,
                       fontWeight: typography.weightSemibold,
-                      color: colors.blue,
+                      color: colors.accentRed,
                       textDecoration: "none",
                       display: "inline-flex",
                       alignItems: "center",
@@ -186,7 +186,7 @@ export const gluCardGridConfig = {
       options: [
         { label: "White", value: "white" },
         { label: "Off White", value: "offWhite" },
-        { label: "Light Rose", value: "lightBlue" },
+        { label: "Light Rose", value: "rose" },
       ],
       ai: BACKGROUND_AI,
     },

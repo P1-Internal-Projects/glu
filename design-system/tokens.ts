@@ -2,13 +2,13 @@ export const colors = {
   crimson: "#8B0015",    // Deep collegiate crimson (nav, footer, dark sections)
   crimsonDark: "#6B0010",
   crimsonLight: "#B22030",
-  blue: "#C0392B",       // Alizarin / medium red (accents, links)
+  accentRed: "#C0392B",  // Alizarin / medium red (accents, links)
   gold: "#C8922A",       // Collegiate gold (CTAs, highlights)
   goldDark: "#A87522",
   goldLight: "#E8B04A",
   white: "#ffffff",
   offWhite: "#FFF5F5",   // Warm blush off-white
-  lightBlue: "#FDECEA",  // Very light red tint (subtle section bg)
+  rose: "#FDECEA",       // Very light red tint (subtle section bg)
   dark: "#1A0505",       // Near-black with red tint (body text)
   muted: "#6B4040",      // Warm muted (secondary text)
   border: "#EDD5D5",
