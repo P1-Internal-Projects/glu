@@ -15,10 +15,13 @@ import { buttonLabelAi, imageAi, linkAi } from "../../lib/ai-hints";
  * place — which is what lets the `gluEvents` datasource read a page back as a
  * record without guessing (see lib/glu-collections.ts).
  *
- * None of the text fields are contentEditable. A contentEditable field's value
- * is a React element in the editor and a string on the published page, and
- * these values are also read as data and formatted as dates — so keeping them
- * plain fields keeps one type flowing through both paths.
+ * Most fields are plain (not contentEditable), because they are read as data —
+ * `startDate` is parsed and formatted, `startTime`/`endTime` are joined, and
+ * `eventType` drives listing-card badges/filters — and a contentEditable
+ * field's value is a React element in the editor rather than a string. Title,
+ * summary, location and registrationLabel are pure display text with no
+ * formatting or parsing downstream, so those four are contentEditable; the
+ * render code below only ever passes them through as JSX children.
  */
 export type GLUEventHeaderProps = {
   eventType: string;
@@ -225,14 +228,14 @@ export const gluEventHeaderConfig = {
       ],
       ai: { instructions: "The closest type; it becomes the badge on listing cards and a filter value." },
     },
-    title: { type: "text", label: "Event Title", ai: { required: true, instructions: "The event's official name, e.g. 'Fall Open House 2026'." } },
-    summary: { type: "textarea", label: "Summary", ai: { required: true, instructions: "1–2 sentences for the listing card: who it is for and what happens." } },
+    title: { type: "text", label: "Event Title", contentEditable: true, ai: { required: true, instructions: "The event's official name, e.g. 'Fall Open House 2026'." } },
+    summary: { type: "textarea", label: "Summary", contentEditable: true, ai: { required: true, instructions: "1–2 sentences for the listing card: who it is for and what happens." } },
     startDate: { type: "text", label: "Date (YYYY-MM-DD)", ai: { required: true, stream: false, instructions: "YYYY-MM-DD exactly — listings sort and format on it." } },
     startTime: { type: "text", label: "Start Time", ai: { instructions: "As displayed, e.g. '9:00 AM'. Blank for all-day items and deadlines." } },
     endTime: { type: "text", label: "End Time", ai: { instructions: "As displayed, e.g. '3:00 PM'. Blank if open-ended." } },
-    location: { type: "text", label: "Location", ai: { instructions: "Building and room, or 'Online'." } },
+    location: { type: "text", label: "Location", contentEditable: true, ai: { instructions: "Building and room, or 'Online'." } },
     registrationUrl: { type: "text", label: "Registration URL", ai: linkAi("Where to register or RSVP.", { optional: true }) },
-    registrationLabel: { type: "text", label: "Registration Button Label", ai: buttonLabelAi("Register") },
+    registrationLabel: { type: "text", label: "Registration Button Label", contentEditable: true, ai: buttonLabelAi("Register") },
     imageUrl: { type: "text", label: "Background Image URL", ai: imageAi("Wide photo behind the masthead; also the listing card image.") },
   },
   defaultProps: {

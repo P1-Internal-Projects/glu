@@ -14,7 +14,7 @@ export const imageBlock = {
       label: "Alt text",
       ai: { instructions: "Describe what is in the image for someone who cannot see it, one sentence. Blank only if purely decorative." },
     },
-    caption: { type: "textarea" as const, label: "Caption (optional)", ai: { instructions: "One sentence, optional. Leave blank if the image explains itself." } },
+    caption: { type: "textarea" as const, label: "Caption (optional)", contentEditable: true, ai: { instructions: "One sentence, optional. Leave blank if the image explains itself." } },
     loading: {
       type: "radio" as const,
       label: "Loading",

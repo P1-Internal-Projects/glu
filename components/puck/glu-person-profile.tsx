@@ -24,6 +24,12 @@ import { buttonLabelAi } from "../../lib/ai-hints";
  * them. Keeping both on one block is deliberate — an editor sets up a counselor
  * page in one panel — but a new field has to go in the right group, or it ends
  * up in the datasource as noise.
+ *
+ * Most of the record fields are plain display text and are contentEditable.
+ * `email`, `phone`, `bookingUrl` and `photoUrl` stay plain fields: they are
+ * used to build `mailto:`/`tel:` links and image `src`/`alt` attributes, which
+ * need a real string, not the React element a contentEditable field's value
+ * becomes in the editor.
  */
 export type GLUPersonProfileProps = {
   name: string;
@@ -234,7 +240,9 @@ export function GLUPersonProfile(props: GLUPersonProfileProps) {
     >
       <img
         src={src}
-        alt={photoUrl ? name : ""}
+        // `name` is a React element in the editor when the Full Name field is
+        // contentEditable — an `alt` attribute can only take a string.
+        alt={photoUrl && typeof name === "string" ? name : ""}
         style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
       />
     </div>
@@ -357,23 +365,23 @@ export const gluPersonProfileConfig = {
       "Staff profile AND the person's data record. One per counselor page, pinned by the Counselor template; the Counselors listing reads this block. Fill the record fields from what you know about the person and leave photoUrl blank if no headshot is available — the block draws the GLU silhouette. Presentation fields (layout, background, photoShape) are page styling, not data.",
   },
   fields: {
-    name: { type: "text", label: "Full Name", ai: { required: true } },
-    pronouns: { type: "text", label: "Pronouns", ai: { instructions: "Optional, e.g. she/her. Leave blank if unknown." } },
-    role: { type: "text", label: "Role / Title", ai: { required: true, instructions: "Official title, e.g. 'Senior Admissions Counselor'." } },
-    focusArea: { type: "text", label: "Focus Area", ai: { instructions: "Who this counselor advises, e.g. 'Transfer applicants'." } },
-    territory: { type: "text", label: "Territory", ai: { instructions: "Region or states covered." } },
-    languages: { type: "text", label: "Languages", ai: { instructions: "Comma-separated, e.g. 'English, Spanish'." } },
+    name: { type: "text", label: "Full Name", contentEditable: true, ai: { required: true } },
+    pronouns: { type: "text", label: "Pronouns", contentEditable: true, ai: { instructions: "Optional, e.g. she/her. Leave blank if unknown." } },
+    role: { type: "text", label: "Role / Title", contentEditable: true, ai: { required: true, instructions: "Official title, e.g. 'Senior Admissions Counselor'." } },
+    focusArea: { type: "text", label: "Focus Area", contentEditable: true, ai: { instructions: "Who this counselor advises, e.g. 'Transfer applicants'." } },
+    territory: { type: "text", label: "Territory", contentEditable: true, ai: { instructions: "Region or states covered." } },
+    languages: { type: "text", label: "Languages", contentEditable: true, ai: { instructions: "Comma-separated, e.g. 'English, Spanish'." } },
     email: { type: "text", label: "Email", ai: { stream: false } },
     phone: { type: "text", label: "Phone", ai: { stream: false } },
-    officeLocation: { type: "text", label: "Office", ai: { instructions: "Building and room, e.g. 'Visitor Center, Room 120'." } },
-    officeHours: { type: "text", label: "Office Hours", ai: { instructions: "Drop-in hours as displayed, e.g. 'Wednesdays 1–4 PM'." } },
+    officeLocation: { type: "text", label: "Office", contentEditable: true, ai: { instructions: "Building and room, e.g. 'Visitor Center, Room 120'." } },
+    officeHours: { type: "text", label: "Office Hours", contentEditable: true, ai: { instructions: "Drop-in hours as displayed, e.g. 'Wednesdays 1–4 PM'." } },
     bookingUrl: { type: "text", label: "Booking URL", ai: { stream: false } },
-    bookingLabel: { type: "text", label: "Booking Button Label", ai: buttonLabelAi("Schedule a conversation") },
+    bookingLabel: { type: "text", label: "Booking Button Label", contentEditable: true, ai: buttonLabelAi("Schedule a conversation") },
     // Rendered as the media library picker, not a text box: lib/media-fields.ts
     // matches this name. The stored value stays a plain CDN URL string, which
     // is what the Counselors listing binds to as `{{ item.photoUrl }}`.
     photoUrl: { type: "text", label: "Headshot", ai: { stream: false } },
-    bio: { type: "textarea", label: "Biography", ai: { instructions: "2–3 sentences in the third person." } },
+    bio: { type: "textarea", label: "Biography", contentEditable: true, ai: { instructions: "2–3 sentences in the third person." } },
     layout: {
       type: "radio",
       label: "Layout",

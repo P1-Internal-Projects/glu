@@ -122,8 +122,8 @@ export const gluStatsBarConfig = {
       label: "Stats",
       ai: { instructions: "Exactly 3 or 4 figures, only ones that are true of Grand Lakes." },
       arrayFields: {
-        value: { type: "text", label: "Value (e.g. 15,000)", ai: { required: true, instructions: "The number as displayed, with its unit: '15,000', '42%', '$450M', '120+'." } },
-        label: { type: "text", label: "Label (e.g. Students)", ai: { required: true, instructions: "2–3 word noun phrase, e.g. 'Enrolled Students'." } },
+        value: { type: "text", label: "Value (e.g. 15,000)", contentEditable: true, ai: { required: true, instructions: "The number as displayed, with its unit: '15,000', '42%', '$450M', '120+'." } },
+        label: { type: "text", label: "Label (e.g. Students)", contentEditable: true, ai: { required: true, instructions: "2–3 word noun phrase, e.g. 'Enrolled Students'." } },
       },
       getItemSummary: (item: { label?: string }, i?: number) => item?.label || `Item #${(i ?? 0) + 1}`,
     },
