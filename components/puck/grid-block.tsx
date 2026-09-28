@@ -17,7 +17,7 @@ function CardGrid({
         {items.map((item, index) => {
           const id = String(item.id ?? "").trim();
           const className =
-            "rounded-lg border border-slate-200 bg-white p-4 shadow-sm transition hover:border-blue-400 hover:shadow-md";
+            "rounded-lg border border-slate-200 bg-white p-4 shadow-sm transition hover:border-[var(--glu-accent-red)] hover:shadow-md";
           if (item._href) {
             return (
               <a

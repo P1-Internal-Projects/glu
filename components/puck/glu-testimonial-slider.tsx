@@ -32,7 +32,7 @@ export function GLUTestimonialSliderComponent({ eyebrow, heading, testimonials }
 
 
   return (
-    <Section background="navy">
+    <Section background="crimson">
       <Container>
         <div style={{ textAlign: "center" as const, maxWidth: 720, margin: "0 auto" }}>
           {eyebrow && (

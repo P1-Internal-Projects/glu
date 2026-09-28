@@ -19,8 +19,9 @@ const stats = [
 
 const heading = "Grand Lakes by the Numbers";
 
-// `navy` is the stored value for crimson, kept because published pages hold it.
-export const Crimson: Story = { args: { heading, stats, background: "navy" } };
+export const Crimson: Story = { args: { heading, stats, background: "crimson" } };
 export const DeepCrimson: Story = { args: { heading, stats, background: "crimsonDark" } };
 export const Gold: Story = { args: { heading, stats, background: "gold" } };
 export const White: Story = { args: { heading, stats, background: "white" } };
+// `navy` is a legacy stored value kept because published pages hold it — still renders crimson.
+export const LegacyNavy: Story = { args: { heading, stats, background: "navy" } };

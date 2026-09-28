@@ -2,7 +2,7 @@
 
 import React from "react";
 import type { ComponentConfig } from "@puckeditor/core";
-import { Section } from "../../design-system/components/section";
+import { Section, type LegacySectionBackground } from "../../design-system/components/section";
 import { Container } from "../../design-system/components/container";
 import { Eyebrow } from "../../design-system/components/typography";
 import { colors, typography, spacing } from "../../design-system/tokens";
@@ -30,7 +30,7 @@ import { colors, typography, spacing } from "../../design-system/tokens";
 export type GLUFactGridProps = {
   eyebrow: string;
   heading: string;
-  background: "white" | "offWhite" | "lightBlue";
+  background: "white" | "offWhite" | "rose" | LegacySectionBackground;
   facts: { label: string; value: string }[];
 };
 
@@ -143,7 +143,7 @@ export const gluFactGridConfig = {
       options: [
         { label: "White", value: "white" },
         { label: "Off White", value: "offWhite" },
-        { label: "Light Rose", value: "lightBlue" },
+        { label: "Light Rose", value: "rose" },
       ],
       ai: {
         instructions:

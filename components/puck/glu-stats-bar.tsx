@@ -6,20 +6,28 @@ import { Section } from "../../design-system/components/section";
 import { Container } from "../../design-system/components/container";
 import { colors, typography, spacing } from "../../design-system/tokens";
 
+/** Canonical, current stored values. */
+export type GLUStatsBarBackground = "crimson" | "crimsonDark" | "gold" | "white";
+
 export type GLUStatsBarProps = {
   heading: string;
   stats: { value: string; label: string }[];
   /**
-   * Stored values predate the crimson palette and are kept because published
-   * pages hold them: `navy` is crimson. `gold` rendered white and `white`
-   * rendered the blush off-white until they were made to mean what they say.
+   * `navy` is a legacy stored value kept because published pages hold it —
+   * it normalizes to `crimson`. `gold` rendered white and `white` rendered
+   * the blush off-white until they were made to mean what they say.
    */
-  background: "navy" | "crimsonDark" | "gold" | "white";
+  background: GLUStatsBarBackground | "navy";
 };
 
+/** Maps the legacy `navy` stored value to its current name: crimson. */
+function normalizeStatsBarBackground(background: GLUStatsBarProps["background"]): GLUStatsBarBackground {
+  return background === "navy" ? "crimson" : background;
+}
+
 /** Section colour, number colour, label colour and divider per background. */
-const THEMES: Record<GLUStatsBarProps["background"], { bg: string; value: string; label: string; heading: string; divider: string }> = {
-  navy: { bg: colors.crimson, value: colors.gold, label: "rgba(255,255,255,0.8)", heading: colors.white, divider: "rgba(255,255,255,0.15)" },
+const THEMES: Record<GLUStatsBarBackground, { bg: string; value: string; label: string; heading: string; divider: string }> = {
+  crimson: { bg: colors.crimson, value: colors.gold, label: "rgba(255,255,255,0.8)", heading: colors.white, divider: "rgba(255,255,255,0.15)" },
   crimsonDark: { bg: colors.crimsonDark, value: colors.gold, label: "rgba(255,255,255,0.8)", heading: colors.white, divider: "rgba(255,255,255,0.15)" },
   // Dark text throughout: white on gold is about 2.6:1.
   gold: { bg: colors.gold, value: colors.crimsonDark, label: colors.dark, heading: colors.dark, divider: "rgba(26,5,5,0.2)" },
@@ -27,7 +35,7 @@ const THEMES: Record<GLUStatsBarProps["background"], { bg: string; value: string
 };
 
 export function GLUStatsBarComponent({ heading, stats, background }: GLUStatsBarProps) {
-  const theme = THEMES[background] ?? THEMES.navy;
+  const theme = THEMES[normalizeStatsBarBackground(background)] ?? THEMES.crimson;
 
   return (
     <Section paddingY={spacing[12]} style={{ backgroundColor: theme.bg }}>
@@ -97,7 +105,7 @@ export function GLUStatsBarComponent({ heading, stats, background }: GLUStatsBar
 export const gluStatsBarConfig = {
   label: "GLU Stats Bar",
   ai: {
-    instructions: "Stats bar — place after hero to highlight key metrics. Max 4 stats. Use navy background for emphasis.",
+    instructions: "Stats bar — place after hero to highlight key metrics. Max 4 stats. Use crimson background for emphasis.",
   },
   fields: {
     heading: {
@@ -110,12 +118,12 @@ export const gluStatsBarConfig = {
       type: "select",
       label: "Background",
       options: [
-        { label: "Crimson", value: "navy" },
+        { label: "Crimson", value: "crimson" },
         { label: "Deep Crimson", value: "crimsonDark" },
         { label: "Gold", value: "gold" },
         { label: "White", value: "white" },
       ],
-      ai: { instructions: "navy (crimson) straight after a hero; crimsonDark next to another crimson section; white between light sections; gold sparingly." },
+      ai: { instructions: "crimson straight after a hero; crimsonDark next to another crimson section; white between light sections; gold sparingly." },
     },
     stats: {
       type: "array",
@@ -130,7 +138,7 @@ export const gluStatsBarConfig = {
   },
   defaultProps: {
     heading: "Grand Lakes by the Numbers",
-    background: "navy",
+    background: "crimson",
     stats: [
       { value: "15,000", label: "Enrolled Students" },
       { value: "42%", label: "Acceptance Rate" },

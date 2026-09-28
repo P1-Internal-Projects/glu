@@ -20,7 +20,7 @@ const meta: Meta<typeof GLUListingSection> = {
   component: GLUListingSection,
   parameters: { layout: "fullscreen" },
   argTypes: {
-    background: { control: "select", options: ["white", "offWhite", "lightBlue", "navy"] },
+    background: { control: "select", options: ["white", "offWhite", "rose", "crimson"] },
     columns: { control: "select", options: ["auto", "2", "3", "4"] },
     cardStyle: { control: "radio", options: ["elevated", "flat"] },
     align: { control: "radio", options: ["center", "left"] },
@@ -201,7 +201,7 @@ export const TwoColumnsRounded: Story = {
   name: "Columns: 2, rounded photos",
   args: {
     ...counselorsHeader,
-    background: "lightBlue",
+    background: "rose",
     columns: "2",
     children: <PersonCards items={people} {...show} photoShape="rounded" />,
   },
@@ -212,7 +212,7 @@ export const FlatOnTint: Story = {
   name: "Card style: flat",
   args: {
     ...counselorsHeader,
-    background: "lightBlue",
+    background: "rose",
     cardStyle: "flat",
     children: <PersonCards items={people} {...show} />,
   },
@@ -225,7 +225,7 @@ export const Crimson: Story = {
     eyebrow: "Visit",
     heading: "Upcoming Events",
     subtext: "Open houses, deadlines and webinars across the admissions year.",
-    background: "navy",
+    background: "crimson",
     columns: "3",
     children: <EventCards items={events} {...show} />,
   },
@@ -236,7 +236,7 @@ export const CrimsonFlat: Story = {
   name: "Background: crimson, flat cards",
   args: {
     ...counselorsHeader,
-    background: "navy",
+    background: "crimson",
     cardStyle: "flat",
     children: <PersonCards items={people} {...show} />,
   },
@@ -297,5 +297,32 @@ export const Empty: Story = {
     heading: "Upcoming Events",
     background: "offWhite",
     children: <EventCards items={[]} {...show} />,
+  },
+};
+
+/**
+ * `navy` and `lightBlue` are legacy stored values from before the crimson
+ * rebrand, kept because hundreds of published pages hold them. They still
+ * render crimson/rose respectively.
+ */
+export const LegacyNavy: Story = {
+  name: "Legacy background: navy",
+  args: {
+    eyebrow: "Visit",
+    heading: "Upcoming Events",
+    subtext: "Open houses, deadlines and webinars across the admissions year.",
+    background: "navy",
+    columns: "3",
+    children: <EventCards items={events} {...show} />,
+  },
+};
+
+export const LegacyLightBlue: Story = {
+  name: "Legacy background: lightBlue",
+  args: {
+    ...counselorsHeader,
+    background: "lightBlue",
+    columns: "2",
+    children: <PersonCards items={people} {...show} photoShape="rounded" />,
   },
 };

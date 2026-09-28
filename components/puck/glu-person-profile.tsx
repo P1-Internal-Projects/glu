@@ -7,6 +7,7 @@ import { Container } from "../../design-system/components/container";
 import { Eyebrow } from "../../design-system/components/typography";
 import { colors, radii, shadows, spacing, typography } from "../../design-system/tokens";
 import { headshotOrSilhouette } from "../../lib/glu-assets";
+import { normalizeBackground, type LegacySectionBackground } from "../../design-system/components/section";
 import { buttonLabelAi } from "../../lib/ai-hints";
 
 /**
@@ -41,19 +42,16 @@ export type GLUPersonProfileProps = {
   photoUrl: string;
   bio: string;
   layout: "split" | "centered";
-  background: "white" | "offWhite" | "lightBlue" | "navy";
+  background: "white" | "offWhite" | "rose" | "crimson" | LegacySectionBackground;
   photoShape: "rounded" | "circle";
 };
 
-const BG: Record<GLUPersonProfileProps["background"], string> = {
+/** Keyed by the canonical values; legacy stored values are normalized before lookup. */
+const BG: Record<"white" | "offWhite" | "rose" | "crimson", string> = {
   white: colors.white,
   offWhite: colors.offWhite,
-  lightBlue: colors.lightBlue,
-  // `navy` is the stored value every other GLU section uses for this colour,
-  // and the colour is crimson — the name is a leftover the editor label
-  // ("Crimson") already corrects. Kept in step with the rest rather than
-  // being the one component with its own spelling.
-  navy: colors.crimson,
+  rose: colors.rose,
+  crimson: colors.crimson,
 };
 
 function Chip({ label, value, onDark }: { label: string; value: string; onDark: boolean }) {
@@ -68,7 +66,7 @@ function Chip({ label, value, onDark }: { label: string; value: string; onDark: 
         borderRadius: radii.full,
         fontFamily: typography.fontBody,
         fontSize: typography.sizeSm,
-        backgroundColor: onDark ? "rgba(255,255,255,0.12)" : colors.lightBlue,
+        backgroundColor: onDark ? "rgba(255,255,255,0.12)" : colors.rose,
         color: onDark ? colors.white : colors.dark,
         border: `1px solid ${onDark ? "rgba(255,255,255,0.25)" : colors.border}`,
       }}
@@ -203,7 +201,8 @@ export function GLUPersonProfile(props: GLUPersonProfileProps) {
     background = "white",
     photoShape = "rounded",
   } = props;
-  const onDark = background === "navy";
+  const normalizedBackground = normalizeBackground(background);
+  const onDark = normalizedBackground === "crimson";
   const centered = layout === "centered";
   const src = headshotOrSilhouette(photoUrl);
   const ink = onDark ? colors.white : colors.dark;
@@ -213,7 +212,7 @@ export function GLUPersonProfile(props: GLUPersonProfileProps) {
   // tinted one gets white, crimson gets a translucent lift. A photo covers it.
   const tileBg = onDark
     ? "rgba(255,255,255,0.12)"
-    : background === "white"
+    : normalizedBackground === "white"
       ? colors.offWhite
       : colors.white;
 
@@ -319,7 +318,7 @@ export function GLUPersonProfile(props: GLUPersonProfileProps) {
   );
 
   return (
-    <section style={{ backgroundColor: BG[background], padding: `${spacing[16]} 0` }}>
+    <section style={{ backgroundColor: BG[normalizedBackground], padding: `${spacing[16]} 0` }}>
       <Container>
         {centered ? (
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: spacing[8] }}>
@@ -389,10 +388,10 @@ export const gluPersonProfileConfig = {
       options: [
         { label: "White", value: "white" },
         { label: "Off White", value: "offWhite" },
-        { label: "Light Rose", value: "lightBlue" },
-        { label: "Crimson", value: "navy" },
+        { label: "Light Rose", value: "rose" },
+        { label: "Crimson", value: "crimson" },
       ],
-      ai: { instructions: "white by default. navy (crimson) only for a featured profile, and never when the next section is also crimson." },
+      ai: { instructions: "white by default. crimson only for a featured profile, and never when the next section is also crimson." },
     },
     photoShape: {
       type: "radio",

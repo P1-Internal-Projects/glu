@@ -19,7 +19,7 @@ export function Card({ hover = true, children, style, className }: CardProps) {
       style={{
         backgroundColor: colors.white,
         borderRadius: radii.lg,
-        border: `1px solid ${isHovered ? colors.blue : colors.border}`,
+        border: `1px solid ${isHovered ? colors.accentRed : colors.border}`,
         boxShadow: isHovered ? shadows.md : shadows.sm,
         overflow: "hidden",
         transition: "border-color 0.2s, box-shadow 0.2s",

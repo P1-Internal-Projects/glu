@@ -1,7 +1,7 @@
 import React from "react";
 import { colors, typography, radii, spacing } from "../tokens";
 
-export type BadgeVariant = "navy" | "gold" | "blue" | "light" | "success" | "error";
+export type BadgeVariant = "crimson" | "gold" | "accent" | "light" | "success" | "error";
 
 export interface BadgeProps {
   variant?: BadgeVariant;
@@ -10,15 +10,15 @@ export interface BadgeProps {
 }
 
 const variantStyles: Record<BadgeVariant, React.CSSProperties> = {
-  navy: { backgroundColor: colors.crimson, color: colors.white },
+  crimson: { backgroundColor: colors.crimson, color: colors.white },
   gold: { backgroundColor: colors.gold, color: colors.white },
-  blue: { backgroundColor: colors.blue, color: colors.white },
-  light: { backgroundColor: colors.lightBlue, color: colors.crimson },
+  accent: { backgroundColor: colors.accentRed, color: colors.white },
+  light: { backgroundColor: colors.rose, color: colors.crimson },
   success: { backgroundColor: colors.success, color: colors.white },
   error: { backgroundColor: colors.error, color: colors.white },
 };
 
-export function Badge({ variant = "navy", children, style }: BadgeProps) {
+export function Badge({ variant = "crimson", children, style }: BadgeProps) {
   return (
     <span
       style={{

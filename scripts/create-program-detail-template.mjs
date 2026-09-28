@@ -23,6 +23,18 @@
  *   node scripts/create-program-detail-template.mjs --branch=<id> [--publish]
  */
 import { api, S, mainBranchId, assertNobodyEditing } from "./p1-admin.mjs";
+import { createHash } from "node:crypto";
+
+/**
+ * Deterministic block id for a migrated component, matching the mapping the
+ * content migration uses. Ids created by this script must line up exactly
+ * with ids already written to existing pages, so this is computed rather
+ * than hard-coded as a plain slug like "program-hero".
+ */
+function newId(type, old) {
+  const h = createHash("sha256").update(`${type}:${old}`).digest("hex");
+  return `${type}-${h.slice(0, 8)}-${h.slice(8, 12)}-4${h.slice(13, 16)}-${"89ab"[parseInt(h[16], 16) & 3]}${h.slice(17, 20)}-${h.slice(20, 32)}`;
+}
 
 const ARGS = new Map(
   process.argv.slice(2).map((a) => {
@@ -44,7 +56,7 @@ const CONTENT = [
   {
     type: "GLUPageHero",
     props: {
-      id: "program-hero",
+      id: newId("GLUPageHero", "program-hero"),
       eyebrow: "{{ gluProgram.college }}",
       heading: "{{ gluProgram.title }}",
       breadcrumbs: [
@@ -62,11 +74,11 @@ const CONTENT = [
   {
     type: "GLUStatsBar",
     props: {
-      id: "program-facts",
+      id: newId("GLUStatsBar", "program-facts"),
       // The stats bar draws its own heading; the facts speak for themselves
       // here and a second title above them only pushes the page down.
       heading: "",
-      background: "navy",
+      background: "crimson",
       stats: "{{ gluProgram.stats }}",
     },
   },
@@ -76,7 +88,7 @@ const CONTENT = [
   {
     type: "GLUFeatureSection",
     props: {
-      id: "program-about",
+      id: newId("GLUFeatureSection", "program-about"),
       eyebrow: "{{ gluProgram.department }}",
       heading: "{{ gluProgram.aboutHeading }}",
       body: "{{ gluProgram.description }}",
@@ -103,7 +115,7 @@ const CONTENT = [
   {
     type: "GLUFactGrid",
     props: {
-      id: "program-facts-grid",
+      id: newId("GLUFactGrid", "program-facts-grid"),
       eyebrow: "",
       heading: "Program details",
       background: "offWhite",
@@ -113,7 +125,7 @@ const CONTENT = [
   {
     type: "GLUCtaBanner",
     props: {
-      id: "program-cta",
+      id: newId("GLUCtaBanner", "program-cta"),
       // Heading, subtext and the primary button all come from the
       // datasource: a code that matches nothing must not close with an
       // invitation to apply to it.
@@ -123,7 +135,7 @@ const CONTENT = [
       primaryCtaHref: "{{ gluProgram.ctaPrimaryHref }}",
       secondaryCtaLabel: "{{ gluProgram.ctaSecondaryLabel }}",
       secondaryCtaHref: "{{ gluProgram.ctaSecondaryHref }}",
-      background: "navy",
+      background: "crimson",
     },
   },
 ];

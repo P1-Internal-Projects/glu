@@ -3,7 +3,7 @@
 import React from "react";
 import { DropZone } from "@puckeditor/core";
 import type { ComponentConfig, Slot } from "@puckeditor/core";
-import { Section } from "../../design-system/components/section";
+import { Section, type LegacySectionBackground } from "../../design-system/components/section";
 import { Container } from "../../design-system/components/container";
 import { Eyebrow } from "../../design-system/components/typography";
 import { colors, spacing, typography } from "../../design-system/tokens";
@@ -34,7 +34,7 @@ import { EYEBROW_AI } from "../../lib/ai-hints";
 export type GLUArticleSectionProps = {
   eyebrow: string;
   heading: string;
-  background: "white" | "offWhite" | "lightBlue";
+  background: "white" | "offWhite" | "rose" | LegacySectionBackground;
   width: "prose" | "wide";
   body: Slot;
 };
@@ -104,7 +104,7 @@ export function GLUArticleSectionComponent({
   width = "prose",
   body,
 }: Omit<GLUArticleSectionProps, "body"> & { body: unknown }) {
-  const onDark = false; // The palette here is light-only; navy is for CTAs.
+  const onDark = false; // The palette here is light-only; crimson is for CTAs.
   const hasHeader = Boolean(eyebrow || heading);
 
   return (
@@ -197,7 +197,7 @@ export const gluArticleSectionConfig = {
       options: [
         { label: "White", value: "white" },
         { label: "Off White", value: "offWhite" },
-        { label: "Light Rose", value: "lightBlue" },
+        { label: "Light Rose", value: "rose" },
       ],
       ai: { instructions: "Alternate with the neighbouring sections so no two adjacent sections share a background." },
     },

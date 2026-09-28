@@ -56,7 +56,7 @@ export const GridPatterns: Story = {
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8 }}>
           {[0, 1, 2].map((i) => (
-            <div key={i} style={{ height: 48, background: colors.lightBlue, borderRadius: 6 }} />
+            <div key={i} style={{ height: 48, background: colors.rose, borderRadius: 6 }} />
           ))}
         </div>
       </div>

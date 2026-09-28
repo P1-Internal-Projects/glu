@@ -38,7 +38,7 @@ export const BorderRadius: Story = {
       <div style={{ display: "flex", gap: 32, flexWrap: "wrap" as const }}>
         {Object.entries(radii).map(([name, value]) => (
           <div key={name} style={{ textAlign: "center" as const }}>
-            <div style={{ width: 80, height: 80, backgroundColor: colors.lightBlue, border: `2px solid ${colors.crimson}`, borderRadius: value }} />
+            <div style={{ width: 80, height: 80, backgroundColor: colors.rose, border: `2px solid ${colors.crimson}`, borderRadius: value }} />
             <div style={{ marginTop: 8, fontFamily: "monospace", fontSize: "0.75rem", color: colors.muted }}>
               {name}<br />{value || "0"}
             </div>

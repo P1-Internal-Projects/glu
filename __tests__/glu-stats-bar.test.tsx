@@ -8,7 +8,8 @@ const html = (background: GLUStatsBarProps["background"]) =>
 
 describe("GLUStatsBar backgrounds", () => {
   it.each([
-    ["navy", "#8B0015"],
+    ["crimson", "#8B0015"],
+    ["navy", "#8B0015"], // legacy stored value — still renders crimson
     ["crimsonDark", "#6B0010"],
     ["gold", "#C8922A"],
     ["white", "#ffffff"],

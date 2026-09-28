@@ -14,7 +14,7 @@ const meta: Meta<typeof GLUFactGridComponent> = {
   component: GLUFactGridComponent,
   parameters: { layout: "fullscreen" },
   argTypes: {
-    background: { control: "select", options: ["white", "offWhite", "lightBlue"] },
+    background: { control: "select", options: ["white", "offWhite", "rose"] },
   },
 };
 

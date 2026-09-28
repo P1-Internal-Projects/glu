@@ -5,7 +5,7 @@ import Image from "next/image";
 import type { ComponentConfig, RichText } from "@puckeditor/core";
 import { Button } from "../../design-system/components/button";
 import { Eyebrow } from "../../design-system/components/typography";
-import { Section } from "../../design-system/components/section";
+import { Section, type LegacySectionBackground } from "../../design-system/components/section";
 import { Container } from "../../design-system/components/container";
 import { colors, typography, spacing, radii, shadows } from "../../design-system/tokens";
 import { richTextProps } from "./rich-text-props";
@@ -25,7 +25,7 @@ export type GLUFeatureSectionProps = {
   imageUrl: MediaImageValue;
   imageAlt: string;
   imagePosition: "left" | "right";
-  background: "white" | "offWhite" | "lightBlue";
+  background: "white" | "offWhite" | "rose" | LegacySectionBackground;
 };
 
 export function GLUFeatureSectionComponent({
@@ -187,7 +187,7 @@ export const gluFeatureSectionConfig = {
       options: [
         { label: "White", value: "white" },
         { label: "Off White", value: "offWhite" },
-        { label: "Light Rose", value: "lightBlue" },
+        { label: "Light Rose", value: "rose" },
       ],
       ai: BACKGROUND_AI,
     },

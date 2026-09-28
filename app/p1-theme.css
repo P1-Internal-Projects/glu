@@ -19,7 +19,7 @@
   --p1-fg-muted: #6B4040;               /* colors.muted */
   --p1-fg-inverse: #ffffff;
   --p1-border: #EDD5D5;                 /* colors.border */
-  --p1-border-strong: #C0392B;          /* colors.blue */
+  --p1-border-strong: #C0392B;          /* colors.accentRed */
   --p1-border-subtle: #EDD5D5;
 
   /* Accent: the library's one "branded" tone becomes GLU crimson, with gold

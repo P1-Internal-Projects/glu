@@ -27,3 +27,6 @@ export const Weather: Story = { args: { ...base, variant: "weather" } };
 export const Emergency: Story = { args: { ...base, variant: "emergency", dismissible: false } };
 export const CustomBackground: Story = { args: { ...base, variant: "news", background: "crimsonDark" } };
 export const TitleOnly: Story = { args: { ...base, variant: "alert", description: "", buttonLabel: "" } };
+
+/** `lightBlue` is a legacy stored value kept because published pages hold it — still renders rose. */
+export const LegacyLightBlue: Story = { args: { ...base, variant: "news", background: "lightBlue" as const } };

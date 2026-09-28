@@ -88,7 +88,7 @@ function Pill({ children }: { children: React.ReactNode }) {
         letterSpacing: "0.06em",
         textTransform: "uppercase",
         color: colors.crimson,
-        backgroundColor: colors.lightBlue,
+        backgroundColor: colors.rose,
         borderRadius: radii.full,
         padding: `${spacing[1]} ${spacing[3]}`,
         whiteSpace: "nowrap",
