@@ -154,5 +154,9 @@ describe("the editor's translation paths", () => {
 
   it("builds the suffix path without a leading slash, as documents are stored", () => {
     expect(suffixDocumentPath("/academics", "es-US")).toBe("academics.es-US");
+    // The home page: P1 stores a pathless translation of `/` at `.fr-ca`.
+    expect(suffixDocumentPath("/", "fr-CA")).toBe(".fr-CA");
+    expect(suffixDocumentPath("", "fr-CA")).toBe(".fr-CA");
+    expect(documentPathCandidates("/", "fr-CA")).toContain(".fr-ca");
   });
 });

@@ -136,7 +136,12 @@ function suffixTagsFor(tag: string): string[] {
  * a page from being read as English and served as English.
  */
 export function suffixDocumentPath(canonicalPath: string, tag: string): string {
-  return `${canonicalPath.replace(/^\/+/, "") || "/"}.${tag}`;
+  // The home page has an empty canonical path, so its translation is stored at
+  // `.{tag}` with no leading slash — observed on 2026-09-27, when a pathless
+  // fr-CA translation of `/` came back as `.fr-ca`. The published path set is
+  // compared with leading slashes stripped, so a `/.{tag}` candidate never
+  // matched and the French home page would not have been served at `/fr`.
+  return `${canonicalPath.replace(/^\/+/, "")}.${tag}`;
 }
 
 /**
