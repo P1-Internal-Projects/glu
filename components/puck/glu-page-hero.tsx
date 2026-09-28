@@ -123,7 +123,7 @@ export const gluPageHeroConfig = {
       label: "Breadcrumbs",
       ai: { instructions: "Home, then the section, then this page's parent if any — 2–3 items. Do not include the current page." },
       arrayFields: {
-        label: { type: "text", label: "Label", ai: { required: true, instructions: "The page's nav name, e.g. 'Home' or 'Admissions'." } },
+        label: { type: "text", label: "Label", contentEditable: true, ai: { required: true, instructions: "The page's nav name, e.g. 'Home' or 'Admissions'." } },
         href: { type: "text", label: "URL", ai: linkAi("That page's path.") },
       },
       getItemSummary: (item: { label?: string }, i?: number) => item?.label || `Item #${(i ?? 0) + 1}`,

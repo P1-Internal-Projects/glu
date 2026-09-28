@@ -86,7 +86,11 @@ export function GLUCardGridComponent({ eyebrow, heading, subtext, columns, backg
                 <div style={{ position: "relative", aspectRatio: "16/9", overflow: "hidden" }}>
                   <Image
                     src={image.src}
-                    alt={image.alt || card.title}
+                    // `card.title` is a React element in the editor when the
+                    // Title field is contentEditable, and an `alt` attribute
+                    // can only take a string — fall back to empty rather than
+                    // stringifying an element into the DOM.
+                    alt={image.alt || (typeof card.title === "string" ? card.title : "")}
                     fill
                     style={{ objectFit: "cover" }}
                     sizes={`(max-width: 768px) 100vw, ${Math.round(100 / columns)}vw`}
@@ -191,7 +195,7 @@ export const gluCardGridConfig = {
       label: "Cards",
       ai: { instructions: "3, 4, 6 or 8 cards so every row is full. Each card is one program, department, office or story." },
       arrayFields: {
-        title: { type: "text", label: "Title", ai: { required: true, instructions: "2–5 words, e.g. 'Environmental Science'." } },
+        title: { type: "text", label: "Title", contentEditable: true, ai: { required: true, instructions: "2–5 words, e.g. 'Environmental Science'." } },
         description: { type: "richtext", label: "Description", ai: { instructions: "1–2 sentences on what makes this one distinctive." } },
         // The rich media field, not a URL box. It stores an object carrying
         // the asset, its alt text and the crop, which is what puts "Custom…"
@@ -207,7 +211,7 @@ export const gluCardGridConfig = {
           ai: imageAi("Landscape photo for the top of the card. Crop it to 16:9."),
         } as any,
         linkHref: { type: "text", label: "Link URL", ai: linkAi("The page this card leads to.", { optional: true }) },
-        linkLabel: { type: "text", label: "Link Label", ai: buttonLabelAi("Explore the program", { optional: true }) },
+        linkLabel: { type: "text", label: "Link Label", contentEditable: true, ai: buttonLabelAi("Explore the program", { optional: true }) },
       },
       getItemSummary: (item: { title?: string }, i?: number) => item?.title || `Item #${(i ?? 0) + 1}`,
     },

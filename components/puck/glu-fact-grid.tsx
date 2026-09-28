@@ -41,9 +41,13 @@ export function GLUFactGridComponent({
   facts,
 }: GLUFactGridProps) {
   // A bound array arrives as whatever the datasource sent, so this cannot
-  // assume it is an array of well-formed rows.
+  // assume it is an array of well-formed rows. `label`/`value` are strings on
+  // the published page but React elements in the editor when their fields are
+  // contentEditable, so only strings get the emptiness check — an editable
+  // element is always kept.
+  const hasText = (v: unknown) => (typeof v === "string" ? v.trim().length > 0 : v != null);
   const rows = (Array.isArray(facts) ? facts : []).filter(
-    (f) => f && String(f.label ?? "").trim() && String(f.value ?? "").trim(),
+    (f) => f && hasText(f.label) && hasText(f.value),
   );
 
   if (rows.length === 0) return null;
@@ -157,6 +161,7 @@ export const gluFactGridConfig = {
         label: {
           type: "text",
           label: "Label (e.g. Accreditation)",
+          contentEditable: true,
           ai: {
             required: true,
             instructions: "A short noun naming the fact, 1-3 words. Not a sentence and not a question.",
@@ -165,6 +170,7 @@ export const gluFactGridConfig = {
         value: {
           type: "text",
           label: "Value",
+          contentEditable: true,
           ai: {
             required: true,
             instructions: "The fact itself, kept short — a figure, a name, a comma-separated list. A row with no value is dropped.",

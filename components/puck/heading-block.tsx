@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { blockPaddingClass } from "./block-padding";
 import { H1, H2, H3, H4 } from "../../design-system/components/typography";
 import { typography } from "../../design-system/tokens";
@@ -24,7 +25,7 @@ export const headingBlock = {
       "Plain heading inside body copy, between Paragraph and List blocks. GLU sections carry their own headings. Never h1: the hero or profile is the page's h1.",
   },
   fields: {
-    title: { type: "text" as const, label: "Text", ai: { required: true, instructions: "Sentence case, under 10 words." } },
+    title: { type: "text" as const, label: "Text", contentEditable: true, ai: { required: true, instructions: "Sentence case, under 10 words." } },
     level: {
       type: "select" as const,
       label: "Level",
@@ -42,14 +43,19 @@ export const headingBlock = {
     // h2, not h1: the hero or profile is the page's h1, as the AI hint says.
     level: "h2" as const,
   },
-  render: ({ title, level }: { title?: string; level?: string }) => {
+  render: ({ title, level }: { title?: ReactNode; level?: string }) => {
     const { Tag, size } = LEVELS[(level ?? "h2") as keyof typeof LEVELS] ?? LEVELS.h2;
     // An empty heading is an accessibility failure, not a blank line: a screen
     // reader announces a heading with nothing under it. This happens for real
     // on a route template, where the text is bound to a datasource field that
     // a given record leaves empty, and the block cannot be removed per record.
     // Rendering nothing is what lets such a heading disappear with its content.
-    if (!title?.trim()) return null;
+    //
+    // `title` is a React element in the editor when the Text field is
+    // contentEditable, rather than a string, so only a string value can be
+    // checked for blankness — an editable element is always kept.
+    const isBlank = typeof title === "string" ? !title.trim() : !title;
+    if (isBlank) return null;
     return (
       <div className={blockPaddingClass}>
         <Tag style={{ fontSize: size }}>{title}</Tag>

@@ -55,7 +55,10 @@ function SlideImage({
   return (
     <Image
       src={resolved.src}
-      alt={resolved.alt || alt}
+      // `alt` is the slide's heading, which is a React element in the editor
+      // when the Heading field is contentEditable — an `alt` attribute can
+      // only take a string.
+      alt={resolved.alt || (typeof alt === "string" ? alt : "")}
       fill
       style={{ objectFit: "cover" }}
       sizes="100vw"
@@ -312,8 +315,8 @@ export const gluSlideshowConfig = {
           label: "Image",
           ai: imageAi("Wide landscape photo, at least 1920px. Crop it wide — the slide is a shallow band, not a square.", { optional: false }),
         } as any,
-        heading: { type: "text", label: "Heading", ai: { required: true, instructions: "2–6 words naming what is shown." } },
-        subtext: { type: "textarea", label: "Subtext", ai: { instructions: "One sentence of context. Leave blank to show only the heading." } },
+        heading: { type: "text", label: "Heading", contentEditable: true, ai: { required: true, instructions: "2–6 words naming what is shown." } },
+        subtext: { type: "textarea", label: "Subtext", contentEditable: true, ai: { instructions: "One sentence of context. Leave blank to show only the heading." } },
       },
       getItemSummary: (item: { heading?: string }, i?: number) => item?.heading || `Item #${(i ?? 0) + 1}`,
     },

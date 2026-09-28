@@ -8,7 +8,7 @@ export const buttonBlock = {
       "Standalone button in body copy. GLU sections carry their own CTAs — use this only when a link needs to stand alone between Paragraph or List blocks.",
   },
   fields: {
-    label: { type: "text" as const, label: "Label", ai: buttonLabelAi("Download the viewbook") },
+    label: { type: "text" as const, label: "Label", contentEditable: true, ai: buttonLabelAi("Download the viewbook") },
     href: { type: "text" as const, label: "Link URL", ai: linkAi("Where the button goes.") },
     openInNewTab: {
       type: "radio" as const,

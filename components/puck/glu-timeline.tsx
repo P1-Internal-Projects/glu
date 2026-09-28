@@ -190,8 +190,8 @@ export const gluTimelineConfig = {
       label: "Timeline Items",
       ai: { instructions: "4–6 items in chronological order, earliest first." },
       arrayFields: {
-        year: { type: "text", label: "Year", ai: { required: true, instructions: "A four-digit year, or a short date or step label such as 'Nov 1' or 'Step 1'." } },
-        title: { type: "text", label: "Title", ai: { required: true, instructions: "2–5 words." } },
+        year: { type: "text", label: "Year", contentEditable: true, ai: { required: true, instructions: "A four-digit year, or a short date or step label such as 'Nov 1' or 'Step 1'." } },
+        title: { type: "text", label: "Title", contentEditable: true, ai: { required: true, instructions: "2–5 words." } },
         description: { type: "richtext", label: "Description", ai: { instructions: "1–2 sentences on what happened or what to do." } },
       },
       getItemSummary: (item: { title?: string }, i?: number) => item?.title || `Item #${(i ?? 0) + 1}`,
