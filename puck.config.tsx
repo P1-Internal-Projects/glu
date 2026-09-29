@@ -49,7 +49,6 @@ import { withFieldAi } from "./lib/ai-hints";
 export const config = {
   root: puckRoot,
   categories: {
-    ...p1Categories,
     glu: {
       title: "Grand Lakes University",
       components: [
@@ -69,6 +68,8 @@ export const config = {
         "GLUArticleSection",
       ],
     },
+    // The P1 library's own groups follow GLU's, so GLU's blocks lead the drawer.
+    ...p1Categories,
     p1Library: {
       title: "P1 Component Library",
       components: ["P1TeamGrid"],
