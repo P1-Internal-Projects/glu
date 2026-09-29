@@ -5,16 +5,22 @@ import Image from "next/image";
 import type { ComponentConfig } from "@puckeditor/core";
 import { Eyebrow } from "../../design-system/components/typography";
 import { colors, typography, layout, spacing } from "../../design-system/tokens";
-import { linkAi } from "../../lib/ai-hints";
+import { imageAi, linkAi } from "../../lib/ai-hints";
+import { resolveMediaImage, type MediaImageValue } from "../../lib/media-image";
 
 export type GLUPageHeroProps = {
   eyebrow: string;
   heading: string;
   breadcrumbs: { label: string; href: string }[];
-  backgroundImageUrl: string;
+  backgroundImageUrl: MediaImageValue;
 };
 
 export function GLUPageHeroComponent({ eyebrow, heading, breadcrumbs = [], backgroundImageUrl }: GLUPageHeroProps) {
+  // A media-library pick is an object and older pages hold a plain URL string;
+  // resolveMediaImage takes both. Passing the raw value to <Image> made an
+  // object `src` (and an empty preload) whenever a page held a library pick.
+  // The alt is dropped on purpose: the photo is decoration behind the h1.
+  const background = resolveMediaImage(backgroundImageUrl, { width: 1920, height: 520 });
   return (
     <section
       style={{
@@ -25,9 +31,9 @@ export function GLUPageHeroComponent({ eyebrow, heading, breadcrumbs = [], backg
         overflow: "hidden",
       }}
     >
-      {backgroundImageUrl && (
+      {background.src && (
         <Image
-          src={backgroundImageUrl}
+          src={background.src}
           alt=""
           fill
           priority
@@ -128,7 +134,14 @@ export const gluPageHeroConfig = {
       },
       getItemSummary: (item: { label?: string }, i?: number) => item?.label || `Item #${(i ?? 0) + 1}`,
     },
-    backgroundImageUrl: { type: "text", label: "Background Image URL", ai: { stream: false } },
+    // A media picker, like GLUHero's. It was a text field, which crashed the
+    // editor ("value.split is not a function") on pages whose value is a
+    // media-library object. The name stays so existing pages keep their image.
+    backgroundImageUrl: {
+      type: "p1-media",
+      label: "Background Image",
+      ai: imageAi("Wide photo behind the page title. The section is a shallow band, so a landscape crop works best.", { optional: true }),
+    } as any,
   },
   defaultProps: {
     eyebrow: "Grand Lakes University",
