@@ -39,7 +39,10 @@ export function GLUFeatureSectionComponent({
   imagePosition,
   background,
 }: GLUFeatureSectionProps) {
-  const reversed = imagePosition === "left";
+  // The image comes first in the markup, so "left" is the natural order and
+  // only "right" flips the grid. (It was the other way round, so each setting
+  // drew its image on the opposite side.)
+  const reversed = imagePosition === "right";
 
   /**
    * The frame is a 4:3 box drawn with `object-fit: cover`, so a height is
