@@ -8,7 +8,8 @@ import { Eyebrow } from "../../design-system/components/typography";
 import { colors, radii, shadows, spacing, typography } from "../../design-system/tokens";
 import { headshotOrSilhouette } from "../../lib/glu-assets";
 import { normalizeBackground, type LegacySectionBackground } from "../../design-system/components/section";
-import { buttonLabelAi } from "../../lib/ai-hints";
+import { buttonLabelAi, imageAi } from "../../lib/ai-hints";
+import { resolveMediaImage, type MediaImageValue } from "../../lib/media-image";
 
 /**
  * A staff profile, and the place a person's structured fields live.
@@ -27,9 +28,8 @@ import { buttonLabelAi } from "../../lib/ai-hints";
  * up in the datasource as noise.
  *
  * Most of the record fields are plain display text and are contentEditable.
- * `email`, `phone`, `bookingUrl` and `photoUrl` stay plain fields: they are
- * used to build `mailto:`/`tel:` links and image `src`/`alt` attributes, which
- * need a real string, not the React element a contentEditable field's value
+ * `email`, `phone` and `bookingUrl` stay plain fields: they are
+ * used to build `mailto:`/`tel:` and booking links, which need a real string, not the React element a contentEditable field's value
  * becomes in the editor.
  */
 export type GLUPersonProfileProps = {
@@ -45,7 +45,7 @@ export type GLUPersonProfileProps = {
   officeHours: string;
   bookingUrl: string;
   bookingLabel: string;
-  photoUrl: string;
+  photoUrl: MediaImageValue;
   bio: string;
   layout: "split" | "centered";
   background: "white" | "offWhite" | "rose" | "crimson" | LegacySectionBackground;
@@ -210,7 +210,10 @@ export function GLUPersonProfile(props: GLUPersonProfileProps) {
   const normalizedBackground = normalizeBackground(background);
   const onDark = normalizedBackground === "crimson";
   const centered = layout === "centered";
-  const src = headshotOrSilhouette(photoUrl);
+  // A media-library pick (with the editor's crop) is an object; older pages hold
+  // a plain URL string. resolveMediaImage reads both; blank -> the silhouette.
+  const headshot = resolveMediaImage(photoUrl, { width: 640, height: 640 });
+  const src = headshotOrSilhouette(headshot.src);
   const ink = onDark ? colors.white : colors.dark;
   const soft = onDark ? "rgba(255,255,255,0.78)" : colors.muted;
   // The silhouette is a transparent PNG, so the tile behind it is chosen here
@@ -241,7 +244,7 @@ export function GLUPersonProfile(props: GLUPersonProfileProps) {
         src={src}
         // `name` is a React element in the editor when the Full Name field is
         // contentEditable — an `alt` attribute can only take a string.
-        alt={photoUrl && typeof name === "string" ? name : ""}
+        alt={headshot.src ? headshot.alt || (typeof name === "string" ? name : "") : ""}
         style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
       />
     </div>
@@ -365,6 +368,16 @@ export const gluPersonProfileConfig = {
   },
   fields: {
     name: { type: "text", label: "Full Name", contentEditable: true, ai: { required: true } },
+    // The p1-media picker, so an editor can upload, choose and crop (Custom…).
+    // It stores an object; older pages keep a plain URL string, and both render.
+    // The gluPeople datasource flattens it to a URL, so the Counselors listing
+    // binding `{{ item.photoUrl }}` still receives a string. Second in the
+    // panel, right under the name, so it isn't buried under the contact fields.
+    photoUrl: {
+      type: "p1-media",
+      label: "Headshot",
+      ai: imageAi("A square headshot of this person. Crop to the face; it shows at 320px.", { optional: true }),
+    } as any,
     pronouns: { type: "text", label: "Pronouns", contentEditable: true, ai: { instructions: "Optional, e.g. she/her. Leave blank if unknown." } },
     role: { type: "text", label: "Role / Title", contentEditable: true, ai: { required: true, instructions: "Official title, e.g. 'Senior Admissions Counselor'." } },
     focusArea: { type: "text", label: "Focus Area", contentEditable: true, ai: { instructions: "Who this counselor advises, e.g. 'Transfer applicants'." } },
@@ -376,10 +389,6 @@ export const gluPersonProfileConfig = {
     officeHours: { type: "text", label: "Office Hours", contentEditable: true, ai: { instructions: "Drop-in hours as displayed, e.g. 'Wednesdays 1–4 PM'." } },
     bookingUrl: { type: "text", label: "Booking URL", ai: { stream: false } },
     bookingLabel: { type: "text", label: "Booking Button Label", contentEditable: true, ai: buttonLabelAi("Schedule a conversation") },
-    // Rendered as the media library picker, not a text box: lib/media-fields.ts
-    // matches this name. The stored value stays a plain CDN URL string, which
-    // is what the Counselors listing binds to as `{{ item.photoUrl }}`.
-    photoUrl: { type: "text", label: "Headshot", ai: { stream: false } },
     bio: { type: "textarea", label: "Biography", contentEditable: true, ai: { instructions: "2–3 sentences in the third person." } },
     layout: {
       type: "radio",

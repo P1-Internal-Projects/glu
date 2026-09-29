@@ -15,6 +15,7 @@
 import type { RemoteDatasourceFetcher } from "@pantheon-systems/puck-css/server";
 import type { RemoteDatasourceDefinition } from "@pantheon-systems/puck-css/server";
 import { readCollection } from "./glu-collections";
+import { resolveMediaImage, type MediaImageValue } from "./media-image";
 
 export const EVENTS_DATASOURCE_ID = "gluEvents";
 export const EVENTS_PATH_PREFIX = "events";
@@ -99,7 +100,13 @@ export const GLU_COLLECTION_FETCHERS: RemoteDatasourceFetcher[] = [
       const read = await readCollection(PEOPLE_PATH_PREFIX, PERSON_RECORD_BLOCK);
       // The profile block also carries how that page chose to draw itself.
       // Those are not facts about the person, so a listing never sees them.
-      const items = read.map(({ layout, background, photoShape, ...record }) => record);
+      // The headshot field is a media picker, so a page may hold a library
+      // object (with its crop) or an older plain URL. Listings and bindings read
+      // `photoUrl` as a URL, so each record carries the resolved string.
+      const items = read.map(({ layout, background, photoShape, ...record }) => ({
+        ...record,
+        photoUrl: resolveMediaImage(record.photoUrl as MediaImageValue, { width: 640, height: 640 }).src,
+      }) as typeof record);
       items.sort((a, b) => String(a.name ?? "").localeCompare(String(b.name ?? "")));
       return { items };
     },
