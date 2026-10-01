@@ -32,6 +32,18 @@ export async function middleware(request: Request) {
   }
 
   const url = new URL(request.url);
+
+  // The editor's API answers differ per user, workstream and moment, so no
+  // shared cache may keep one. Without this, Pantheon's CDN cached the
+  // datasource-context response: when the content API was cold and the
+  // editor's 8-second fetch timed out, the empty result was served to every
+  // later editor load until it expired, and GLU Listing showed "No items to
+  // display" on and off while the published page rendered fine.
+  if (url.pathname.startsWith("/p1/api/")) {
+    p1Response.headers.set("Cache-Control", "private, no-store, max-age=0");
+    return p1Response;
+  }
+
   if (isAppPath(url.pathname)) return p1Response;
 
   const { locale, rest } = readLocaleFromPath(url.pathname);
