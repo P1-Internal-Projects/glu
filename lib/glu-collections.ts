@@ -27,18 +27,73 @@ export type CollectionRecord = Record<string, unknown> & {
   locale: string;
 };
 
+const PATHS_TTL_MS = 30_000;
+const PAGE_CONCURRENCY = 10;
+const READ_DEADLINE_MS = 7_800;
+
+let client: P1ContentClient | null | undefined;
+
 function contentClient(): P1ContentClient | null {
+  if (client !== undefined) return client;
   const baseUrl = process.env.NEXT_PUBLIC_CSS_BASE_URL;
   const siteId = process.env.NEXT_PUBLIC_CSS_SITE_ID;
   const apiToken = process.env.CSS_API_KEY;
-  if (!baseUrl || !siteId || !apiToken) return null;
-  return new P1ContentClient({
-    baseUrl,
-    siteId,
-    apiToken,
-    ...(process.env.NEXT_PUBLIC_CSS_BRANCH_ID
-      ? { branchId: process.env.NEXT_PUBLIC_CSS_BRANCH_ID }
-      : {}),
+  client =
+    baseUrl && siteId && apiToken
+      ? new P1ContentClient({
+          baseUrl,
+          siteId,
+          apiToken,
+          ...(process.env.NEXT_PUBLIC_CSS_BRANCH_ID
+            ? { branchId: process.env.NEXT_PUBLIC_CSS_BRANCH_ID }
+            : {}),
+        })
+      : null;
+  if (client) void publishedPaths(client).catch(() => {});
+  return client;
+}
+
+let sharedPaths: { promise: Promise<{ path: string }[]>; at: number } | null = null;
+
+function publishedPaths(c: P1ContentClient): Promise<{ path: string }[]> {
+  if (sharedPaths && Date.now() - sharedPaths.at < PATHS_TTL_MS) return sharedPaths.promise;
+  const promise = c.getPagePaths().then((r) => r.pages);
+  const entry = { promise, at: Date.now() };
+  sharedPaths = entry;
+  promise.catch(() => {
+    if (sharedPaths === entry) sharedPaths = null;
+  });
+  return promise;
+}
+
+let running = 0;
+const waiting: (() => void)[] = [];
+
+async function withSlot<T>(task: () => Promise<T>): Promise<T> {
+  if (running >= PAGE_CONCURRENCY) await new Promise<void>((resolve) => waiting.push(resolve));
+  running++;
+  try {
+    return await task();
+  } finally {
+    running--;
+    waiting.shift()?.();
+  }
+}
+
+function beforeDeadline<T>(promise: Promise<T>, deadline: number): Promise<T | null> {
+  const remaining = Math.max(0, deadline - Date.now());
+  return new Promise((resolve) => {
+    const timer = setTimeout(() => resolve(null), remaining);
+    promise.then(
+      (value) => {
+        clearTimeout(timer);
+        resolve(value);
+      },
+      () => {
+        clearTimeout(timer);
+        resolve(null);
+      },
+    );
   });
 }
 
@@ -74,12 +129,9 @@ export async function readCollection(
   const client = contentClient();
   if (!client) return [];
 
-  let paths: { path: string }[];
-  try {
-    paths = (await client.getPagePaths()).pages;
-  } catch {
-    return [];
-  }
+  const deadline = Date.now() + READ_DEADLINE_MS;
+  const paths = await beforeDeadline(publishedPaths(client), deadline);
+  if (!paths) return [];
 
   const matches = paths
     .map((p) => p.path.replace(/^\/+/, ""))
@@ -91,15 +143,14 @@ export async function readCollection(
 
   const records = await Promise.all(
     matches.map(async (path): Promise<CollectionRecord | null> => {
-      try {
-        const page = await client.getPage(path);
-        const props = propsOfPinnedBlock(page?.data as Record<string, unknown>, blockType);
-        if (!props) return null;
-        const { locale, rest } = splitLocalePath(path);
-        return { ...props, url: `/${path}`, canonicalUrl: `/${rest}`, locale };
-      } catch {
-        return null;
-      }
+      const page = await beforeDeadline(
+        withSlot(async () => (Date.now() < deadline ? client.getPage(path) : null)),
+        deadline,
+      );
+      const props = propsOfPinnedBlock(page?.data as Record<string, unknown>, blockType);
+      if (!props) return null;
+      const { locale, rest } = splitLocalePath(path);
+      return { ...props, url: `/${path}`, canonicalUrl: `/${rest}`, locale };
     }),
   );
 
