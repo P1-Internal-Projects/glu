@@ -23,7 +23,7 @@ export const PullQuoteBlock: ComponentConfig<PullQuoteProps> = {
     accent: {
       type: "select" as const,
       options: [
-        { label: "Yellow rule", value: "yellow rule" },
+        { label: "Accent rule", value: "accent rule" },
         { label: "Quote mark", value: "quote mark" },
         { label: "None", value: "none" },
       ],
@@ -40,7 +40,7 @@ export const PullQuoteBlock: ComponentConfig<PullQuoteProps> = {
     quote:
       "The best workflow is the one your whole team <mark>actually uses</mark> — not the one that looks impressive in a diagram.",
     cite: "Jordan Ellis, Operations Lead",
-    accent: "yellow rule",
+    accent: "accent rule",
     align: "center",
   },
   render: PullQuoteRender,
@@ -48,7 +48,7 @@ export const PullQuoteBlock: ComponentConfig<PullQuoteProps> = {
 
 export const meta = defineMeta({
   title: 'Pull Quote',
-  description: 'Large typographic blockquote with optional yellow rule or quotation mark accent and attribution; use for editorial emphasis quotes.',
+  description: 'Large typographic blockquote with optional accent rule or quotation mark accent and attribution; use for editorial emphasis quotes.',
   categories: ["editorial"],
   published: true,
   registryDependencies: ["@p1/tokens","@p1/internal-rich"],
