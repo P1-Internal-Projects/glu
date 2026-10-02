@@ -28,6 +28,16 @@
   --p1-accent-hover: #6B0010;           /* colors.crimsonDark */
   --p1-on-accent: #ffffff;
 
+  /* The library's call-to-action buttons (default: the PDS 2 yellow brand
+     button) become GLU's crimson Apply-style button. */
+  --p1-cta-bg: #8B0015;                 /* colors.crimson */
+  --p1-cta-bg-hover: #6B0010;           /* colors.crimsonDark */
+  --p1-cta-fg: #ffffff;
+
+  /* Highlight: eyebrows, numbers on dark grounds, rules, badges. Gold, the
+     tone these spots took from --p1-warning before the library split it out. */
+  --p1-highlight: #C8922A;              /* colors.gold */
+
   /* Gradients resolve to the crimson → gold sweep GLU cards already use. */
   --p1-gradient-from: #8B0015;
   --p1-gradient-via: #B22030;           /* colors.crimsonLight */
