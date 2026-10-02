@@ -24,7 +24,6 @@ type Story = StoryObj<typeof GLUPersonProfile>;
 
 const marisol = {
   name: "Marisol Vega",
-  pronouns: "she/her",
   role: "Senior Admissions Counselor",
   focusArea: "First-generation and transfer applicants",
   territory: "Michigan, Ohio, Indiana",
@@ -42,14 +41,13 @@ const marisol = {
   photoShape: "rounded" as const,
 };
 
-/** A page the moment it is created from the template: no photo, no bio yet. */
+/** A page the moment it is created from the template: no photo, placeholder bio. */
 export const FreshFromTemplate: Story = {
   args: {
     name: "New Counselor",
-    pronouns: "",
     role: "Admissions Counselor",
-    focusArea: "",
-    territory: "",
+    focusArea: "Undergraduate Admissions",
+    territory: "West Coast",
     languages: "English",
     email: "",
     phone: "",
@@ -58,7 +56,7 @@ export const FreshFromTemplate: Story = {
     bookingUrl: "/visit/open-house",
     bookingLabel: "Schedule a conversation",
     photoUrl: "",
-    bio: "",
+    bio: "Brief Bio Here",
     layout: "split",
     background: "white",
     photoShape: "rounded",

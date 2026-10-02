@@ -58,7 +58,6 @@ export const GLU_COLLECTION_DATASOURCES: RemoteDatasourceDefinition[] = [
       "Reads published pages under `counselors/` and under each locale prefix, taking each record from the page's pinned GLUPersonProfile block.",
     fields: [
       { path: "name", description: "Full name" },
-      { path: "pronouns", description: "Pronouns, if given" },
       { path: "role", description: "Role or title" },
       { path: "focusArea", description: "What this counselor advises on" },
       { path: "territory", description: "Region or school group they cover" },
