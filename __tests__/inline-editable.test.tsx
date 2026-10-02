@@ -260,7 +260,6 @@ describe("glu-person-profile", () => {
     const f = asAny(gluPersonProfileConfig.fields);
     for (const key of [
       "name",
-      "pronouns",
       "role",
       "focusArea",
       "territory",
@@ -294,7 +293,6 @@ describe("glu-person-profile", () => {
     const html = renderWith(GLUPersonProfile, {
       ...base,
       name: "Marisol Vega",
-      pronouns: "she/her",
       role: "Senior Admissions Counselor",
       focusArea: "Transfer applicants",
       territory: "Midwest",
@@ -305,7 +303,6 @@ describe("glu-person-profile", () => {
       bio: "Marisol has worked in admissions for a decade.",
     });
     expect(html).toContain("Marisol Vega");
-    expect(html).toContain("she/her");
     expect(html).toContain("Senior Admissions Counselor");
     expect(html).toContain("Transfer applicants");
     expect(html).toContain("Midwest");
@@ -320,7 +317,6 @@ describe("glu-person-profile", () => {
     const html = renderWith(GLUPersonProfile, {
       ...base,
       name: editable("edit-name"),
-      pronouns: editable("edit-pronouns"),
       role: editable("edit-role"),
       focusArea: editable("edit-focus"),
       territory: editable("edit-territory"),
@@ -332,7 +328,6 @@ describe("glu-person-profile", () => {
     });
     for (const marker of [
       "edit-name",
-      "edit-pronouns",
       "edit-role",
       "edit-focus",
       "edit-territory",

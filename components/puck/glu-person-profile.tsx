@@ -34,7 +34,6 @@ import { resolveMediaImage, type MediaImageValue } from "../../lib/media-image";
  */
 export type GLUPersonProfileProps = {
   name: string;
-  pronouns: string;
   role: string;
   focusArea: string;
   territory: string;
@@ -197,7 +196,6 @@ function ContactCard(props: GLUPersonProfileProps) {
 export function GLUPersonProfile(props: GLUPersonProfileProps) {
   const {
     name,
-    pronouns,
     role,
     focusArea,
     territory,
@@ -215,7 +213,6 @@ export function GLUPersonProfile(props: GLUPersonProfileProps) {
   const headshot = resolveMediaImage(photoUrl, { width: 640, height: 640 });
   const src = headshotOrSilhouette(headshot.src);
   const ink = onDark ? colors.white : colors.dark;
-  const soft = onDark ? "rgba(255,255,255,0.78)" : colors.muted;
   // The silhouette is a transparent PNG, so the tile behind it is chosen here
   // to sit one step off the section: a white section gets a blush tile, a
   // tinted one gets white, crimson gets a translucent lift. A photo covers it.
@@ -271,18 +268,6 @@ export function GLUPersonProfile(props: GLUPersonProfileProps) {
         }}
       >
         {name}
-        {pronouns && (
-          <span
-            style={{
-              fontFamily: typography.fontBody,
-              fontSize: typography.sizeBase,
-              fontWeight: typography.weightNormal,
-              color: soft,
-            }}
-          >
-            ({pronouns})
-          </span>
-        )}
       </h1>
       {role && (
         <p
@@ -378,7 +363,6 @@ export const gluPersonProfileConfig = {
       label: "Headshot",
       ai: imageAi("A square headshot of this person. Crop to the face; it shows at 320px.", { optional: true }),
     } as any,
-    pronouns: { type: "text", label: "Pronouns", contentEditable: true, ai: { instructions: "Optional, e.g. she/her. Leave blank if unknown." } },
     role: { type: "text", label: "Role / Title", contentEditable: true, ai: { required: true, instructions: "Official title, e.g. 'Senior Admissions Counselor'." } },
     focusArea: { type: "text", label: "Focus Area", contentEditable: true, ai: { instructions: "Who this counselor advises, e.g. 'Transfer applicants'." } },
     territory: { type: "text", label: "Territory", contentEditable: true, ai: { instructions: "Region or states covered." } },
@@ -422,10 +406,9 @@ export const gluPersonProfileConfig = {
   },
   defaultProps: {
     name: "New Counselor",
-    pronouns: "",
     role: "Admissions Counselor",
-    focusArea: "",
-    territory: "",
+    focusArea: "Undergraduate Admissions",
+    territory: "West Coast",
     languages: "English",
     email: "",
     phone: "",
@@ -434,7 +417,7 @@ export const gluPersonProfileConfig = {
     bookingUrl: "/visit/open-house",
     bookingLabel: "Schedule a conversation",
     photoUrl: "",
-    bio: "",
+    bio: "Brief Bio Here",
     layout: "split",
     background: "white",
     photoShape: "rounded",
