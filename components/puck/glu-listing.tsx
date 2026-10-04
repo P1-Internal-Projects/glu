@@ -183,6 +183,7 @@ type ModeProps = LayoutProps & ListingPresentation & { imagePosition?: string };
 function EventCard({
   item,
   showTitle,
+  showSubtitle,
   showTeaser,
   showImage,
   cardStyle,
@@ -190,6 +191,7 @@ function EventCard({
 }: {
   item: ResolvedItem;
   showTitle: boolean;
+  showSubtitle: boolean;
   showTeaser: boolean;
   /** Already combined with the image position by the mode — see `withImage`. */
   showImage: boolean;
@@ -249,7 +251,9 @@ function EventCard({
             marginBottom: spacing[3],
           }}
         >
-          {r.eventType && (
+          {/* The Subtitle mapping (defaulted to the event type below), not
+              the raw field — otherwise its eye toggle and mapping do nothing. */}
+          {showSubtitle && item.subtitle && (
             <span
               style={{
                 fontFamily: typography.fontBody,
@@ -263,7 +267,7 @@ function EventCard({
                 padding: `${spacing[1]} ${spacing[3]}`,
               }}
             >
-              {r.eventType}
+              {item.subtitle}
             </span>
           )}
           {dateLabel && (
@@ -347,6 +351,7 @@ function EventCard({
 function EventCards({
   items,
   showTitle,
+  showSubtitle,
   showTeaser,
   showImage,
   imagePosition,
@@ -380,6 +385,7 @@ function EventCards({
           key={`${raw<EventRaw>(item).url ?? "item"}-${i}`}
           item={item}
           showTitle={showTitle}
+          showSubtitle={showSubtitle}
           showTeaser={showTeaser}
           showImage={withImage}
           cardStyle={cardStyle}
@@ -726,6 +732,65 @@ const COLUMN_OPTIONS = [
   { label: "4 columns", value: "4" },
 ];
 
+type ListingMode = "eventCards" | "peopleCards" | "programCards";
+
+/**
+ * What each GLU datasource is drawn with, applied when an editor switches the
+ * block from one source to another.
+ *
+ * The factory only rewires `items` on a datasource change. The view mode and the
+ * field mappings stayed behind, so switching Programs → Counselors drew
+ * counselors through the program card with `{{ item.summary }}` as a teaser no
+ * counselor has — the grid changed but every mapping and eye toggle looked dead.
+ * These are the same pairings the AI hints below describe; keep the two in step.
+ * The ids are literals because the datasource modules are server-side and this
+ * file is a client component.
+ */
+const DATASOURCE_PRESETS: Record<string, Record<string, unknown> & { viewMode: ListingMode }> = {
+  gluPrograms: {
+    viewMode: "programCards",
+    titleField: "{{ item.title }}",
+    subtitleField: "{{ item.degreeType }}",
+    teaserField: "{{ item.summary }}",
+    imageField: "",
+    imagePosition: "none",
+    sortBy: "{{ item.title }}",
+  },
+  gluEvents: {
+    viewMode: "eventCards",
+    titleField: "{{ item.title }}",
+    subtitleField: "{{ item.eventType }}",
+    teaserField: "{{ item.summary }}",
+    imageField: "{{ item.imageUrl }}",
+    imagePosition: "top",
+    sortBy: "{{ item.startDate }}",
+  },
+  gluPeople: {
+    viewMode: "peopleCards",
+    titleField: "{{ item.name }}",
+    subtitleField: "{{ item.role }}",
+    teaserField: "{{ item.focusArea }}",
+    imageField: "{{ item.photoUrl }}",
+    imagePosition: "top",
+    sortBy: "{{ item.name }}",
+  },
+};
+
+/**
+ * The subtitle each mode draws when the block has none mapped.
+ *
+ * The cards read the block's Subtitle mapping so that it, and its eye toggle,
+ * do something. Without a default, a block saved before mappings were set —
+ * the published programs page is one — would fall to the factory's guesser,
+ * which maps a program's subtitle to its summary and would put a paragraph in
+ * the degree pill.
+ */
+const MODE_SUBTITLE_DEFAULTS: Record<ListingMode, string> = {
+  eventCards: "{{ item.eventType }}",
+  peopleCards: "{{ item.role }}",
+  programCards: "{{ item.degreeType }}",
+};
+
 /**
  * The factory's config, wrapped in GLU's section chrome.
  *
@@ -840,19 +905,39 @@ export const gluListing = {
     cardStyle: "layout",
     background: "layout",
   },
-  render: (props: Record<string, unknown>) => (
-    <GLUListingSection
-      eyebrow={props.eyebrow as string | undefined}
-      heading={props.heading as string | undefined}
-      subtext={props.subtext as string | undefined}
-      align={props.align as GLUListingSectionProps["align"]}
-      background={props.background as ListingBackground | undefined}
-      columns={props.columns as ListingColumns | undefined}
-      cardStyle={props.cardStyle as ListingCardStyle | undefined}
-    >
-      <BaseListingRender {...props} heading="" />
-    </GLUListingSection>
-  ),
+  resolveData: async (
+    data: { props: Record<string, unknown> },
+    params: { changed: Record<string, boolean>; lastData?: { props?: Record<string, unknown> } | null },
+  ) => {
+    const base = await baseListing.resolveData(data, params);
+    // Puck reports every prop as changed on a block's first resolve in an
+    // editor session — it has no earlier copy to compare against — so
+    // `changed.datasourceId` alone would re-apply the preset each time a page
+    // opened and overwrite mappings the editor chose. Only a real switch from
+    // one source to another counts.
+    const next = data.props.datasourceId as string | undefined;
+    const prev = params.lastData?.props?.datasourceId;
+    if (!params.lastData || !next || prev === next) return base;
+    const preset = DATASOURCE_PRESETS[next];
+    return preset ? { ...base, props: { ...base.props, ...preset } } : base;
+  },
+  render: (props: Record<string, unknown>) => {
+    const mode = (props.viewMode as ListingMode | undefined) ?? "eventCards";
+    const subtitleField = (props.subtitleField as string | undefined) || MODE_SUBTITLE_DEFAULTS[mode];
+    return (
+      <GLUListingSection
+        eyebrow={props.eyebrow as string | undefined}
+        heading={props.heading as string | undefined}
+        subtext={props.subtext as string | undefined}
+        align={props.align as GLUListingSectionProps["align"]}
+        background={props.background as ListingBackground | undefined}
+        columns={props.columns as ListingColumns | undefined}
+        cardStyle={props.cardStyle as ListingCardStyle | undefined}
+      >
+        <BaseListingRender {...props} subtitleField={subtitleField} heading="" />
+      </GLUListingSection>
+    );
+  },
 };
 
 export { EventCards, PersonCards };

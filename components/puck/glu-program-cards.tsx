@@ -136,12 +136,16 @@ function ProgramCard({
   item,
   open,
   panelId,
+  showTitle,
+  showSubtitle,
   showTeaser,
   onToggle,
 }: {
   item: ResolvedItem;
   open: boolean;
   panelId: string;
+  showTitle: boolean;
+  showSubtitle: boolean;
   showTeaser: boolean;
   onToggle: () => void;
 }) {
@@ -178,7 +182,10 @@ function ProgramCard({
       }}
     >
       <div style={{ display: "flex", alignItems: "center", gap: spacing[2], flexWrap: "wrap" }}>
-        {r.degreeType && <Pill>{r.degreeType}</Pill>}
+        {/* The block's Subtitle mapping, which GLU Listing defaults to the
+            degree type when an editor has not chosen one. Reading the raw
+            field here made the Subtitle mapping and its eye toggle inert. */}
+        {showSubtitle && item.subtitle && <Pill>{item.subtitle}</Pill>}
         {r.featured && (
           <span
             style={{
@@ -195,18 +202,20 @@ function ProgramCard({
         )}
       </div>
 
-      <h3
-        style={{
-          fontFamily: typography.fontHeading,
-          fontSize: typography.size2xl,
-          fontWeight: typography.weightBold,
-          lineHeight: typography.lineHeightSnug,
-          color: colors.dark,
-          margin: 0,
-        }}
-      >
-        {item.title}
-      </h3>
+      {showTitle && item.title && (
+        <h3
+          style={{
+            fontFamily: typography.fontHeading,
+            fontSize: typography.size2xl,
+            fontWeight: typography.weightBold,
+            lineHeight: typography.lineHeightSnug,
+            color: colors.dark,
+            margin: 0,
+          }}
+        >
+          {item.title}
+        </h3>
+      )}
 
       {r.college && (
         <p
@@ -419,7 +428,13 @@ export interface GLUProgramCardsProps extends LayoutProps {
   showCollegeFilter?: boolean;
 }
 
-export function GLUProgramCards({ items, showTeaser, showCollegeFilter = true }: GLUProgramCardsProps) {
+export function GLUProgramCards({
+  items,
+  showTitle,
+  showSubtitle,
+  showTeaser,
+  showCollegeFilter = true,
+}: GLUProgramCardsProps) {
   const [college, setCollege] = useState<string>(ALL_COLLEGES);
   const [openCode, setOpenCode] = useState<string | null>(null);
   const gridRef = useRef<HTMLDivElement | null>(null);
@@ -552,6 +567,8 @@ export function GLUProgramCards({ items, showTeaser, showCollegeFilter = true }:
                 item={item}
                 open={open}
                 panelId={panelId}
+                showTitle={showTitle !== false}
+                showSubtitle={showSubtitle !== false}
                 showTeaser={showTeaser !== false}
                 onToggle={() => setOpenCode(open ? null : code)}
               />
