@@ -166,10 +166,13 @@ export function GLUVideoComponent({
   const label = title || "Video";
   const posterSrc = resolveMediaImage(poster, { width: 1920, height: 1080 }).src || undefined;
 
+  // Black behind a video or a letterboxed image. A width-fitted image is pinned
+  // to the top, so a short one leaves space below it: white, to read as page.
+  const backgroundColor = mediaType === "image" && imageFit === "width" ? colors.white : "#000";
   const frame: React.CSSProperties =
     size === "fullscreen"
-      ? { width: "100%", height: "100dvh", backgroundColor: "#000", position: "relative", overflow: "hidden" }
-      : { width: "100%", aspectRatio: "16 / 9", backgroundColor: "#000", position: "relative", overflow: "hidden" };
+      ? { width: "100%", height: "100dvh", backgroundColor, position: "relative", overflow: "hidden" }
+      : { width: "100%", aspectRatio: "16 / 9", backgroundColor, position: "relative", overflow: "hidden" };
 
   let body: React.ReactNode;
   if (mediaType === "image") {

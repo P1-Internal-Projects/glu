@@ -120,6 +120,12 @@ describe("GLUVideo image mode", () => {
     expect(out).not.toContain("<iframe");
   });
 
+  it("puts white behind a width-fitted image and black behind everything else", () => {
+    expect(html({ mediaType: "image", image: IMG })).toContain("background-color:#ffffff");
+    expect(html({ mediaType: "image", image: IMG, imageFit: "contain" })).toContain("background-color:#000");
+    expect(html()).toContain("background-color:#000");
+  });
+
   it("fills and crops all round when fit is cover", () => {
     expect(html({ mediaType: "image", image: IMG, imageFit: "cover" })).toContain("object-fit:cover");
   });
