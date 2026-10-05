@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { GLUVideoComponent, gluVideoConfig, resolveVideoSource, type GLUVideoProps } from "../components/puck/glu-video";
+import { GLUVideoComponent, gluVideoConfig, resolveVideoSource, safeImageHref, type GLUVideoProps } from "../components/puck/glu-video";
 import { SiteChrome } from "../components/site-chrome";
 
 describe("resolveVideoSource", () => {
@@ -174,7 +174,42 @@ describe("GLUVideo image mode", () => {
     }).resolveFields;
     const forImage = Object.keys(resolve({ props: { mediaType: "image" } }, { fields }));
     const forVideo = Object.keys(resolve({ props: { mediaType: "video" } }, { fields }));
-    expect(forImage).toEqual(["mediaType", "title", "size", "image", "imageLink", "imageFit"]);
+    expect(forImage).toEqual(["mediaType", "title", "size", "image", "imageLink", "imageFit", "imageHref", "imageNewTab"]);
     expect(forVideo).toEqual(["mediaType", "source", "title", "size", "autoplay", "muted", "loop", "controls", "poster"]);
+  });
+});
+
+describe("GLUVideo linked image", () => {
+  const IMG = "https://images.example.com/campus.jpg";
+
+  it("wraps the image in a link when one is set", () => {
+    const out = html({ mediaType: "image", image: IMG, title: "Apply now", imageHref: "/apply" });
+    expect(out).toMatch(/<a href="\/apply" style="position:absolute;inset:0;display:block"><img /);
+    expect(out).not.toContain("target=");
+  });
+
+  it("opens in a new tab safely when asked", () => {
+    const out = html({ mediaType: "image", image: IMG, imageHref: "https://pantheon.io", imageNewTab: true });
+    expect(out).toContain('href="https://pantheon.io/"');
+    expect(out).toContain('target="_blank"');
+    expect(out).toContain('rel="noopener noreferrer"');
+  });
+
+  it("is not a link when the field is blank or unsafe", () => {
+    expect(html({ mediaType: "image", image: IMG })).not.toContain("<a ");
+    expect(html({ mediaType: "image", image: IMG, imageHref: "javascript:alert(1)" })).not.toContain("<a ");
+  });
+
+  it.each([
+    ["/apply", "/apply"],
+    ["#programs", "#programs"],
+    ["www.grandlakes.edu/visit", "https://www.grandlakes.edu/visit"],
+    ["mailto:admissions@grandlakes.edu", "mailto:admissions@grandlakes.edu"],
+    ["javascript:alert(1)", null],
+    ["data:text/html,hi", null],
+    ["//evil.example", null],
+    ["", null],
+  ])("safeImageHref(%s)", (input, expected) => {
+    expect(safeImageHref(input)).toBe(expected);
   });
 });

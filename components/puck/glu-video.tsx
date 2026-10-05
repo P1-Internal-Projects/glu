@@ -31,7 +31,33 @@ export type GLUVideoProps = {
    * crops all round; "contain" shows the whole image on black.
    */
   imageFit?: "width" | "cover" | "contain";
+  /** Where clicking the image goes. Blank means the image is not a link. */
+  imageHref?: string;
+  /** Open the link in a new browser tab. */
+  imageNewTab?: boolean;
 };
+
+/**
+ * The link an author typed, if it is safe to put in an href: a site path,
+ * an in-page anchor, http(s), mailto: or tel:. Anything else (javascript:,
+ * data:, a typo with no scheme) is dropped rather than rendered.
+ */
+export function safeImageHref(input: string | undefined): string | null {
+  const raw = (input ?? "").trim();
+  if (!raw) return null;
+  if (raw.startsWith("/") && !raw.startsWith("//")) return raw;
+  if (raw.startsWith("#")) return raw;
+  if (/^(https?:|mailto:|tel:)/i.test(raw)) {
+    try {
+      return new URL(raw).toString();
+    } catch {
+      return null;
+    }
+  }
+  // "www.example.com" is what people paste; treat a dotted host as https.
+  if (/^[a-z0-9-]+(\.[a-z0-9-]+)+(\/.*)?$/i.test(raw)) return `https://${raw}`;
+  return null;
+}
 
 export type ResolvedVideo =
   | { kind: "youtube"; id: string; start: number }
@@ -157,6 +183,8 @@ export function GLUVideoComponent({
   image,
   imageLink,
   imageFit = "width",
+  imageHref,
+  imageNewTab = false,
   puck,
 }: GLUVideoProps & { puck?: { isEditing?: boolean } }) {
   const isEditing = Boolean(puck?.isEditing);
@@ -209,14 +237,30 @@ export function GLUVideoComponent({
         imageFit === "width"
           ? { top: 0, left: 0, width: "100%", height: "auto" }
           : { inset: 0, width: "100%", height: "100%", objectFit: imageFit };
-      body = (
+      const img = (
         <img
           src={picture.src}
           // The library's alt text first; the block's title is the fallback, so a
-          // picture is never announced as nothing.
+          // picture is never announced as nothing. On a linked image it is also
+          // the link's accessible name.
           alt={picture.alt || title || ""}
           style={{ position: "absolute", display: "block", ...fit }}
         />
+      );
+      const href = safeImageHref(imageHref);
+      body = href ? (
+        <a
+          href={href}
+          target={imageNewTab ? "_blank" : undefined}
+          rel={imageNewTab ? "noopener noreferrer" : undefined}
+          // In the editor a click selects the block; it must not navigate away.
+          onClick={isEditing ? (e) => e.preventDefault() : undefined}
+          style={{ position: "absolute", inset: 0, display: "block" }}
+        >
+          {img}
+        </a>
+      ) : (
+        img
       );
     }
   } else if (video.kind === "youtube") {
@@ -383,6 +427,21 @@ export const gluVideoConfig = {
           "width (the default) for a screenshot or tall image that must keep its top; cover for a photo that should fill the frame; contain when nothing may be cut off.",
       },
     },
+    imageHref: {
+      type: "text",
+      label: "Link (optional)",
+      ai: {
+        stream: false,
+        instructions:
+          "Where clicking the image goes: a site path like /apply, or a full https link. Leave blank for an image that is not a link. Only use a link the user supplied.",
+      },
+    },
+    imageNewTab: {
+      type: "radio",
+      label: "Open link in a new tab",
+      options: yesNo,
+      ai: { instructions: "false for a page on this site; true only for an external site the user wants kept separate." },
+    },
   },
   /**
    * Only the fields for what the block is showing: the player settings mean
@@ -391,7 +450,7 @@ export const gluVideoConfig = {
   resolveFields: (data: { props?: Partial<GLUVideoProps> }, { fields }: { fields: Record<string, unknown> }) => {
     const isImage = data.props?.mediaType === "image";
     const videoOnly = ["source", "autoplay", "muted", "loop", "controls", "poster"];
-    const imageOnly = ["image", "imageLink", "imageFit"];
+    const imageOnly = ["image", "imageLink", "imageFit", "imageHref", "imageNewTab"];
     const hide = new Set(isImage ? videoOnly : imageOnly);
     return Object.fromEntries(Object.entries(fields).filter(([key]) => !hide.has(key)));
   },
@@ -408,6 +467,8 @@ export const gluVideoConfig = {
     image: null,
     imageLink: "",
     imageFit: "width",
+    imageHref: "",
+    imageNewTab: false,
   },
   render: GLUVideoComponent,
 } as ComponentConfig<GLUVideoProps>;
