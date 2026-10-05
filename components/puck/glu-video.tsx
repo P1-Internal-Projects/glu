@@ -25,8 +25,12 @@ export type GLUVideoProps = {
    * patterns (image, imageUrl, …ImageUrl) as a library picker, not a text box.
    */
   imageLink?: string;
-  /** "cover" fills the frame and crops; "contain" shows the whole image on black. */
-  imageFit?: "cover" | "contain";
+  /**
+   * "width" spans the full width at its own proportions, pinned to the top, so
+   * a tall image loses its bottom, never its top. "cover" fills the frame and
+   * crops all round; "contain" shows the whole image on black.
+   */
+  imageFit?: "width" | "cover" | "contain";
 };
 
 export type ResolvedVideo =
@@ -152,7 +156,7 @@ export function GLUVideoComponent({
   poster,
   image,
   imageLink,
-  imageFit = "cover",
+  imageFit = "width",
   puck,
 }: GLUVideoProps & { puck?: { isEditing?: boolean } }) {
   const isEditing = Boolean(puck?.isEditing);
@@ -196,13 +200,19 @@ export function GLUVideoComponent({
           />
         );
     } else {
+      // The frame clips (overflow: hidden), so "width" crops whatever runs
+      // past the bottom edge.
+      const fit: React.CSSProperties =
+        imageFit === "width"
+          ? { top: 0, left: 0, width: "100%", height: "auto" }
+          : { inset: 0, width: "100%", height: "100%", objectFit: imageFit };
       body = (
         <img
           src={picture.src}
           // The library's alt text first; the block's title is the fallback, so a
           // picture is never announced as nothing.
           alt={picture.alt || title || ""}
-          style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: imageFit, display: "block" }}
+          style={{ position: "absolute", display: "block", ...fit }}
         />
       );
     }
@@ -361,10 +371,14 @@ export const gluVideoConfig = {
       type: "radio",
       label: "Image fit",
       options: [
+        { label: "Fit the width (crops the bottom)", value: "width" },
         { label: "Fill the frame (crops edges)", value: "cover" },
         { label: "Show the whole image", value: "contain" },
       ],
-      ai: { instructions: "cover for a photo; contain for a slide or screenshot whose edges must not be cut off." },
+      ai: {
+        instructions:
+          "width (the default) for a screenshot or tall image that must keep its top; cover for a photo that should fill the frame; contain when nothing may be cut off.",
+      },
     },
   },
   /**
@@ -390,7 +404,7 @@ export const gluVideoConfig = {
     poster: null,
     image: null,
     imageLink: "",
-    imageFit: "cover",
+    imageFit: "width",
   },
   render: GLUVideoComponent,
 } as ComponentConfig<GLUVideoProps>;

@@ -107,14 +107,21 @@ describe("GLUVideo inline", () => {
 describe("GLUVideo image mode", () => {
   const IMG = "https://images.example.com/campus.jpg";
 
-  it("fills the viewport with the image, cropped to cover by default", () => {
+  it("spans the full width, pinned to the top, by default", () => {
     const out = html({ mediaType: "image", image: IMG, title: "The quad at dusk" });
     expect(out).toContain(`src="${IMG}"`);
     expect(out).toContain('alt="The quad at dusk"');
-    expect(out).toContain("object-fit:cover");
+    // Natural height from the top edge; the frame's overflow:hidden crops the bottom.
+    expect(out).toContain("position:absolute;display:block;top:0;left:0;width:100%;height:auto");
+    expect(out).not.toContain("object-fit");
     expect(out).toContain("height:100dvh");
+    expect(out).toContain("overflow:hidden");
     expect(out).not.toContain("<video");
     expect(out).not.toContain("<iframe");
+  });
+
+  it("fills and crops all round when fit is cover", () => {
+    expect(html({ mediaType: "image", image: IMG, imageFit: "cover" })).toContain("object-fit:cover");
   });
 
   it("shows the whole image when fit is contain", () => {
