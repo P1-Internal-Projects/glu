@@ -19,8 +19,12 @@ export type GLUVideoProps = {
   poster: MediaImageValue;
   /** The picture shown when mediaType is "image". */
   image?: MediaImageValue;
-  /** A direct link to an image outside the library. Used instead of `image` when filled in. */
-  imageUrl?: string;
+  /**
+   * A direct link to an image outside the library. Used instead of `image` when filled in.
+   * Not named `imageUrl`: puck-css draws any field matching its media-name
+   * patterns (image, imageUrl, …ImageUrl) as a library picker, not a text box.
+   */
+  imageLink?: string;
   /** "cover" fills the frame and crops; "contain" shows the whole image on black. */
   imageFit?: "cover" | "contain";
 };
@@ -147,7 +151,7 @@ export function GLUVideoComponent({
   controls,
   poster,
   image,
-  imageUrl,
+  imageLink,
   imageFit = "cover",
   puck,
 }: GLUVideoProps & { puck?: { isEditing?: boolean } }) {
@@ -170,7 +174,7 @@ export function GLUVideoComponent({
     // A pasted link wins over the library pick: typing it is the deliberate act.
     // It goes through the same resolver as a video link, so gs:// and s3://
     // paths and storage-console links work for images too.
-    const pasted = imageUrl?.trim() ? resolveVideoSource(imageUrl) : null;
+    const pasted = imageLink?.trim() ? resolveVideoSource(imageLink) : null;
     const picture =
       pasted?.kind === "file"
         ? { src: pasted.src, alt: "" }
@@ -344,7 +348,7 @@ export const gluVideoConfig = {
       label: "Image",
       ai: imageAi("The still that fills the frame. Pick a landscape image at least 1920px wide for a full-screen frame."),
     } as any,
-    imageUrl: {
+    imageLink: {
       type: "text",
       label: "Image URL (instead of the library)",
       ai: {
@@ -370,7 +374,7 @@ export const gluVideoConfig = {
   resolveFields: (data: { props?: Partial<GLUVideoProps> }, { fields }: { fields: Record<string, unknown> }) => {
     const isImage = data.props?.mediaType === "image";
     const videoOnly = ["source", "autoplay", "muted", "loop", "controls", "poster"];
-    const imageOnly = ["image", "imageUrl", "imageFit"];
+    const imageOnly = ["image", "imageLink", "imageFit"];
     const hide = new Set(isImage ? videoOnly : imageOnly);
     return Object.fromEntries(Object.entries(fields).filter(([key]) => !hide.has(key)));
   },
@@ -385,7 +389,7 @@ export const gluVideoConfig = {
     controls: true,
     poster: null,
     image: null,
-    imageUrl: "",
+    imageLink: "",
     imageFit: "cover",
   },
   render: GLUVideoComponent,
