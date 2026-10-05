@@ -26,3 +26,13 @@ const base = {
 export const FullScreen: Story = { args: { ...base, size: "fullscreen" } };
 export const Inline: Story = { args: { ...base, size: "inline" } };
 export const InvalidLink: Story = { args: { ...base, size: "inline", source: "http://example.com/video.mp4" } };
+
+// Image mode needs a library pick or an https URL in `image`; this one uses a
+// public Unsplash photo the site already shows on Campus Life.
+const photo = "https://images.unsplash.com/photo-1562774053-701939374585?w=1920&q=80";
+export const ImageFullScreen: Story = {
+  args: { ...base, mediaType: "image", size: "fullscreen", image: photo, imageFit: "cover", title: "Grand Lakes campus" },
+};
+export const ImageWholeFrame: Story = {
+  args: { ...base, mediaType: "image", size: "inline", image: photo, imageFit: "contain", title: "Grand Lakes campus" },
+};

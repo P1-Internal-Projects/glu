@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { GLUVideoComponent, resolveVideoSource, type GLUVideoProps } from "../components/puck/glu-video";
+import { GLUVideoComponent, gluVideoConfig, resolveVideoSource, type GLUVideoProps } from "../components/puck/glu-video";
 import { SiteChrome } from "../components/site-chrome";
 
 describe("resolveVideoSource", () => {
@@ -101,5 +101,48 @@ describe("GLUVideo inline", () => {
     const out = renderToStaticMarkup(<GLUVideoComponent {...BASE} size="inline" />);
     expect(out).toMatch(/^<div style="width:100%;aspect-ratio:16 \/ 9/);
     expect(out).not.toContain("max-width");
+  });
+});
+
+describe("GLUVideo image mode", () => {
+  const IMG = "https://images.example.com/campus.jpg";
+
+  it("fills the viewport with the image, cropped to cover by default", () => {
+    const out = html({ mediaType: "image", image: IMG, title: "The quad at dusk" });
+    expect(out).toContain(`src="${IMG}"`);
+    expect(out).toContain('alt="The quad at dusk"');
+    expect(out).toContain("object-fit:cover");
+    expect(out).toContain("height:100dvh");
+    expect(out).not.toContain("<video");
+    expect(out).not.toContain("<iframe");
+  });
+
+  it("shows the whole image when fit is contain", () => {
+    expect(html({ mediaType: "image", image: IMG, imageFit: "contain" })).toContain("object-fit:contain");
+  });
+
+  it("runs 16:9 inline like a video", () => {
+    expect(html({ mediaType: "image", image: IMG, size: "inline" })).toContain('<div style="width:100%;aspect-ratio:16 / 9');
+  });
+
+  it("renders nothing for visitors without an image, and a prompt in the editor", () => {
+    expect(html({ mediaType: "image", image: null })).toBe("");
+    expect(html({ mediaType: "image", image: null, puck: { isEditing: true } })).toContain("Choose an image");
+  });
+
+  it("keeps blocks saved before the option as video", () => {
+    const { mediaType: _omit, ...legacy } = { ...BASE, mediaType: undefined };
+    expect(renderToStaticMarkup(<GLUVideoComponent {...legacy} />)).toContain("<video");
+  });
+
+  it("offers only the fields for what the block shows", () => {
+    const fields = gluVideoConfig.fields as Record<string, unknown>;
+    const resolve = (gluVideoConfig as unknown as {
+      resolveFields: (d: { props: Partial<GLUVideoProps> }, p: { fields: Record<string, unknown> }) => Record<string, unknown>;
+    }).resolveFields;
+    const forImage = Object.keys(resolve({ props: { mediaType: "image" } }, { fields }));
+    const forVideo = Object.keys(resolve({ props: { mediaType: "video" } }, { fields }));
+    expect(forImage).toEqual(["mediaType", "title", "size", "image", "imageFit"]);
+    expect(forVideo).toEqual(["mediaType", "source", "title", "size", "autoplay", "muted", "loop", "controls", "poster"]);
   });
 });

@@ -7,6 +7,8 @@ import { imageAi } from "../../lib/ai-hints";
 import { resolveMediaImage, type MediaImageValue } from "../../lib/media-image";
 
 export type GLUVideoProps = {
+  /** What the block shows. Blocks saved before the image option have no value and are video. */
+  mediaType?: "video" | "image";
   source: string;
   title: string;
   size: "fullscreen" | "inline";
@@ -15,6 +17,10 @@ export type GLUVideoProps = {
   loop: boolean;
   controls: boolean;
   poster: MediaImageValue;
+  /** The picture shown when mediaType is "image". */
+  image?: MediaImageValue;
+  /** "cover" fills the frame and crops; "contain" shows the whole image on black. */
+  imageFit?: "cover" | "contain";
 };
 
 export type ResolvedVideo =
@@ -129,6 +135,7 @@ function youtubeEmbed(id: string, start: number, opts: Pick<GLUVideoProps, "auto
 }
 
 export function GLUVideoComponent({
+  mediaType = "video",
   source,
   title,
   size = "fullscreen",
@@ -137,6 +144,8 @@ export function GLUVideoComponent({
   loop,
   controls,
   poster,
+  image,
+  imageFit = "cover",
   puck,
 }: GLUVideoProps & { puck?: { isEditing?: boolean } }) {
   const isEditing = Boolean(puck?.isEditing);
@@ -152,7 +161,25 @@ export function GLUVideoComponent({
       : { width: "100%", aspectRatio: "16 / 9", backgroundColor: "#000", position: "relative", overflow: "hidden" };
 
   let body: React.ReactNode;
-  if (video.kind === "youtube") {
+  if (mediaType === "image") {
+    // 2560 wide covers a full-bleed frame on a retina laptop; the stored asset
+    // is its own ceiling. The height reaches the CDN only for a smart crop.
+    const picture = resolveMediaImage(image, { width: 2560, height: 1440 });
+    if (!picture.src) {
+      if (!isEditing) return null;
+      body = <EditorPrompt heading="Choose an image" detail="Pick or upload an image in the Image field. It fills this frame edge to edge." />;
+    } else {
+      body = (
+        <img
+          src={picture.src}
+          // The library's alt text first; the block's title is the fallback, so a
+          // picture is never announced as nothing.
+          alt={picture.alt || title || ""}
+          style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: imageFit, display: "block" }}
+        />
+      );
+    }
+  } else if (video.kind === "youtube") {
     body = (
       <iframe
         key={`${video.id}-${play}-${muted}-${loop}-${controls}`}
@@ -183,34 +210,44 @@ export function GLUVideoComponent({
     // Nothing to play. Visitors get nothing; the editor gets a prompt.
     if (!isEditing) return null;
     body = (
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          display: "flex",
-          flexDirection: "column" as const,
-          alignItems: "center",
-          justifyContent: "center",
-          gap: spacing[2],
-          padding: spacing[6],
-          textAlign: "center" as const,
-          color: colors.white,
-          fontFamily: typography.fontBody,
-        }}
-      >
-        <strong style={{ fontSize: typography.sizeLg }}>{video.kind === "none" ? "Paste a video link" : "Can't play this link"}</strong>
-        <span style={{ fontSize: typography.sizeSm, opacity: 0.8, maxWidth: 520 }}>
-          {video.kind === "invalid"
+      <EditorPrompt
+        heading={video.kind === "none" ? "Paste a video link" : "Can't play this link"}
+        detail={
+          video.kind === "invalid"
             ? video.reason
-            : "A YouTube link, a gs:// or s3:// path, a Cloud Storage or S3 console link, or any https link to an .mp4 or .webm file."}
-        </span>
-      </div>
+            : "A YouTube link, a gs:// or s3:// path, a Cloud Storage or S3 console link, or any https link to an .mp4 or .webm file."
+        }
+      />
     );
   }
 
   // Both sizes run edge to edge: inline is the full browser width at 16:9,
   // not held to the content column.
   return <div style={frame}>{body}</div>;
+}
+
+/** The editor-only message drawn when there is nothing to show yet. */
+function EditorPrompt({ heading, detail }: { heading: string; detail: string }) {
+  return (
+    <div
+      style={{
+        position: "absolute",
+        inset: 0,
+        display: "flex",
+        flexDirection: "column" as const,
+        alignItems: "center",
+        justifyContent: "center",
+        gap: spacing[2],
+        padding: spacing[6],
+        textAlign: "center" as const,
+        color: colors.white,
+        fontFamily: typography.fontBody,
+      }}
+    >
+      <strong style={{ fontSize: typography.sizeLg }}>{heading}</strong>
+      <span style={{ fontSize: typography.sizeSm, opacity: 0.8, maxWidth: 520 }}>{detail}</span>
+    </div>
+  );
 }
 
 const yesNo = [
@@ -222,9 +259,18 @@ export const gluVideoConfig = {
   label: "GLU Video",
   ai: {
     instructions:
-      "A single video. Use size fullscreen on a page whose Page Layout is Full-screen, to show only the video; inline to put a video within a normal page.",
+      "A single video, or a single still image, edge to edge. Use size fullscreen on a page whose Page Layout is Full-screen, to show only the video or image; inline to put it within a normal page. Set mediaType image for a still.",
   },
   fields: {
+    mediaType: {
+      type: "radio",
+      label: "Show",
+      options: [
+        { label: "Video", value: "video" },
+        { label: "Image", value: "image" },
+      ],
+      ai: { instructions: "video unless the user wants a still image filling the frame." },
+    },
     source: {
       type: "text",
       label: "Video link or storage path",
@@ -238,7 +284,7 @@ export const gluVideoConfig = {
     title: {
       type: "text",
       label: "Title (for screen readers)",
-      ai: { instructions: "What the video is, e.g. 'Product demo: publishing a page'." },
+      ai: { instructions: "What the video or image is, e.g. 'Product demo: publishing a page'. Also the image's alt text when the library asset has none." },
     },
     size: {
       type: "radio",
@@ -270,8 +316,34 @@ export const gluVideoConfig = {
       label: "Poster image (optional, video files only)",
       ai: imageAi("Still frame shown before a video file starts. Not used for YouTube, which draws its own."),
     } as any,
+    image: {
+      type: "p1-media",
+      label: "Image",
+      ai: imageAi("The still that fills the frame. Pick a landscape image at least 1920px wide for a full-screen frame."),
+    } as any,
+    imageFit: {
+      type: "radio",
+      label: "Image fit",
+      options: [
+        { label: "Fill the frame (crops edges)", value: "cover" },
+        { label: "Show the whole image", value: "contain" },
+      ],
+      ai: { instructions: "cover for a photo; contain for a slide or screenshot whose edges must not be cut off." },
+    },
+  },
+  /**
+   * Only the fields for what the block is showing: the player settings mean
+   * nothing to an image, and the image fields nothing to a video.
+   */
+  resolveFields: (data: { props?: Partial<GLUVideoProps> }, { fields }: { fields: Record<string, unknown> }) => {
+    const isImage = data.props?.mediaType === "image";
+    const videoOnly = ["source", "autoplay", "muted", "loop", "controls", "poster"];
+    const imageOnly = ["image", "imageFit"];
+    const hide = new Set(isImage ? videoOnly : imageOnly);
+    return Object.fromEntries(Object.entries(fields).filter(([key]) => !hide.has(key)));
   },
   defaultProps: {
+    mediaType: "video",
     source: "",
     title: "",
     size: "fullscreen",
@@ -280,6 +352,8 @@ export const gluVideoConfig = {
     loop: false,
     controls: true,
     poster: null,
+    image: null,
+    imageFit: "cover",
   },
   render: GLUVideoComponent,
 } as ComponentConfig<GLUVideoProps>;
