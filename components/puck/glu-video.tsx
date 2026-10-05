@@ -19,6 +19,8 @@ export type GLUVideoProps = {
   poster: MediaImageValue;
   /** The picture shown when mediaType is "image". */
   image?: MediaImageValue;
+  /** A direct link to an image outside the library. Used instead of `image` when filled in. */
+  imageUrl?: string;
   /** "cover" fills the frame and crops; "contain" shows the whole image on black. */
   imageFit?: "cover" | "contain";
 };
@@ -145,6 +147,7 @@ export function GLUVideoComponent({
   controls,
   poster,
   image,
+  imageUrl,
   imageFit = "cover",
   puck,
 }: GLUVideoProps & { puck?: { isEditing?: boolean } }) {
@@ -164,10 +167,30 @@ export function GLUVideoComponent({
   if (mediaType === "image") {
     // 2560 wide covers a full-bleed frame on a retina laptop; the stored asset
     // is its own ceiling. The height reaches the CDN only for a smart crop.
-    const picture = resolveMediaImage(image, { width: 2560, height: 1440 });
+    // A pasted link wins over the library pick: typing it is the deliberate act.
+    // It goes through the same resolver as a video link, so gs:// and s3://
+    // paths and storage-console links work for images too.
+    const pasted = imageUrl?.trim() ? resolveVideoSource(imageUrl) : null;
+    const picture =
+      pasted?.kind === "file"
+        ? { src: pasted.src, alt: "" }
+        : pasted
+          ? { src: "", alt: "" }
+          : resolveMediaImage(image, { width: 2560, height: 1440 });
     if (!picture.src) {
       if (!isEditing) return null;
-      body = <EditorPrompt heading="Choose an image" detail="Pick or upload an image in the Image field. It fills this frame edge to edge." />;
+      body =
+        pasted && pasted.kind !== "file" ? (
+          <EditorPrompt
+            heading="Can't show this image link"
+            detail={pasted.kind === "invalid" ? pasted.reason : "That's a video link. Paste a link to an image file, or switch Show to Video."}
+          />
+        ) : (
+          <EditorPrompt
+            heading="Choose an image"
+            detail="Pick or upload an image in the Image field, or paste a direct link in Image URL. It fills this frame edge to edge."
+          />
+        );
     } else {
       body = (
         <img
@@ -321,6 +344,15 @@ export const gluVideoConfig = {
       label: "Image",
       ai: imageAi("The still that fills the frame. Pick a landscape image at least 1920px wide for a full-screen frame."),
     } as any,
+    imageUrl: {
+      type: "text",
+      label: "Image URL (instead of the library)",
+      ai: {
+        stream: false,
+        instructions:
+          "Only for an image that is not in the media library: an https link, or a gs:// or s3:// path. Leave blank to use the Image field. Only use a link the user supplied — never invent one.",
+      },
+    },
     imageFit: {
       type: "radio",
       label: "Image fit",
@@ -338,7 +370,7 @@ export const gluVideoConfig = {
   resolveFields: (data: { props?: Partial<GLUVideoProps> }, { fields }: { fields: Record<string, unknown> }) => {
     const isImage = data.props?.mediaType === "image";
     const videoOnly = ["source", "autoplay", "muted", "loop", "controls", "poster"];
-    const imageOnly = ["image", "imageFit"];
+    const imageOnly = ["image", "imageUrl", "imageFit"];
     const hide = new Set(isImage ? videoOnly : imageOnly);
     return Object.fromEntries(Object.entries(fields).filter(([key]) => !hide.has(key)));
   },
@@ -353,6 +385,7 @@ export const gluVideoConfig = {
     controls: true,
     poster: null,
     image: null,
+    imageUrl: "",
     imageFit: "cover",
   },
   render: GLUVideoComponent,

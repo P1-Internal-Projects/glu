@@ -135,6 +135,25 @@ describe("GLUVideo image mode", () => {
     expect(renderToStaticMarkup(<GLUVideoComponent {...legacy} />)).toContain("<video");
   });
 
+  it("uses a pasted image URL instead of the library pick", () => {
+    const out = html({ mediaType: "image", image: IMG, imageUrl: "https://cdn.example.org/slide-1.png", title: "Slide one" });
+    expect(out).toContain('src="https://cdn.example.org/slide-1.png"');
+    expect(out).not.toContain(IMG);
+    expect(out).toContain('alt="Slide one"');
+  });
+
+  it("reads storage paths for images the way it does for video", () => {
+    expect(html({ mediaType: "image", imageUrl: "gs://demo-assets/stills/quad at dusk.jpg" })).toContain(
+      'src="https://storage.googleapis.com/demo-assets/stills/quad%20at%20dusk.jpg"',
+    );
+  });
+
+  it("explains an image link it can't show, in the editor only", () => {
+    expect(html({ mediaType: "image", imageUrl: "http://example.com/a.jpg" })).toBe("");
+    expect(html({ mediaType: "image", imageUrl: "http://example.com/a.jpg", puck: { isEditing: true } })).toContain("Can&#x27;t show this image link");
+    expect(html({ mediaType: "image", imageUrl: "https://youtu.be/dQw4w9WgXcQ", puck: { isEditing: true } })).toContain("That&#x27;s a video link");
+  });
+
   it("offers only the fields for what the block shows", () => {
     const fields = gluVideoConfig.fields as Record<string, unknown>;
     const resolve = (gluVideoConfig as unknown as {
@@ -142,7 +161,7 @@ describe("GLUVideo image mode", () => {
     }).resolveFields;
     const forImage = Object.keys(resolve({ props: { mediaType: "image" } }, { fields }));
     const forVideo = Object.keys(resolve({ props: { mediaType: "video" } }, { fields }));
-    expect(forImage).toEqual(["mediaType", "title", "size", "image", "imageFit"]);
+    expect(forImage).toEqual(["mediaType", "title", "size", "image", "imageUrl", "imageFit"]);
     expect(forVideo).toEqual(["mediaType", "source", "title", "size", "autoplay", "muted", "loop", "controls", "poster"]);
   });
 });
