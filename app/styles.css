@@ -6,6 +6,9 @@
 @import "./p1-tokens.css";
 @import "./p1-base.css";
 @import "./p1-theme.css";
+/* Prose styles for <RichText> (components/rich-text). Imported with the other
+   global CSS, as Next recommends, rather than from the component. */
+@import "../components/rich-text/rich.css";
 @plugin "@tailwindcss/typography";
 
 /* Scoped via :has() rather than a bare `body {...}` selector so this reset
@@ -39,4 +42,11 @@ body:has(> .p1-app-shell) {
 [class*="_Puck"] svg {
   display: inline-block;
   vertical-align: middle;
+}
+
+/* Rich text links (components/rich-text/rich.css) in GLU's link colours:
+   design-system tokens accentRed ("accents, links") and crimsonDark. */
+:root {
+  --rich-text-link: #c0392b;
+  --rich-text-link-hover: #6b0010;
 }

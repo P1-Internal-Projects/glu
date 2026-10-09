@@ -1,0 +1,63 @@
+/* Shared prose styles for <RichText> (components/rich-text/render.tsx).
+   Imported once from app/styles.css, which Puck also copies into the canvas
+   iframe, so the editor and the published page draw the same thing.
+
+   Tailwind's preflight strips list markers and makes links inherit colour with
+   no underline, so a link added in the editor looked like plain text. These
+   rules are unlayered and so win over preflight.
+
+   Colours come from custom properties, with currentColor as the fallback, so a
+   site or a single block can theme them without touching this file:
+     --rich-text-link        link colour
+     --rich-text-link-hover  link colour on hover (defaults to --rich-text-link)
+     --rich-text-rule        blockquote rule colour */
+
+.rich-text-prose :where(p, ul, ol, blockquote, h2, h3) {
+  margin: 0 0 0.75em;
+}
+.rich-text-prose :where(p, ul, ol, blockquote, h2, h3):last-child {
+  margin-bottom: 0;
+}
+
+.rich-text-prose :where(ul, ol) {
+  padding-left: 1.5em;
+}
+.rich-text-prose ul {
+  list-style: disc;
+}
+.rich-text-prose ol {
+  list-style: decimal;
+}
+.rich-text-prose li > p {
+  margin: 0;
+}
+
+.rich-text-prose :where(h2, h3) {
+  font-weight: 700;
+  line-height: 1.25;
+  margin-top: 1.25em;
+}
+.rich-text-prose h2 {
+  font-size: 1.5em;
+}
+.rich-text-prose h3 {
+  font-size: 1.25em;
+}
+.rich-text-prose :where(h2, h3):first-child {
+  margin-top: 0;
+}
+
+.rich-text-prose blockquote {
+  padding-left: 1em;
+  border-left: 3px solid var(--rich-text-rule, currentColor);
+  font-style: italic;
+}
+
+.rich-text-prose a {
+  color: var(--rich-text-link, currentColor);
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+.rich-text-prose a:hover {
+  color: var(--rich-text-link-hover, var(--rich-text-link, currentColor));
+}
