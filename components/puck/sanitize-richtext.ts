@@ -58,7 +58,7 @@ const ALLOWED_TAGS = [
  * formatting choice, and this is the boundary that can still catch it.
  */
 
-const ALLOWED_ATTR = ["href", "target", "rel", "style"];
+const ALLOWED_ATTR = ["href", "target", "rel", "title", "style"];
 
 /** The only declarations `style` may carry — see the hook below. */
 const ALIGNMENTS = new Set(["left", "center", "right", "justify"]);
@@ -97,5 +97,9 @@ export function sanitizeRichtextHtml(html: string): string {
     // which already rejects javascript:/unknown schemes): only safe link
     // protocols, plus relative/anchor hrefs.
     ALLOWED_URI_REGEXP: /^(?:https?:|mailto:|tel:|ftp:|#|\/|\.)/i,
+    // DOMPurify checks every attribute not on its URI-safe list against the
+    // regexp above, so `target="_blank"` and `rel="noopener"` were dropped as
+    // if they were bad URLs. They are not URLs at all.
+    ADD_URI_SAFE_ATTR: ["target", "rel"],
   });
 }

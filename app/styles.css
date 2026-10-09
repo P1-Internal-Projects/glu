@@ -40,3 +40,15 @@ body:has(> .p1-app-shell) {
   display: inline-block;
   vertical-align: middle;
 }
+
+/* Links in richtext. The Tailwind base reset makes an <a> inherit the
+   surrounding colour with no underline, so a link looked like plain text.
+   Colours are the design tokens' accentRed (links) and crimsonDark. */
+.glu-rich-links a {
+  color: #c0392b;
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+.glu-rich-links a:hover {
+  color: #6b0010;
+}
