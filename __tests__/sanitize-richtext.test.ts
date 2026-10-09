@@ -103,4 +103,13 @@ describe("sanitizeRichtextHtml", () => {
       'href="#section"',
     );
   });
+
+  it("keeps a link's target, rel and title", () => {
+    const out = sanitizeRichtextHtml(
+      '<a href="https://example.com" target="_blank" rel="noopener noreferrer nofollow" title="Example">x</a>',
+    );
+    expect(out).toContain('target="_blank"');
+    expect(out).toContain('rel="noopener noreferrer nofollow"');
+    expect(out).toContain('title="Example"');
+  });
 });

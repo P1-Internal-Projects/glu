@@ -2,7 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
-import type { ComponentConfig, RichText as RichTextValue } from "@puckeditor/core";
+import type { ComponentConfig, RichText } from "@puckeditor/core";
 import { Button } from "../../design-system/components/button";
 import { Eyebrow } from "../../design-system/components/typography";
 import { Section, type LegacySectionBackground } from "../../design-system/components/section";
@@ -10,13 +10,13 @@ import { Container } from "../../design-system/components/container";
 import { colors, typography, spacing, radii, shadows } from "../../design-system/tokens";
 import { resolveMediaImage, type MediaImageValue } from "../../lib/media-image";
 import { BACKGROUND_AI, EYEBROW_AI, buttonLabelAi, imageAi, linkAi } from "../../lib/ai-hints";
-import { richTextField } from "../rich-text/field";
-import { RichText } from "../rich-text/render";
+import { richTextProps } from "./rich-text-props";
+import { withLinkEditing } from "./rich-text-link";
 
 export type GLUFeatureSectionProps = {
   eyebrow: string;
   heading: string;
-  body: RichTextValue;
+  body: RichText;
   ctaLabel: string;
   ctaHref: string;
   /**
@@ -102,18 +102,17 @@ export function GLUFeatureSectionComponent({
             >
               {heading}
             </h2>
-            <RichText
-              value={body}
+            <div
+              className="glu-rich-links"
               style={{
                 fontFamily: typography.fontBody,
                 fontSize: typography.sizeLg,
                 color: colors.muted,
                 lineHeight: typography.lineHeightRelaxed,
                 margin: `0 0 ${spacing[8]}`,
-                // No `whiteSpace: "pre-line"`: the value is HTML now, and the
-                // newlines between tags in HTML written outside the editor
-                // (AI, imports) would each draw a blank line.
+                whiteSpace: "pre-line",
               }}
+              {...richTextProps(body)}
             />
             {ctaLabel && (
               <Button variant="secondary" size="md" href={ctaHref}>
@@ -145,11 +144,10 @@ export const gluFeatureSectionConfig = {
       contentEditable: true,
       ai: { required: true, instructions: "Section headline highlighting a program strength or key feature." },
     } as any,
-    // Preset "standard": lists, bold, italic, link, clear formatting — and the
-    // editor accepts nothing else. See components/rich-text/README.md.
-    body: richTextField({
+    body: withLinkEditing({
+      type: "richtext",
       label: "Body Text",
-      preset: "standard",
+      contentEditable: true,
       ai: { instructions: "2-3 sentences expanding on the heading. Focus on student outcomes or differentiators." },
     }),
     ctaLabel: {
