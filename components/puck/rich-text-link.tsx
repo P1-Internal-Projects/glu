@@ -62,8 +62,9 @@ const SAFE_SCHEMES = new Set(["http", "https", "mailto", "tel"]);
 export function normalizeHref(input: string): string | null {
   const value = input.trim();
   if (!value || /\s/.test(value)) return null;
-  // Site paths, anchors and queries. Browsers read `/\` as `//`: another host.
-  if (/^[/#?]/.test(value)) return value.startsWith("/\\") ? null : value;
+  // Site paths and anchors. Browsers read `/\` as `//`: another host. No bare
+  // `?query`: the sanitizer would strip it from the published page.
+  if (/^[/#]/.test(value)) return value.startsWith("/\\") ? null : value;
   const scheme = /^([a-z][a-z0-9+-]*):/i.exec(value)?.[1];
   if (scheme) return SAFE_SCHEMES.has(scheme.toLowerCase()) ? value : null;
   if (/^[^@/]+@[^@/]+\.[^@/]+$/.test(value)) return `mailto:${value}`;
