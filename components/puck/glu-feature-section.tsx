@@ -10,6 +10,7 @@ import { Container } from "../../design-system/components/container";
 import { colors, typography, spacing, radii, shadows } from "../../design-system/tokens";
 import { richTextProps } from "./rich-text-props";
 import { MenuWithLink } from "./rich-text-link-control";
+import "./glu-rich-links.css";
 import { resolveMediaImage, type MediaImageValue } from "../../lib/media-image";
 import { BACKGROUND_AI, EYEBROW_AI, buttonLabelAi, imageAi, linkAi } from "../../lib/ai-hints";
 
@@ -103,6 +104,7 @@ export function GLUFeatureSectionComponent({
               {heading}
             </h2>
             <div
+              className="glu-rich-links"
               style={{
                 fontFamily: typography.fontBody,
                 fontSize: typography.sizeLg,
