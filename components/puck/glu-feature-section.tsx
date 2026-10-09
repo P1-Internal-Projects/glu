@@ -9,6 +9,7 @@ import { Section, type LegacySectionBackground } from "../../design-system/compo
 import { Container } from "../../design-system/components/container";
 import { colors, typography, spacing, radii, shadows } from "../../design-system/tokens";
 import { richTextProps } from "./rich-text-props";
+import { MenuWithLink } from "./rich-text-link-control";
 import { resolveMediaImage, type MediaImageValue } from "../../lib/media-image";
 import { BACKGROUND_AI, EYEBROW_AI, buttonLabelAi, imageAi, linkAi } from "../../lib/ai-hints";
 
@@ -146,6 +147,18 @@ export const gluFeatureSectionConfig = {
       type: "richtext",
       label: "Body Text",
       contentEditable: true,
+      // Puck's default menu plus a button for its included Link extension.
+      renderMenu: (props: any) => <MenuWithLink {...props} />,
+      renderInlineMenu: (props: any) => <MenuWithLink {...props} />,
+      // The Link extension's own options, overriding three TipTap defaults:
+      // - openOnClick: a click inside a link in the editor followed it;
+      // - HTMLAttributes: every link was saved target="_blank" rel="... nofollow",
+      //   links to other GLU pages included;
+      // - defaultProtocol: a URL typed into the text without a scheme autolinks
+      //   to https, not http. (It does not apply to the link button's setLink.)
+      options: {
+        link: { openOnClick: false, HTMLAttributes: { target: null, rel: null }, defaultProtocol: "https" },
+      },
       ai: { instructions: "2-3 sentences expanding on the heading. Focus on student outcomes or differentiators." },
     } as any,
     ctaLabel: {
