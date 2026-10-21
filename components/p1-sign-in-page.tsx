@@ -1,5 +1,6 @@
 "use client";
 
+import { Icon } from "@pantheon-systems/pds-toolkit-react";
 import { useP1Auth } from "@pantheon-systems/puck-css";
 
 import { P1Lockup } from "./p1-lockup";
@@ -13,14 +14,7 @@ export function P1SignInPage() {
       <div className={styles.inner}>
         <P1Lockup />
 
-        <h1 className={styles.heading}>
-          Your Collaborative Website Management Workspace.
-        </h1>
-        <p className={styles.description}>
-          Log in to your Pantheon P1 account to edit your P1 powered website.
-          If you don&apos;t have yet a Pantheon P1 account, contact us{" "}
-          <a href="https://pantheon.io/contact-us" className={styles.link}>here</a>.
-        </p>
+        <h1 className={styles.title}>Welcome to P1 Visual Editor</h1>
 
         <div className={styles.actions}>
           <button
@@ -28,9 +22,15 @@ export function P1SignInPage() {
             onClick={() => void login()}
             disabled={isLoading}
           >
-            {isLoading ? "Signing in..." : "Continue"}
+            {!isLoading && <Icon iconName="arrowRight" aria-hidden="true" />}
+            {isLoading ? "Signing in..." : "Sign in"}
           </button>
         </div>
+
+        <p className={`${styles.description} ${styles.note}`}>
+          Don&rsquo;t have access yet?{" "}
+          <a href="https://p1.pantheon.io" className={styles.link}>Learn about P1</a>
+        </p>
 
         {error && <p className={styles.error}>{error}</p>}
       </div>
