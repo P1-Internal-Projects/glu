@@ -1,0 +1,7 @@
+/* Puck's richtext menu is one row (nowrap) inside overflow-x: auto with the
+   scrollbar hidden, so in a narrow sidebar the last controls, the link button
+   among them, sit out of sight with no way to tell. Let it wrap instead. */
+.glu-rte-menu > [data-puck-rte-menu] {
+  flex-wrap: wrap;
+  row-gap: 2px;
+}
