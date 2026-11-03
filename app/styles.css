@@ -19,7 +19,7 @@
    A class on <body> itself doesn't help: Puck's CopyHostStyles syncs this
    document's <body> attributes (including class) onto the iframe's own
    <body>, so `body.some-class` would still match there too. `.p1-app-shell`
-   (see app/layout.tsx) is a *child* of <body> instead — attributes aren't
+   (see components/html-shell.tsx) is a *child* of <body> instead — attributes aren't
    synced onto descendants, and Puck's canvas iframe never renders this
    layout's tree at all (only the Puck root/block tree, into its own
    #frame-root) — so `body:has(> .p1-app-shell)` matches on every real

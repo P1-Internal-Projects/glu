@@ -73,12 +73,12 @@ currently at 0.20.0.
 
 ```
 app/
-  page.tsx                      # Site root (renders via Puck)
-  layout.tsx                    # Root layout
   styles.css                    # Tailwind entry point
-  [...puckPath]/                # Catch-all route for published pages
+  [[...puckPath]]/              # "/" and every published page, rendered via Puck
+    layout.tsx                  #   site root layout; <html lang> is the page's language
   api/pcc/                      # Content Publisher article endpoints
   p1/
+    layout.tsx                  # Root layout for the editor, auth and API routes
     (editor)/[[...p1]]/         # Dashboard at /p1, editor at /p1/<path>
     api/[...p1]/route.ts        # API handler for page data
     auth/[...action]/route.ts   # Login / logout callbacks

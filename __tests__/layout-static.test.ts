@@ -4,8 +4,9 @@ import { fileURLToPath } from "url";
 import { describe, expect, it } from "vitest";
 
 /**
- * The root layout wraps every route, including the published catch-all, which
- * Next renders statically so pages can be cached at the edge.
+ * The root layouts (the site's and the editor's) and the HTML shell they share
+ * wrap every route, including the published catch-all, which Next renders
+ * statically so pages can be cached at the edge.
  *
  * Reading a dynamic API here makes that render throw DYNAMIC_SERVER_USAGE, and
  * the failure is invisible in development, where every route is dynamic anyway.
@@ -29,11 +30,17 @@ function code(path: string): string {
     .replace(/^\s*\/\/.*$/gm, "");
 }
 
-const layout = code("app/layout.tsx");
+const ROOT_LAYOUTS = [
+  "app/[[...puckPath]]/layout.tsx",
+  "app/p1/layout.tsx",
+  "components/html-shell.tsx",
+];
 
 const DYNAMIC_APIS = ["headers(", "cookies(", "draftMode(", "connection("];
 
-describe("the root layout stays statically renderable", () => {
+describe.each(ROOT_LAYOUTS)("%s stays statically renderable", (path) => {
+  const layout = code(path);
+
   it.each(DYNAMIC_APIS)("does not call %s", (api) => {
     expect(layout).not.toContain(api.replace("(", "()"));
     // Catch the import too: importing it is the first half of using it.
@@ -45,11 +52,18 @@ describe("the root layout stays statically renderable", () => {
   it("imports nothing from next/headers", () => {
     expect(layout).not.toMatch(/from\s+["']next\/headers["']/);
   });
+});
 
-  // The language of the content is set by the chrome instead. If that moved
-  // back to the layout it could only work by reading a request, so this pins
-  // where the responsibility lives.
-  it("leaves the page language to the site chrome", () => {
+describe("page language", () => {
+  // <html lang> comes from the document the route resolves to, read from the
+  // route params rather than the request.
+  it("the site layout takes <html lang> from the page's document", () => {
+    expect(code("app/[[...puckPath]]/layout.tsx")).toMatch(/getDocumentLanguage\(\{ params \}\)/);
+  });
+
+  // The chrome also sets it on its own wrapper, which is what the editor canvas
+  // (whose <html> is the editor's) relies on.
+  it("the site chrome sets the content language", () => {
     const chrome = code("components/site-chrome.tsx");
     expect(chrome).toMatch(/lang=\{tag\}/);
   });
