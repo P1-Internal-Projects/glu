@@ -10,7 +10,7 @@ import { DEFAULT_LOCALE, localeByTag, readLocaleFromPath } from "../lib/locales"
 /**
  * The page landmarks, wrapped around whatever the page itself renders.
  *
- * This sits in the Puck root rather than in app/layout.tsx on purpose. The root
+ * This sits in the Puck root rather than in the root layout on purpose. The root
  * is rendered inside the editor canvas as well as on the published page, so the
  * editor shows the real header and footer instead of a bare content column —
  * and because they are not blocks, there is nothing to select, drag, delete or

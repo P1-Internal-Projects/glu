@@ -1,15 +1,16 @@
 /**
- * The app's published-page routes, built once and shared by both route files.
+ * The app's published-page route, built once and shared by the route and its
+ * layout.
  *
  * One instance on purpose: the factory memoizes per-request work (the CCR query
- * fetchers), and "/" and the catch-all should share that rather than each
+ * fetchers), and the route and its layout should share that rather than each
  * building their own.
  */
 
 import { createPublishedPage, resolvePageMetadata } from "@pantheon-systems/p1-next-sdk/server";
 import { REMOTE_DATASOURCE_FETCHERS } from "../lib/remote-datasource-fetchers";
 import { ContentUnavailable } from "../components/content-unavailable";
-import { Client } from "./[...puckPath]/client";
+import { Client } from "./[[...puckPath]]/client";
 import { WelcomeBlock } from "./welcome-block";
 import { DEFAULT_LOCALE, localizedPath, readLocaleFromPath } from "../lib/locales";
 import { availableLocales } from "../lib/locale-pages";

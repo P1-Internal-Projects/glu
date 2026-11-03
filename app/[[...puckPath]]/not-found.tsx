@@ -4,7 +4,7 @@
  * cache with "doesn't exist yet" pages and getting them indexed.
  */
 
-import { PageMissing } from "../components/page-missing";
+import { PageMissing } from "../../components/page-missing";
 
 export default function NotFound() {
   return <PageMissing />;

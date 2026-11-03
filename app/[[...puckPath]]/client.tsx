@@ -3,7 +3,9 @@
 import { useEffect, useState } from "react";
 import type { Data } from "@puckeditor/core";
 import { RenderClient, performLogout, P1_LOGGED_IN_KEY } from "@pantheon-systems/puck-css";
+import type { PublishedPageLocalization } from "@pantheon-systems/p1-next-sdk";
 import config from "../../puck.config";
+import { LocaleSuggestion } from "../../components/locale-suggestion";
 import { readLocaleFromPath } from "../../lib/locales";
 import { runWidgetLogout } from "./widget-logout";
 import { filterMisplacedAnnouncementBanners } from "../../lib/announcement-placement";
@@ -211,6 +213,7 @@ export function P1EditWidget({ route }: { route: string }) {
 export function Client({
   data,
   pageMetadata,
+  localization,
 }: {
   data: Data;
   pageMetadata?: {
@@ -218,6 +221,7 @@ export function Client({
     documentName?: string;
     pageType?: "page" | "template" | "override";
   };
+  localization?: PublishedPageLocalization;
 }) {
   /**
    * The chrome's language comes from the route, resolved here rather than from
@@ -247,6 +251,7 @@ export function Client({
   return (
     <>
       <RenderClient config={config} data={renderedData} />
+      {localization && !bare && <LocaleSuggestion />}
       {pageMetadata && !bare && <P1EditWidget route={pageMetadata.route} />}
     </>
   );
