@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs";
-import { GLUTestimonialSliderComponent, gluTestimonialSliderConfig } from "../components/puck/glu-testimonial-slider";
+import { GLUTestimonialSliderComponent, gluTestimonialSliderConfig, type GLUTestimonialSliderProps } from "../components/puck/glu-testimonial-slider";
 
 const meta: Meta<typeof GLUTestimonialSliderComponent> = {
   title: "Components/GLUTestimonialSlider",
@@ -11,7 +11,7 @@ export default meta;
 type Story = StoryObj<typeof GLUTestimonialSliderComponent>;
 
 // The block's defaults, which are also what every GLU page using it holds.
-const defaults = gluTestimonialSliderConfig.defaultProps!;
+const defaults = gluTestimonialSliderConfig.defaultProps as GLUTestimonialSliderProps;
 
 export const Default: Story = {
   args: { eyebrow: defaults.eyebrow, heading: defaults.heading, testimonials: defaults.testimonials },
