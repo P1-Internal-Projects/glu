@@ -22,7 +22,7 @@ function isAppPath(pathname: string): boolean {
   );
 }
 
-export async function middleware(request: Request) {
+export async function proxy(request: Request) {
   const p1Response = await p1Middleware(request);
 
   // P1's own middleware owns redirects and auth. Anything other than a pass

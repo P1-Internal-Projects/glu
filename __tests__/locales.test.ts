@@ -12,7 +12,7 @@ import {
 
 /**
  * The locale map is the one place the URL shape is decided, and four things
- * read it: the middleware, the switcher, the hreflang alternates and the
+ * read it: the proxy, the switcher, the hreflang alternates and the
  * collection datasources. A disagreement between any two of them shows up as a
  * 404 or a wrong-language page, so the round trip is what these tests pin.
  */
