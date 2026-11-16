@@ -1,0 +1,12 @@
+/* Links inside GLU richtext. The Tailwind base reset makes an <a> inherit the
+   surrounding colour with no underline, so a link added with the richtext link
+   button looked like plain text in the editor canvas and on the live site.
+   Colours are the design tokens' accentRed (links) and crimsonDark. */
+.glu-rich-links a {
+  color: #c0392b;
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+.glu-rich-links a:hover {
+  color: #6b0010;
+}
