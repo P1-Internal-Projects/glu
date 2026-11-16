@@ -5,7 +5,7 @@
  * "serve the default language when this one has no version" is enforced here.
  * Answering that needs the set of published paths, which is one request for the
  * whole site rather than one per page, so it is cached for a short window and
- * shared by the middleware and the <head> alternates.
+ * shared by the proxy and the <head> alternates.
  *
  * A failure returns an empty set and every caller treats that as "cannot say",
  * falling through to normal rendering. A backend blip should not start
@@ -80,7 +80,7 @@ export async function availableLocales(canonicalPath: string): Promise<string[]>
  * Two shapes are possible for the same page. This site creates translations
  * with an explicit prefixed path, but the editor cannot send a path at all, so
  * anything authored in the UI lands at the platform default
- * `{canonicalPath}.{tag}`. The middleware uses this to serve either one at the
+ * `{canonicalPath}.{tag}`. The proxy uses this to serve either one at the
  * prefix URL the rest of the site links to, so a page authored in the editor is
  * reachable without anyone renaming it first.
  *

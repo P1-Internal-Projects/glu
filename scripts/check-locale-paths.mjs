@@ -5,7 +5,7 @@
  * `{canonicalDocumentId, locale, mode}`, so a translation created in the UI
  * lands at the backend default `{canonicalPath}.{locale}` (lowercased) instead
  * of under this site's `/{prefix}/` convention. The app serves both — see
- * `findLocalizedDocument` and the middleware — but the prefixed form is the one
+ * `findLocalizedDocument` and the proxy — but the prefixed form is the one
  * the nav, switcher and alternates link to, so a suffix page is worth knowing
  * about and renaming at leisure.
  *

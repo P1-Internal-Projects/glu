@@ -92,7 +92,7 @@ lib/remote-datasource-fetchers.ts  # Fetchers backing those datasources
 lib/glu-datasources.ts          # GLU events and people datasources
 lib/glu-programs.ts             # Academic programs from Drupal
 lib/locales.ts                  # The locales the site serves
-middleware.ts                   # Locale routing (never touches /p1 or auth)
+proxy.ts                        # Locale routing (never touches /p1 or auth)
 i18n/                           # Translation glossary, see i18n/README.md
 scripts/                        # Admin scripts against the P1 API (see below)
 stories/                        # Storybook stories

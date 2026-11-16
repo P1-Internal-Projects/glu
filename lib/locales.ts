@@ -4,7 +4,7 @@
  * P1 records a serving policy in site settings, but nothing acts on it at
  * request time — deciding which language a visitor receives is the
  * application's job. This module is that decision, in one place, so the
- * middleware, the switcher, the <head> alternates and the datasources cannot
+ * proxy, the switcher, the <head> alternates and the datasources cannot
  * drift from each other.
  *
  * The prefix is ours, not the platform's. A translation created without an
