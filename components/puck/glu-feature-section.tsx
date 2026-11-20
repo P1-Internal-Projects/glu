@@ -8,9 +8,10 @@ import { Eyebrow } from "../../design-system/components/typography";
 import { Section, type LegacySectionBackground } from "../../design-system/components/section";
 import { Container } from "../../design-system/components/container";
 import { colors, typography, spacing, radii, shadows } from "../../design-system/tokens";
-import { richTextProps } from "./rich-text-props";
 import { resolveMediaImage, type MediaImageValue } from "../../lib/media-image";
 import { BACKGROUND_AI, EYEBROW_AI, buttonLabelAi, imageAi, linkAi } from "../../lib/ai-hints";
+import { richTextProps } from "./rich-text-props";
+import { withLinkEditing } from "./rich-text-link";
 
 export type GLUFeatureSectionProps = {
   eyebrow: string;
@@ -102,6 +103,7 @@ export function GLUFeatureSectionComponent({
               {heading}
             </h2>
             <div
+              className="glu-rich-links"
               style={{
                 fontFamily: typography.fontBody,
                 fontSize: typography.sizeLg,
@@ -142,12 +144,12 @@ export const gluFeatureSectionConfig = {
       contentEditable: true,
       ai: { required: true, instructions: "Section headline highlighting a program strength or key feature." },
     } as any,
-    body: {
+    body: withLinkEditing({
       type: "richtext",
       label: "Body Text",
       contentEditable: true,
       ai: { instructions: "2-3 sentences expanding on the heading. Focus on student outcomes or differentiators." },
-    } as any,
+    }),
     ctaLabel: {
       type: "text",
       label: "CTA Label",
